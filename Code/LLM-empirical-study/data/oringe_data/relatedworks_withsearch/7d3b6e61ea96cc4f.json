@@ -1,0 +1,107 @@
+{
+  "pdf_id": "7d3b6e61ea96cc4f",
+  "mode": "withsearch",
+  "observation": "Datacenter networks must serve cloud applications that require extremely low latency and high bandwidth, yet traffic is commonly bursty and emerging reconfigurable datacenters introduce rapid bandwidth changes, making congestion control a key enabler or limiter of system performance. The reaction time and accuracy of existing datacenter congestion control schemes are inherently limited because they react either only to the absolute network state (queue length, delay, ECN, or loss, called voltage) or only to state variations (e.g., RTT gradient, called current). A voltage-based reaction is oblivious to the rate at which the queue builds up and over-reacts when the queue drains, losing throughput; a current-based reaction is oblivious to the absolute queue length and, having no unique equilibrium, cannot stabilize queue lengths. Consequently, neither class of algorithms alone can deliver both fast, accurate reaction to perturbations and the strict near-zero-queue, high-throughput equilibrium that datacenter workloads demand.",
+  "related_works": [
+    {
+      "claims": [
+        "The dominant class of datacenter congestion-control schemes reacts to the instantaneous network state: queue occupancy, ECN marking, packet delay, or packet loss.",
+        "DCTCP uses switch-level ECN marking triggered by queue length, and the sender reduces its window in proportion to the fraction of marked packets in a round.",
+        "DCQCN carries switch ECN information to RDMA NICs through congestion notification packets and uses queue-threshold-triggered marks as the central congestion feedback.",
+        "HPCC replaces threshold marking with per-hop queue lengths and link utilization from in-band network telemetry, letting senders compute an exact current rate.",
+        "Such controls have no direct access to the rate of change of the queue signal, so their response is delayed until the absolute signal has already built or drained."
+      ],
+      "works": [
+        {
+          "title": "Data Center TCP",
+          "authors": [
+            "Mohammad Alizadeh"
+          ]
+        },
+        {
+          "title": "DCQCN: Congestion Control for Large-Scale RDMA Deployments",
+          "authors": [
+            "Yibo Zhu"
+          ]
+        },
+        {
+          "title": "HPCC: High Precision Congestion Control",
+          "authors": [
+            "Yuliang Li"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "A second class of datacenter congestion control targets the variation of delay rather than its absolute level.",
+        "TIMELY is a datacenter protocol that computes the RTT gradient in the NIC and adjusts the sending rate in response to this gradient, anticipating queue growth rather than waiting for queue-level thresholds.",
+        "A control law based solely on a differentiated congestion signal has no absolute reference to the current queue length and hence no stable target at which the queue must rest.",
+        "Therefore current-only control can prevent queue growth but cannot maintain a strict near-zero-queue equilibrium across changing traffic conditions."
+      ],
+      "works": [
+        {
+          "title": "TIMELY: RTT-based Congestion Control for the Datacenter",
+          "authors": [
+            "Radhika Mittal"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Datacenter protocols that do obtain near-zero queues generally replace distributed congestion control with scheduling or priority mechanisms.",
+        "Homa uses receiver-driven priorities and receiver-side queue information to schedule short flows ahead of bulk traffic, keeping queues short without a conventional sender-rate controller.",
+        "Fastpass centralizes transmission decisions in a scheduler that admits packets only when switch buffers will not form queues, providing near-zero-queue transmission at the cost of a centralized arbiter.",
+        "These scheduling-based designs are not built around the congestion-control signal classes used by sender-side protocols and require mechanisms outside the standard host transport stack."
+      ],
+      "works": [
+        {
+          "title": "Homa: A Receiver-Driven Low-Latency Transport Protocol Using Network Priorities",
+          "authors": [
+            "Behnam Montazeri"
+          ]
+        },
+        {
+          "title": "Fastpass: A Centralized \"Zero-Queue\" Datacenter Network",
+          "authors": [
+            "Jonathan Perry"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Reconfigurable datacenter networks such as RotorNet periodically change which switch pairs are connected, exposing flows to bottleneck capacities that vary independently of host traffic demand.",
+        "The queue-threshold and RTT-gradient congestion-control protocols described above were designed for fixed-capacity network paths and do not incorporate knowledge of the timescale at which a reconfigurable link changes.",
+        "Consequently, prior sender-side controllers founded on either absolute queue state or its derivative alone cannot simultaneously deliver the fast perturbation tracking and stable near-zero-queue operation that reconfigurable datacenter workloads require."
+      ],
+      "works": [
+        {
+          "title": "RotorNet: A Scalable, Reconfigurable Datacenter Network",
+          "authors": [
+            "William M. Mellette"
+          ]
+        },
+        {
+          "title": "Data Center TCP",
+          "authors": [
+            "Mohammad Alizadeh"
+          ]
+        },
+        {
+          "title": "TIMELY: RTT-based Congestion Control for the Datacenter",
+          "authors": [
+            "Radhika Mittal"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "f948850caef3d25f",
+    "e3d82bafe7cb11e7"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 08:47:11"
+}

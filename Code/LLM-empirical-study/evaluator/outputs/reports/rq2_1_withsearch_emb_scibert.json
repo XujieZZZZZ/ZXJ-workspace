@@ -1,0 +1,807 @@
+{
+  "variant": "withsearch",
+  "emb": "scibert",
+  "per_sample": [
+    {
+      "pdf_id": "52875bf8ef4b3f8c",
+      "variant": "withsearch",
+      "retrieval": {
+        "recall": 0.1875,
+        "precision": 0.25,
+        "jaccard": 0.12,
+        "matched": 3,
+        "n_h": 16,
+        "n_l": 12
+      },
+      "failure": {
+        "H": {
+          "total": 16,
+          "s2_fail": 0,
+          "s2_fail_rate": 0.0
+        },
+        "L": {
+          "total": 12,
+          "s2_fail": 3,
+          "s2_fail_rate": 0.25
+        }
+      },
+      "temporal": {
+        "rr_h": 0.125,
+        "rr_l": 0.0,
+        "n_years_h": 16,
+        "n_years_l": 9,
+        "w1": 4.708333333333335,
+        "w1_n_h": 16,
+        "w1_n_l": 9
+      },
+      "semantic": {
+        "intra_h": 0.7470975518226624,
+        "intra_l": 0.7631725668907166,
+        "inter": 0.972713974633789,
+        "rel_h": 0.7479961514472961,
+        "rel_l": 0.7246413230895996
+      },
+      "quality_h": {
+        "mlc": 4.870430798098373,
+        "n_mlc": 16,
+        "tvr": 0.8125,
+        "n_tvr": 16,
+        "n_venue_known": 16
+      },
+      "quality_l": {
+        "mlc": 6.599891715777755,
+        "n_mlc": 9,
+        "tvr": 0.5833333333333334,
+        "n_tvr": 12,
+        "n_venue_known": 12
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 1,
+          "2": 0,
+          "3": 6
+        },
+        "n_h": 16,
+        "n_l": 12,
+        "matched_l_idx": [
+          0,
+          3,
+          4
+        ],
+        "l_titles_matched": [
+          "Understanding Network Failures in Data Centers: Measurement, Analysis, and Implications",
+          "Achieving High Utilization with Software-Driven WAN",
+          "Header Space Analysis: Static Checking for Networks"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.998481273651123,
+        "n_nli_pairs": 2,
+        "n_atoms": 35,
+        "coverage": 0.22857142857142856,
+        "n_supported": 8,
+        "logic": 4
+      }
+    },
+    {
+      "pdf_id": "5dd2d839c66d339a",
+      "variant": "withsearch",
+      "retrieval": {
+        "recall": 0.19642857142857142,
+        "precision": 0.9166666666666666,
+        "jaccard": 0.19298245614035087,
+        "matched": 11,
+        "n_h": 56,
+        "n_l": 12
+      },
+      "failure": {
+        "H": {
+          "total": 56,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.017857142857142856
+        },
+        "L": {
+          "total": 12,
+          "s2_fail": 0,
+          "s2_fail_rate": 0.0
+        }
+      },
+      "temporal": {
+        "rr_h": 0.625,
+        "rr_l": 0.9166666666666666,
+        "n_years_h": 56,
+        "n_years_l": 12,
+        "w1": 6.053571428571429,
+        "w1_n_h": 56,
+        "w1_n_l": 12
+      },
+      "semantic": {
+        "intra_h": 0.7800944447517395,
+        "intra_l": 0.8806252479553223,
+        "inter": 0.9839175425475865,
+        "rel_h": 0.8117824792861938,
+        "rel_l": 0.8611314296722412
+      },
+      "quality_h": {
+        "mlc": 6.182281761610105,
+        "n_mlc": 55,
+        "tvr": 0.5,
+        "n_tvr": 56,
+        "n_venue_known": 56
+      },
+      "quality_l": {
+        "mlc": 6.924748588666932,
+        "n_mlc": 12,
+        "tvr": 0.9166666666666666,
+        "n_tvr": 12,
+        "n_venue_known": 12
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 2,
+          "2": 0,
+          "3": 118
+        },
+        "n_h": 56,
+        "n_l": 12,
+        "matched_l_idx": [
+          0,
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "l_titles_matched": [
+          "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation",
+          "ChatDev: Communicative Agents for Software Development",
+          "Improving Factuality and Reasoning in Language Models through Multiagent Debate",
+          "Encouraging Divergent Thinking in Large Language Models through Multi-Agent Debate",
+          "Self-Refine: Iterative Refinement with Self-Feedback",
+          "Reflexion: Language Agents with Verbal Reinforcement Learning",
+          "CodeT: Code Generation with Generated Tests",
+          "Teaching Large Language Models to Self-Debug",
+          "AgentBench: Evaluating LLMs as Agents",
+          "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+          "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9980842471122742,
+        "n_nli_pairs": 11,
+        "n_atoms": 81,
+        "coverage": 0.2345679012345679,
+        "n_supported": 19,
+        "logic": 4
+      }
+    },
+    {
+      "pdf_id": "7d3b6e61ea96cc4f",
+      "variant": "withsearch",
+      "retrieval": {
+        "recall": 0.18518518518518517,
+        "precision": 0.7142857142857143,
+        "jaccard": 0.1724137931034483,
+        "matched": 5,
+        "n_h": 27,
+        "n_l": 7
+      },
+      "failure": {
+        "H": {
+          "total": 27,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.037037037037037035
+        },
+        "L": {
+          "total": 7,
+          "s2_fail": 3,
+          "s2_fail_rate": 0.42857142857142855
+        }
+      },
+      "temporal": {
+        "rr_h": 0.0,
+        "rr_l": 0.0,
+        "n_years_h": 27,
+        "n_years_l": 4,
+        "w1": 4.537037037037038,
+        "w1_n_h": 27,
+        "w1_n_l": 4
+      },
+      "semantic": {
+        "intra_h": 0.7723085880279541,
+        "intra_l": 0.7893608808517456,
+        "inter": 0.9874540427721219,
+        "rel_h": 0.8019530177116394,
+        "rel_l": 0.8210671544075012
+      },
+      "quality_h": {
+        "mlc": 6.069131806625091,
+        "n_mlc": 26,
+        "tvr": 0.6296296296296297,
+        "n_tvr": 27,
+        "n_venue_known": 27
+      },
+      "quality_l": {
+        "mlc": 6.897085959362119,
+        "n_mlc": 4,
+        "tvr": 0.42857142857142855,
+        "n_tvr": 7,
+        "n_venue_known": 7
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 4,
+          "2": 0,
+          "3": 1
+        },
+        "n_h": 27,
+        "n_l": 7,
+        "matched_l_idx": [
+          0,
+          2,
+          3,
+          4,
+          5
+        ],
+        "l_titles_matched": [
+          "Data Center TCP",
+          "HPCC: High Precision Congestion Control",
+          "TIMELY: RTT-based Congestion Control for the Datacenter",
+          "Homa: A Receiver-Driven Low-Latency Transport Protocol Using Network Priorities",
+          "Fastpass: A Centralized \"Zero-Queue\" Datacenter Network"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9927000999450684,
+        "n_nli_pairs": 4,
+        "n_atoms": 95,
+        "coverage": 0.30526315789473685,
+        "n_supported": 29,
+        "logic": 5
+      }
+    },
+    {
+      "pdf_id": "b93fea400aedf898",
+      "variant": "withsearch",
+      "retrieval": {
+        "recall": 0.0,
+        "precision": 0.0,
+        "jaccard": 0.0,
+        "matched": 0,
+        "n_h": 25,
+        "n_l": 4
+      },
+      "failure": {
+        "H": {
+          "total": 25,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.04
+        },
+        "L": {
+          "total": 4,
+          "s2_fail": 0,
+          "s2_fail_rate": 0.0
+        }
+      },
+      "temporal": {
+        "rr_h": 0.08,
+        "rr_l": 0.0,
+        "n_years_h": 25,
+        "n_years_l": 4,
+        "w1": 6.62,
+        "w1_n_h": 25,
+        "w1_n_l": 4
+      },
+      "semantic": {
+        "intra_h": 0.7863399982452393,
+        "intra_l": 0.7823671698570251,
+        "inter": 0.9058810160679441,
+        "rel_h": 0.8171275854110718,
+        "rel_l": 0.7017562389373779
+      },
+      "quality_h": {
+        "mlc": 3.818358660891812,
+        "n_mlc": 24,
+        "tvr": 0.72,
+        "n_tvr": 25,
+        "n_venue_known": 25
+      },
+      "quality_l": {
+        "mlc": 6.555072187465653,
+        "n_mlc": 4,
+        "tvr": 1.0,
+        "n_tvr": 4,
+        "n_venue_known": 4
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "n_h": 25,
+        "n_l": 4,
+        "matched_l_idx": [],
+        "l_titles_matched": []
+      },
+      "claim": {
+        "faithfulness": null,
+        "n_nli_pairs": 0,
+        "n_atoms": 38,
+        "coverage": 0.2631578947368421,
+        "n_supported": 10,
+        "logic": 3
+      }
+    },
+    {
+      "pdf_id": "c252b8a901feea74",
+      "variant": "withsearch",
+      "retrieval": {
+        "recall": 0.05,
+        "precision": 0.4444444444444444,
+        "jaccard": 0.047058823529411764,
+        "matched": 4,
+        "n_h": 80,
+        "n_l": 9
+      },
+      "failure": {
+        "H": {
+          "total": 80,
+          "s2_fail": 5,
+          "s2_fail_rate": 0.0625
+        },
+        "L": {
+          "total": 9,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.1111111111111111
+        }
+      },
+      "temporal": {
+        "rr_h": 0.0625,
+        "rr_l": 0.0,
+        "n_years_h": 80,
+        "n_years_l": 8,
+        "w1": 20.187500000000004,
+        "w1_n_h": 80,
+        "w1_n_l": 8
+      },
+      "semantic": {
+        "intra_h": 0.7433595061302185,
+        "intra_l": 0.7293073534965515,
+        "inter": 0.9722491200254171,
+        "rel_h": 0.752029538154602,
+        "rel_l": 0.7247603535652161
+      },
+      "quality_h": {
+        "mlc": 5.099021988233247,
+        "n_mlc": 75,
+        "tvr": 0.5125,
+        "n_tvr": 80,
+        "n_venue_known": 80
+      },
+      "quality_l": {
+        "mlc": 7.15247570574326,
+        "n_mlc": 8,
+        "tvr": 0.4444444444444444,
+        "n_tvr": 9,
+        "n_venue_known": 9
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 1,
+          "2": 0,
+          "3": 9
+        },
+        "n_h": 80,
+        "n_l": 9,
+        "matched_l_idx": [
+          0,
+          4,
+          5,
+          8
+        ],
+        "l_titles_matched": [
+          "System Level Concurrency Control for Distributed Database Systems",
+          "Calvin: Fast Distributed Transactions for Partitioned Database Systems",
+          "Staring into the Abyss: An Evaluation of Concurrency Control with One Thousand Cores",
+          "Optimization and Approximation in Deterministic Sequencing and Scheduling: A Survey"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9987310767173767,
+        "n_nli_pairs": 2,
+        "n_atoms": 89,
+        "coverage": 0.15730337078651685,
+        "n_supported": 14,
+        "logic": 4
+      }
+    },
+    {
+      "pdf_id": "d18c13d036b3708f",
+      "variant": "withsearch",
+      "retrieval": {
+        "recall": 0.2777777777777778,
+        "precision": 0.7142857142857143,
+        "jaccard": 0.25,
+        "matched": 5,
+        "n_h": 18,
+        "n_l": 7
+      },
+      "failure": {
+        "H": {
+          "total": 18,
+          "s2_fail": 5,
+          "s2_fail_rate": 0.2777777777777778
+        },
+        "L": {
+          "total": 7,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.14285714285714285
+        }
+      },
+      "temporal": {
+        "rr_h": 0.3333333333333333,
+        "rr_l": 0.7142857142857143,
+        "n_years_h": 18,
+        "n_years_l": 6,
+        "w1": 6.333333333333334,
+        "w1_n_h": 18,
+        "w1_n_l": 6
+      },
+      "semantic": {
+        "intra_h": 0.7427382469177246,
+        "intra_l": 0.8443331718444824,
+        "inter": 0.916292834382342,
+        "rel_h": 0.7711641788482666,
+        "rel_l": 0.8569435477256775
+      },
+      "quality_h": {
+        "mlc": 6.104994618087425,
+        "n_mlc": 13,
+        "tvr": 0.5555555555555556,
+        "n_tvr": 18,
+        "n_venue_known": 18
+      },
+      "quality_l": {
+        "mlc": 6.21053183467961,
+        "n_mlc": 6,
+        "tvr": 0.5714285714285714,
+        "n_tvr": 7,
+        "n_venue_known": 7
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 2,
+          "2": 0,
+          "3": 5
+        },
+        "n_h": 18,
+        "n_l": 7,
+        "matched_l_idx": [
+          0,
+          1,
+          2,
+          3,
+          6
+        ],
+        "l_titles_matched": [
+          "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+          "SGLang: Efficient Execution of Structured Language Model Programs",
+          "Prompt Cache: Modular Attention Reuse for Low-Latency Inference",
+          "LOTUS: Enabling Semantic Queries with Large Language Models",
+          "TabLLM: Few-Shot Classification of Tabular Data with Large Language Models"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.990936279296875,
+        "n_nli_pairs": 6,
+        "n_atoms": 36,
+        "coverage": 0.25,
+        "n_supported": 9,
+        "logic": 4
+      }
+    },
+    {
+      "pdf_id": "e3d82bafe7cb11e7",
+      "variant": "withsearch",
+      "retrieval": {
+        "recall": 0.1724137931034483,
+        "precision": 0.7142857142857143,
+        "jaccard": 0.16129032258064516,
+        "matched": 5,
+        "n_h": 29,
+        "n_l": 7
+      },
+      "failure": {
+        "H": {
+          "total": 29,
+          "s2_fail": 4,
+          "s2_fail_rate": 0.13793103448275862
+        },
+        "L": {
+          "total": 7,
+          "s2_fail": 3,
+          "s2_fail_rate": 0.42857142857142855
+        }
+      },
+      "temporal": {
+        "rr_h": 0.0,
+        "rr_l": 0.0,
+        "n_years_h": 29,
+        "n_years_l": 4,
+        "w1": 9.491379310344826,
+        "w1_n_h": 29,
+        "w1_n_l": 4
+      },
+      "semantic": {
+        "intra_h": 0.7445316910743713,
+        "intra_l": 0.7852303385734558,
+        "inter": 0.9764977040463283,
+        "rel_h": 0.727617621421814,
+        "rel_l": 0.6834686994552612
+      },
+      "quality_h": {
+        "mlc": 4.715965487412519,
+        "n_mlc": 25,
+        "tvr": 0.6896551724137931,
+        "n_tvr": 29,
+        "n_venue_known": 29
+      },
+      "quality_l": {
+        "mlc": 6.824570871682909,
+        "n_mlc": 4,
+        "tvr": 0.5714285714285714,
+        "n_tvr": 7,
+        "n_venue_known": 7
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 3,
+          "2": 0,
+          "3": 2
+        },
+        "n_h": 29,
+        "n_l": 7,
+        "matched_l_idx": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "l_titles_matched": [
+          "A Case for End System Multicast",
+          "SplitStream: High-Bandwidth Multicast in Cooperative Environments",
+          "Bullet: High Bandwidth Data Dissemination Using an Overlay Mesh",
+          "Overcast: Reliable Multicasting with an Overlay Network",
+          "FastReplica: Efficient Large File Distribution within Content Delivery Networks"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9973963499069214,
+        "n_nli_pairs": 1,
+        "n_atoms": 99,
+        "coverage": 0.16161616161616163,
+        "n_supported": 16,
+        "logic": 4
+      }
+    },
+    {
+      "pdf_id": "f948850caef3d25f",
+      "variant": "withsearch",
+      "retrieval": {
+        "recall": 0.16216216216216217,
+        "precision": 0.8571428571428571,
+        "jaccard": 0.15789473684210525,
+        "matched": 6,
+        "n_h": 37,
+        "n_l": 7
+      },
+      "failure": {
+        "H": {
+          "total": 37,
+          "s2_fail": 6,
+          "s2_fail_rate": 0.16216216216216217
+        },
+        "L": {
+          "total": 7,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.14285714285714285
+        }
+      },
+      "temporal": {
+        "rr_h": 0.8918918918918919,
+        "rr_l": 0.8571428571428571,
+        "n_years_h": 37,
+        "n_years_l": 6,
+        "w1": 1.2387387387387396,
+        "w1_n_h": 37,
+        "w1_n_l": 6
+      },
+      "semantic": {
+        "intra_h": 0.7899495959281921,
+        "intra_l": 0.858177661895752,
+        "inter": 0.9704365992778677,
+        "rel_h": 0.8050969839096069,
+        "rel_l": 0.853024423122406
+      },
+      "quality_h": {
+        "mlc": 4.215662718427926,
+        "n_mlc": 31,
+        "tvr": 0.6486486486486487,
+        "n_tvr": 37,
+        "n_venue_known": 37
+      },
+      "quality_l": {
+        "mlc": 6.382055467164697,
+        "n_mlc": 6,
+        "tvr": 0.7142857142857143,
+        "n_tvr": 7,
+        "n_venue_known": 7
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 3,
+          "2": 0,
+          "3": 54
+        },
+        "n_h": 37,
+        "n_l": 7,
+        "matched_l_idx": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "l_titles_matched": [
+          "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+          "AlpaServe: Statistical Multiplexing with Model Parallelism for Deep Learning Serving",
+          "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving",
+          "Splitwise: Efficient Generative LLM Inference Using Phase Splitting",
+          "S-LoRA: Serving Thousands of Concurrent LoRA Adapters",
+          "Punica: Multi-Tenant LoRA Serving"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.998744547367096,
+        "n_nli_pairs": 6,
+        "n_atoms": 58,
+        "coverage": 0.3275862068965517,
+        "n_supported": 19,
+        "logic": 4
+      }
+    }
+  ],
+  "aggregate": {
+    "n_samples": 8,
+    "retrieval": {
+      "recall": {
+        "mean": 0.1539334362071431,
+        "std": 0.08227510326780096,
+        "n": 8
+      },
+      "precision": {
+        "mean": 0.5763888888888888,
+        "std": 0.2974520033862071,
+        "n": 8
+      },
+      "jaccard": {
+        "mean": 0.13770501652449516,
+        "std": 0.07527219006277135,
+        "n": 8
+      },
+      "matched": {
+        "mean": 4.875,
+        "std": 2.8912583765550943,
+        "n": 8
+      },
+      "n_h": {
+        "mean": 36.0,
+        "std": 20.346989949375804,
+        "n": 8
+      },
+      "n_l": {
+        "mean": 8.125,
+        "std": 2.5708704751503917,
+        "n": 8
+      }
+    },
+    "temporal": {
+      "rr_h": {
+        "mean": 0.26471565315315315,
+        "std": 0.3087360304004064,
+        "n": 8
+      },
+      "rr_l": {
+        "mean": 0.31101190476190477,
+        "std": 0.4048685740046432,
+        "n": 8
+      },
+      "w1": {
+        "mean": 7.396236647669838,
+        "std": 5.30160028604772,
+        "n": 8
+      },
+      "n_years_h": {
+        "mean": 36.0,
+        "std": 20.346989949375804,
+        "n": 8
+      },
+      "n_years_l": {
+        "mean": 6.625,
+        "std": 2.6896793489187516,
+        "n": 8
+      }
+    },
+    "semantic": {
+      "intra_h": {
+        "mean": 0.7633024528622627,
+        "std": 0.01949175530633178,
+        "n": 8
+      },
+      "intra_l": {
+        "mean": 0.8040717989206314,
+        "std": 0.04836556788995448,
+        "n": 8
+      },
+      "inter": {
+        "mean": 0.9606803542191746,
+        "std": 0.02927036456678699,
+        "n": 8
+      },
+      "rel_h": {
+        "mean": 0.7793459445238113,
+        "std": 0.03186991772517624,
+        "n": 8
+      },
+      "rel_l": {
+        "mean": 0.7783491462469101,
+        "std": 0.07163821709939976,
+        "n": 8
+      }
+    },
+    "quality_h": {
+      "mlc": {
+        "mean": 5.134480979923312,
+        "std": 0.8467508030860958,
+        "n": 8
+      },
+      "tvr": {
+        "mean": 0.6335611257809534,
+        "std": 0.10090817065553413,
+        "n": 8
+      }
+    },
+    "quality_l": {
+      "mlc": {
+        "mean": 6.693304041317867,
+        "std": 0.2917494287015964,
+        "n": 8
+      },
+      "tvr": {
+        "mean": 0.6537698412698413,
+        "std": 0.19548182538005385,
+        "n": 8
+      }
+    },
+    "failure": {
+      "H": {
+        "n_total": 288,
+        "n_fail": 23,
+        "s2_fail_rate": 0.0798611111111111
+      },
+      "L": {
+        "n_total": 65,
+        "n_fail": 12,
+        "s2_fail_rate": 0.18461538461538463
+      }
+    }
+  }
+}

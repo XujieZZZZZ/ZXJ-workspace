@@ -1,0 +1,24 @@
+{
+  "task": "cloudcast",
+  "program": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/ADR-evaluator/tasks/cloudcast/initial_program_reference.py",
+  "program_name": "initial_program_reference.py",
+  "paper_id": "e3d82bafe7cb11e7",
+  "status": "success",
+  "combined_score": 0.0009651245162391779,
+  "metrics": {
+    "combined_score": 0.0009651245162391779,
+    "runs_successfully": 1.0,
+    "total_cost": 1035.135735,
+    "avg_cost": 207.027147,
+    "successful_configs": 5.0,
+    "failed_configs": 0.0,
+    "cost_score": 0.0009651245162391779,
+    "success_rate": 1.0
+  },
+  "artifacts": {},
+  "elapsed_seconds": 3.7,
+  "returncode": 0,
+  "timed_out": false,
+  "log_file": "cloudcast__initial_program_reference.log",
+  "evaluated_at": "2026-09-10T01:28:08.278301+00:00"
+}

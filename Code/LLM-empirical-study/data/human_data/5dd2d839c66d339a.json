@@ -1,0 +1,940 @@
+{
+  "observation": "Existing LLM-based multi-agent systems can handle simple dialogue tasks, but complex tasks remain difficult because naively chaining LLMs induces cascading hallucinations and logic inconsistencies. Real-world LLM agent frameworks tend to oversimplify the complexities of collaborative problem solving and often rely on unstructured natural-language dialogue, which loses information across rounds and produces unproductive chatter. Existing code-generation methods also lack self-correction mechanisms that verify runtime executability, leaving complex software engineering tasks unmet.",
+  "related_works": [
+    {
+      "claims": [
+        "A system called PROW was introduced in 1969 to accept program specifications written in predicate calculus, generate algorithms, and create LISP implementations.",
+        "Efforts by Balzer and Soloway advanced automatic programming and identified potential methods for achieving it.",
+        "Recent automatic-programming approaches use natural language processing techniques."
+      ],
+      "works": [
+        {
+          "title": "PROW: a step toward automatic program writing",
+          "authors": [
+            "R. J. Waldinger",
+            "R. C. T. Lee"
+          ],
+          "year": 1969
+        },
+        {
+          "title": "A 15 year perspective on automatic programming",
+          "authors": [
+            "Robert Balzer"
+          ],
+          "year": 1985
+        },
+        {
+          "title": "Learning to program = learning to construct mechanisms and explanations",
+          "authors": [
+            "Elliot Soloway"
+          ],
+          "year": 1986
+        },
+        {
+          "title": "LEVER: Learning to verify language-to-code generation with execution",
+          "authors": [
+            "Ansong Ni",
+            "Srini Iyer",
+            "Dragomir Radev",
+            "Veselin Stoyanov",
+            "Wen-tau Yih",
+            "Sida Wang",
+            "Xi Victoria Lin"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Errors are useful prompts: Instruction guided task programming with verifier-assisted iterative prompting",
+          "authors": [
+            "Marta Skreta",
+            "Naruki Yoshikawa",
+            "Sebastian Arellano-Rubach",
+            "Zhi Ji",
+            "Lasse Bjørn Kristensen",
+            "Kourosh Darvish",
+            "Alan Aspuru-Guzik",
+            "Florian Shkurti",
+            "Animesh Garg"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "CodeBERT: A pre-trained model for programming and natural languages",
+          "authors": [
+            "Zhangyin Feng",
+            "Daya Guo",
+            "Duyu Tang",
+            "Nan Duan",
+            "Xiaocheng Feng",
+            "Ming Gong",
+            "Linjun Shou",
+            "Bing Qin",
+            "Ting Liu",
+            "Daxin Jiang"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Competition-level code generation with AlphaCode",
+          "authors": [
+            "Yujia Li",
+            "David Choi",
+            "Junyoung Chung",
+            "Nate Kushman",
+            "Julian Schrittwieser",
+            "Remi Leblond",
+            "Tom Eccles",
+            "James Keeling",
+            "Felix Gimeno",
+            "Agustin Dal Lago"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Execution-guided neural program synthesis",
+          "authors": [
+            "Xinyun Chen",
+            "Chang Liu",
+            "Dawn Song"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Latent execution for neural program synthesis beyond domain-specific languages",
+          "authors": [
+            "Xinyun Chen",
+            "Dawn Song",
+            "Yuandong Tian"
+          ],
+          "year": 2021
+        },
+        {
+          "title": "Building cooperative embodied agents modularly with large language models",
+          "authors": [
+            "Hongxin Zhang",
+            "Weihua Du",
+            "Jiaming Shan",
+            "Qinhong Zhou",
+            "Yilun Du",
+            "Joshua B. Tenenbaum",
+            "Tianmin Shu",
+            "Chuang Gan"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "ML-Bench: Large language models leverage open-source libraries for machine learning tasks",
+          "authors": [
+            "Yuliang Liu",
+            "Xiangru Tang",
+            "Zefan Cai",
+            "Junjie Lu",
+            "Yichi Zhang",
+            "Yanjun Shao",
+            "Zexuan Deng",
+            "Helan Hu",
+            "Zengxian Yang",
+            "Kaikai An"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "BioCoder: A benchmark for bioinformatics code generation with contextual pragmatic knowledge",
+          "authors": [
+            "Xiangru Tang",
+            "Bill Qian",
+            "Rick Gao",
+            "Jiakang Chen",
+            "Xinyun Chen",
+            "Mark Gerstein"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "OctoPack: Instruction tuning code large language models",
+          "authors": [
+            "Niklas Muennighoff",
+            "Qian Liu",
+            "Armel Zebaze",
+            "Qinkai Zheng",
+            "Binyuan Hui",
+            "Terry Yue Zhuo",
+            "Swayam Singh",
+            "Xiangru Tang",
+            "Leandro Von Werra",
+            "Shayne Longpre"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "LLM-based agents have advanced automatic-programming development.",
+        "ReAct and Reflexion use chain-of-thought prompts to generate reasoning trajectories and action plans with LLMs.",
+        "The two approaches demonstrate that a ReAct-style loop of reasoning is effective for empowering automatic programming.",
+        "ToolFormer and ToolLLM can learn to use external tools through simple APIs.",
+        "One role-play framework for programming involves communication between agents playing different roles.",
+        "Another framework utilizes multiple agents for software development.",
+        "The role-play and multi-agent software-development frameworks have not fully exploited effective workflows with structured output formats, which makes it harder to deal with complex software engineering issues.",
+        "The broader meta-programming line of work has also included code models such as CodeBERT and recent projects such as CodeLlama and WizardCoder."
+      ],
+      "works": [
+        {
+          "title": "ReAct: Synergizing reasoning and acting in language models",
+          "authors": [
+            "Shunyu Yao",
+            "Jeffrey Zhao",
+            "Dian Yu",
+            "Nan Du",
+            "Izhak Shafran",
+            "Karthik Narasimhan",
+            "Yuan Cao"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Reflexion: An autonomous agent with dynamic memory and self-reflection",
+          "authors": [
+            "Noah Shinn",
+            "Beck Labash",
+            "Ashwin Gopinath"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "SwiftSage: A generative agent with fast and slow thinking for complex interactive tasks",
+          "authors": [
+            "Bill Yuchen Lin",
+            "Yicheng Fu",
+            "Karina Yang",
+            "Prithviraj Ammanabrolu",
+            "Faeze Brahman",
+            "Shiyu Huang",
+            "Chandra Bhagavatula",
+            "Yejin Choi",
+            "Xiang Ren"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Chain-of-thought prompting elicits reasoning in large language models",
+          "authors": [
+            "Jason Wei",
+            "Xuezhi Wang",
+            "Dale Schuurmans",
+            "Maarten Bosma",
+            "Fei Xia",
+            "Ed Chi",
+            "Quoc V. Le",
+            "Denny Zhou"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Toolformer: Language models can teach themselves to use tools",
+          "authors": [
+            "Timo Schick",
+            "Jane Dwivedi-Yu",
+            "Roberto Dessi",
+            "Roberta Raileanu",
+            "Maria Lomeli",
+            "Luke Zettlemoyer",
+            "Nicola Cancedda",
+            "Thomas Scialom"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "ToolLLM: Facilitating large language models to master 16000+ real-world APIs",
+          "authors": [
+            "Yujia Qin",
+            "Shihao Liang",
+            "Yining Ye",
+            "Kunlun Zhu",
+            "Lan Yan",
+            "Yaxi Lu",
+            "Yankai Lin",
+            "Xin Cong",
+            "Xiangru Tang",
+            "Bill Qian"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "CAMEL: Communicative agents for 'mind' exploration of large scale language model society",
+          "authors": [
+            "Guohao Li",
+            "Hasan Abed Al Kader Hammoud",
+            "Hani Itani",
+            "Dmitrii Khizbullin",
+            "Bernard Ghanem"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Communicative agents for software development",
+          "authors": [
+            "Chen Qian",
+            "Xin Cong",
+            "Cheng Yang",
+            "Weize Chen",
+            "Yusheng Su",
+            "Juyuan Xu",
+            "Zhiyuan Liu",
+            "Maosong Sun"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Code Llama: Open foundation models for code",
+          "authors": [
+            "Baptiste Roziere",
+            "Jonas Gehring",
+            "Fabian Gloeckle",
+            "Sten Sootla",
+            "Itai Gat",
+            "Xiaoqing Ellen Tan",
+            "Yossi Adi",
+            "Jingyu Liu",
+            "Tal Remez",
+            "Jeremy Rapin"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "WizardCoder: Empowering code large language models with evol-instruct",
+          "authors": [
+            "Ziyang Luo",
+            "Can Xu",
+            "Pu Zhao",
+            "Qingfeng Sun",
+            "Xiubo Geng",
+            "Wenxiang Hu",
+            "Chongyang Tao",
+            "Jing Ma",
+            "Qingwei Lin",
+            "Daxin Jiang"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "LLM-based agent systems tend to oversimplify the complexities of real-world applications.",
+        "They struggle with effective, coherent, and accurate problem solving when collaborative interaction is important.",
+        "Many LLM-based multi-agent works improve problem-solving abilities by integrating discussions among multiple agents.",
+        "Stable-Alignment builds instruction datasets from consensus on value judgments reached by LLM agents in a sandbox.",
+        "Some works on LLM agents focus on sociological phenomena, such as Generative Agents, which creates a town of 25 agents.",
+        "NL-SOM uses agents with different functions interacting through multiple rounds of mindstorms to solve complex tasks.",
+        "A cost-reduction model combines large language models as tool makers with small language models as tool users.",
+        "Some LLM multi-agent works address cooperation and competition in planning and strategy and propose LLM-based economies, focusing on open-world human behavior simulation.",
+        "LLM-based agents face pitfalls such as assistant repeated instruction and infinite loops of messages.",
+        "These pitfalls become more urgent in task-oriented collaborations that require consistent and mutually beneficial interactions."
+      ],
+      "works": [
+        {
+          "title": "Generative Agents: Interactive simulacra of human behavior",
+          "authors": [
+            "Joon Sung Park",
+            "Joseph C. O'Brien",
+            "Carrie J. Cai",
+            "Meredith Ringel Morris",
+            "Percy Liang",
+            "Michael S. Bernstein"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Mindstorms in natural language-based societies of mind",
+          "authors": [
+            "Mingchen Zhuge",
+            "Haozhe Liu",
+            "Francesco Faccio",
+            "Dylan R. Ashley",
+            "Robert Csordas",
+            "Anand Gopalakrishnan",
+            "Abdullah Hamdi",
+            "Hasan Abed Al Kader Hammoud",
+            "Vincent Herrmann",
+            "Kazuki Irie"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Large language models as tool makers",
+          "authors": [
+            "Tianle Cai",
+            "Xuezhi Wang",
+            "Tengyu Ma",
+            "Xinyun Chen",
+            "Denny Zhou"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Unleashing cognitive synergy in large language models: A task-solving agent through multi-persona self-collaboration",
+          "authors": [
+            "Zhenhailong Wang",
+            "Shaoguang Mao",
+            "Wenshan Wu",
+            "Tao Ge",
+            "Furu Wei",
+            "Heng Ji"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "CAMEL: Communicative agents for 'mind' exploration of large scale language model society",
+          "authors": [
+            "Guohao Li",
+            "Hasan Abed Al Kader Hammoud",
+            "Hani Itani",
+            "Dmitrii Khizbullin",
+            "Bernard Ghanem"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Improving factuality and reasoning in language models through multiagent debate",
+          "authors": [
+            "Yilun Du",
+            "Shuang Li",
+            "Antonio Torralba",
+            "Joshua B. Tenenbaum",
+            "Igor Mordatch"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Encouraging divergent thinking in large language models through multiagent debate",
+          "authors": [
+            "Tian Liang",
+            "Zhiwei He",
+            "Wenxiang Jiao",
+            "Xing Wang",
+            "Yan Wang",
+            "Rui Wang",
+            "Yujiu Yang",
+            "Zhaopeng Tu",
+            "Shuming Shi"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "ChatLLM Network: More brains, more intelligence",
+          "authors": [
+            "Rui Hao",
+            "Linmei Hu",
+            "Weijian Qi",
+            "Qingliu Wu",
+            "Yirui Zhang",
+            "Liqiang Nie"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Agents: An open-source framework for autonomous language agents",
+          "authors": [
+            "Wangchunshu Zhou",
+            "Yuchen Eleanor Jiang",
+            "Long Li",
+            "Jialong Wu",
+            "Tiannan Wang",
+            "Shi Qiu",
+            "Jintian Zhang",
+            "Jing Chen",
+            "Ruipu Wu",
+            "Shuai Wang"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "S-Agents: Self-organizing agents in open-ended environment",
+          "authors": [
+            "Jiaqi Chen",
+            "Yuxian Jiang",
+            "Jiachen Lu",
+            "Li Zhang"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Building cooperative embodied agents modularly with large language models",
+          "authors": [
+            "Hongxin Zhang",
+            "Weihua Du",
+            "Jiaming Shan",
+            "Qinhong Zhou",
+            "Yilun Du",
+            "Joshua B. Tenenbaum",
+            "Tianmin Shu",
+            "Chuang Gan"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Self-collaboration code generation via ChatGPT",
+          "authors": [
+            "Yihong Dong",
+            "Xue Jiang",
+            "Zhi Jin",
+            "Ge Li"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "WebArena: A realistic web environment for building autonomous agents",
+          "authors": [
+            "Shuyan Zhou",
+            "Frank F. Xu",
+            "Hao Zhu",
+            "Xuhui Zhou",
+            "Robert Lo",
+            "Abishek Sridhar",
+            "Xianyi Cheng",
+            "Yonatan Bisk",
+            "Daniel Fried",
+            "Uri Alon"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Communicative agents for software development",
+          "authors": [
+            "Chen Qian",
+            "Xin Cong",
+            "Cheng Yang",
+            "Weize Chen",
+            "Yusheng Su",
+            "Juyuan Xu",
+            "Zhiyuan Liu",
+            "Maosong Sun"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "MedAgents: Large language models as collaborators for zero-shot medical reasoning",
+          "authors": [
+            "Xiangru Tang",
+            "Anni Zou",
+            "Zhuosheng Zhang",
+            "Yilun Zhao",
+            "Xingyao Zhang",
+            "Arman Cohan",
+            "Mark Gerstein"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Data Interpreter: An LLM agent for data science",
+          "authors": [
+            "Sirui Hong",
+            "Yizhang Lin",
+            "Bangbang Liu",
+            "Binhao Wu",
+            "Danyang Li",
+            "Jiaqi Chen",
+            "Jiayi Zhang",
+            "Jinlin Wang",
+            "Lingyao Zhang",
+            "Mingchen Zhuge"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Playing repeated games with large language models",
+          "authors": [
+            "Elif Akata",
+            "Lion Schulz",
+            "Julian Coda-Forno",
+            "Seong Joon Oh",
+            "Matthias Bethge",
+            "Eric Schulz"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Training socially aligned language models in simulated human society",
+          "authors": [
+            "Ruibo Liu",
+            "Ruixin Yang",
+            "Chenyan Jia",
+            "Ge Zhang",
+            "Denny Zhou",
+            "Andrew M. Dai",
+            "Diyi Yang",
+            "Soroush Vosoughi"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Human-level play in the game of Diplomacy by combining language models with strategic reasoning",
+          "authors": [
+            "Anton Bakhtin",
+            "Noam Brown",
+            "Emily Dinan",
+            "Gabriele Farina",
+            "Colin Flaherty",
+            "Daniel Fried",
+            "Andrew Goff",
+            "Jonathan Gray",
+            "Hengyuan Hu"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Multi-agent collaboration: Harnessing the power of intelligent LLM agents",
+          "authors": [
+            "Yashar Talebirad",
+            "Amirhossein Nadiri"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Measuring and improving consistency in pretrained language models",
+          "authors": [
+            "Yanai Elazar",
+            "Nora Kassner",
+            "Shauli Ravfogel",
+            "Abhilasha Ravichander",
+            "Eduard Hovy",
+            "Hinrich Schutze",
+            "Yoav Goldberg"
+          ],
+          "year": 2021
+        },
+        {
+          "title": "Self-consistency improves chain of thought reasoning in language models",
+          "authors": [
+            "Xuezhi Wang",
+            "Jason Wei",
+            "Dale Schuurmans",
+            "Quoc Le",
+            "Ed Chi",
+            "Sharan Narang",
+            "Aakanksha Chowdhery",
+            "Denny Zhou"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Self-planning code generation with large language model",
+          "authors": [
+            "Xue Jiang",
+            "Yihong Dong",
+            "Lecheng Wang",
+            "Qiwei Shang",
+            "Ge Li"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Most current LLM-based multi-agent frameworks use unconstrained natural language as a communication interface.",
+        "Communicating required information one-to-one among agents each time complicates the communication topology and results in inefficiencies.",
+        "A prior software-development agent framework, ChatDev, relies on dialogue rather than structured documents and diagrams."
+      ],
+      "works": [
+        {
+          "title": "CAMEL: Communicative agents for 'mind' exploration of large scale language model society",
+          "authors": [
+            "Guohao Li",
+            "Hasan Abed Al Kader Hammoud",
+            "Hani Itani",
+            "Dmitrii Khizbullin",
+            "Bernard Ghanem"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Mindstorms in natural language-based societies of mind",
+          "authors": [
+            "Mingchen Zhuge",
+            "Haozhe Liu",
+            "Francesco Faccio",
+            "Dylan R. Ashley",
+            "Robert Csordas",
+            "Anand Gopalakrishnan",
+            "Abdullah Hamdi",
+            "Hasan Abed Al Kader Hammoud",
+            "Vincent Herrmann",
+            "Kazuki Irie"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Building cooperative embodied agents modularly with large language models",
+          "authors": [
+            "Hongxin Zhang",
+            "Weihua Du",
+            "Jiaming Shan",
+            "Qinhong Zhou",
+            "Yilun Du",
+            "Joshua B. Tenenbaum",
+            "Tianmin Shu",
+            "Chuang Gan"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Generative Agents: Interactive simulacra of human behavior",
+          "authors": [
+            "Joon Sung Park",
+            "Joseph C. O'Brien",
+            "Carrie J. Cai",
+            "Meredith Ringel Morris",
+            "Percy Liang",
+            "Michael S. Bernstein"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Communicative agents for software development",
+          "authors": [
+            "Chen Qian",
+            "Xin Cong",
+            "Cheng Yang",
+            "Weize Chen",
+            "Yusheng Su",
+            "Juyuan Xu",
+            "Zhiyuan Liu",
+            "Maosong Sun"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Existing methods often lack a self-correction mechanism, which leads to unsuccessful code generation.",
+        "Previous work has introduced non-executable code review and self-reflection, but these approaches still face challenges in ensuring code executability and runtime correctness.",
+        "Hallucinations in LLMs can cause code-review processes to overlook errors."
+      ],
+      "works": [
+        {
+          "title": "Communicative agents for software development",
+          "authors": [
+            "Chen Qian",
+            "Xin Cong",
+            "Cheng Yang",
+            "Weize Chen",
+            "Yusheng Su",
+            "Juyuan Xu",
+            "Zhiyuan Liu",
+            "Maosong Sun"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "ReAct: Synergizing reasoning and acting in language models",
+          "authors": [
+            "Shunyu Yao",
+            "Jeffrey Zhao",
+            "Dian Yu",
+            "Nan Du",
+            "Izhak Shafran",
+            "Karthik Narasimhan",
+            "Yuan Cao"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Reflexion: An autonomous agent with dynamic memory and self-reflection",
+          "authors": [
+            "Noah Shinn",
+            "Beck Labash",
+            "Ashwin Gopinath"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Self-collaboration code generation via ChatGPT",
+          "authors": [
+            "Yihong Dong",
+            "Xue Jiang",
+            "Zhi Jin",
+            "Ge Li"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "SelfCheckGPT: Zero-resource black-box hallucination detection for generative large language models",
+          "authors": [
+            "Potsawee Manakul",
+            "Adian Liusie",
+            "Mark J. F. Gales"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Public code benchmarks such as HumanEval and MBPP contain function-level code tasks, unlike datasets that focus on real-world software engineering aspects.",
+        "On a seven-task SoftwareDev comparison, AutoGPT, LangChain, and AgentVerse obtain an average executability score of 1.0, failing to produce executable code, while ChatDev obtains 2.1.",
+        "In the statistical analysis on SoftwareDev, ChatDev has an executability of 2.25, consumes 19,292 tokens, generates 1.9 code files, 77.5 total code lines, 40.8 lines per code file, requires 762 seconds, and has a human revision cost of 2.5.",
+        "AgentVerse, like general-purpose agent frameworks, lacks the ability to systematically deconstruct requirements for complex software systems."
+      ],
+      "works": [
+        {
+          "title": "Evaluating large language models trained on code",
+          "authors": [
+            "Mark Chen",
+            "Jerry Tworek",
+            "Heewoo Jun",
+            "Qiming Yuan",
+            "Henrique Ponde de Oliveira Pinto",
+            "Jared Kaplan",
+            "Harri Edwards",
+            "Yuri Burda",
+            "Nicholas Joseph",
+            "Greg Brockman"
+          ],
+          "year": 2021
+        },
+        {
+          "title": "Program synthesis with large language models",
+          "authors": [
+            "Jacob Austin",
+            "Augustus Odena",
+            "Maxwell Nye",
+            "Maarten Bosma",
+            "Henryk Michalewski",
+            "David Dohan",
+            "Ellen Jiang",
+            "Carrie Cai",
+            "Michael Terry",
+            "Quoc Le",
+            "Charles Sutton"
+          ],
+          "year": 2021
+        },
+        {
+          "title": "AgentVerse: Facilitating multi-agent collaboration and exploring emergent behaviors in agents",
+          "authors": [
+            "Weize Chen",
+            "Yusheng Su",
+            "Jingwei Zuo",
+            "Cheng Yang",
+            "Chenfei Yuan",
+            "Chen Qian",
+            "Chi-Min Chan",
+            "Yujia Qin",
+            "Yaxi Lu",
+            "Ruobing Xie",
+            "Zhiyuan Liu",
+            "Maosong Sun",
+            "Jie Zhou"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Communicative agents for software development",
+          "authors": [
+            "Chen Qian",
+            "Xin Cong",
+            "Cheng Yang",
+            "Weize Chen",
+            "Yusheng Su",
+            "Juyuan Xu",
+            "Zhiyuan Liu",
+            "Maosong Sun"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Recursive self-improvement was first informally proposed in 1965, with first concrete implementations appearing from 1987 onward and later culminating in mathematically optimal self-referential self-improvers.",
+        "More recent work recursively improves prompts of LLMs using reasoning, analogous to earlier adaptive prompt engineering in which one neural network learns to generate queries for another pre-trained neural network."
+      ],
+      "works": [
+        {
+          "title": "Speculations concerning the first ultraintelligent machine",
+          "authors": [
+            "Irving John Good"
+          ],
+          "year": 1965
+        },
+        {
+          "title": "Evolutionary principles in self-referential learning, or on learning how to learn: the meta-meta-... hook",
+          "authors": [
+            "Jurgen Schmidhuber"
+          ],
+          "year": 1987
+        },
+        {
+          "title": "A 'self-referential' weight matrix",
+          "authors": [
+            "Jurgen Schmidhuber"
+          ],
+          "year": 1993
+        },
+        {
+          "title": "Reinforcement learning with self-modifying policies",
+          "authors": [
+            "Jurgen Schmidhuber",
+            "Jieyu Zhao",
+            "Nicol N. Schraudolph"
+          ],
+          "year": 1998
+        },
+        {
+          "title": "Godel machines: self-referential universal problem solvers making provably optimal self-improvements",
+          "authors": [
+            "Jurgen Schmidhuber"
+          ],
+          "year": 2003
+        },
+        {
+          "title": "Ultimate cognition a la Godel",
+          "authors": [
+            "Jurgen Schmidhuber"
+          ],
+          "year": 2009
+        },
+        {
+          "title": "Promptbreeder: Self-referential self-improvement via prompt evolution",
+          "authors": [
+            "Chrisantha Fernando",
+            "Dylan Banarse",
+            "Henryk Michalewski",
+            "Simon Osindero",
+            "Tim Rocktaschel"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Self-taught Optimizer (STOP): Recursively self-improving code generation",
+          "authors": [
+            "Eric Zelikman",
+            "Eliana Lorch",
+            "Lester Mackey",
+            "Adam Tauman Kalai"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "On learning to think: Algorithmic information theory for novel combinations of reinforcement learning controllers and recurrent neural world models",
+          "authors": [
+            "Jurgen Schmidhuber"
+          ],
+          "year": 2015
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The core insight is to transfer mature human organizational practices, namely Standard Operating Procedures, into LLM-based multi-agent collaboration. Instead of letting agents engage in free-form dialogue, each agent plays a specialized role in a simulated software company and produces standardized intermediate artifacts such as product requirement documents, system designs, interface definitions, task lists, code, and test code. These structured handovers reduce ambiguity and information loss, prevent irrelevant chat and cascading hallucinations, and make complex software engineering tasks tractable by decomposing them into a role-specific assembly line. The approach also uses a shared publish-subscribe message pool to make communication efficient and an executable feedback loop to correct runtime errors, targeting the key failure of prior methods that lacked runtime self-correction.",
+    "implementation": "MetaGPT defines a simulated software company with specialized roles: Product Manager, Architect, Project Manager, Engineer, and QA Engineer. Each agent profile contains name, profile, goal, constraints, role-specific context, and skills; all agents operate in a ReAct-style loop in which they observe relevant messages from the shared environment and then trigger actions. Work follows a Standard Operating Procedure: first, on receiving user requirements, the Product Manager performs analysis and produces a structured Product Requirements Document containing Original Requirements, Product Goals, User Stories, Competitive Analysis, Requirement Analysis, and Requirement Pool. Next, the Architect converts the PRD into a system design that includes an implementation approach, Python package name, file list, data structures, interface definitions, and sequence flow or program call diagrams. Then the Project Manager decomposes the design into a task list, treating each code file as a separate task and assigning it to Engineers. Engineers write the actual code, execute it, and refer to the PRD, system design documents, previous messages, and code files when debugging. Afterwards, the QA Engineer generates unit tests and reviews the code to fix bugs and ensure quality. The final structured assembly is output as a complete software solution. Communication is structured rather than natural-language chat: each role publishes documents and diagrams to a shared global message pool, and agents subscribe to messages relevant to their role profiles; an agent activates its action only after all prerequisite dependencies are available, avoiding one-to-one requests and information overload. Executable feedback is integrated as follows: after initial code generation, the Engineer writes and runs unit tests; if tests fail, the Engineer inspects stored messages, compares the code with the PRD and system design, debugs the code, and reruns tests iteratively until the tests pass or a maximum of three retries is reached."
+  },
+  "pdf_id": "5dd2d839c66d339a",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/MAS.md",
+  "model": "deepseek-v4-flash",
+  "extracted_at": "2026-09-03 07:03:28"
+}

@@ -1,0 +1,438 @@
+{
+  "variant": "withoutsearch",
+  "main_backend": "qwen",
+  "cross_backend": "deepseek",
+  "per_sample": [
+    {
+      "pdf_id": "52875bf8ef4b3f8c",
+      "pref_o1": "A",
+      "pref_o2": "B",
+      "outcome": "Win_LLM",
+      "scores_pair": {
+        "llm": {
+          "targetedness": 5.0,
+          "feasibility": 5.0,
+          "novelty": 4.5,
+          "groundedness": 5.0,
+          "total": 4.875
+        },
+        "human": {
+          "targetedness": 4.0,
+          "feasibility": 3.5,
+          "novelty": 4.0,
+          "groundedness": 4.0,
+          "total": 3.875
+        }
+      },
+      "delta_pair": {
+        "targetedness": 1.0,
+        "feasibility": 1.5,
+        "novelty": 0.5,
+        "groundedness": 1.0,
+        "total": 1.0
+      },
+      "cross_outcome": "Tie",
+      "cross_backend": "deepseek",
+      "rubric_llm": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "rubric_hrw": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "delta_rubric": {
+        "targetedness": 0,
+        "feasibility": 0,
+        "novelty": 0,
+        "groundedness": 0
+      }
+    },
+    {
+      "pdf_id": "5dd2d839c66d339a",
+      "pref_o1": "A",
+      "pref_o2": "B",
+      "outcome": "Win_LLM",
+      "scores_pair": {
+        "llm": {
+          "targetedness": 5.0,
+          "feasibility": 5.0,
+          "novelty": 4.0,
+          "groundedness": 5.0,
+          "total": 4.75
+        },
+        "human": {
+          "targetedness": 4.0,
+          "feasibility": 4.0,
+          "novelty": 3.5,
+          "groundedness": 3.5,
+          "total": 3.75
+        }
+      },
+      "delta_pair": {
+        "targetedness": 1.0,
+        "feasibility": 1.0,
+        "novelty": 0.5,
+        "groundedness": 1.5,
+        "total": 1.0
+      },
+      "cross_outcome": "Tie",
+      "cross_backend": "deepseek",
+      "rubric_llm": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "rubric_hrw": {
+        "targetedness": 3,
+        "feasibility": 3,
+        "novelty": 3,
+        "groundedness": 3
+      },
+      "delta_rubric": {
+        "targetedness": 2,
+        "feasibility": 1,
+        "novelty": 1,
+        "groundedness": 2
+      }
+    },
+    {
+      "pdf_id": "7d3b6e61ea96cc4f",
+      "pref_o1": "A",
+      "pref_o2": "B",
+      "outcome": "Win_LLM",
+      "scores_pair": {
+        "llm": {
+          "targetedness": 5.0,
+          "feasibility": 5.0,
+          "novelty": 4.0,
+          "groundedness": 4.5,
+          "total": 4.625
+        },
+        "human": {
+          "targetedness": 4.5,
+          "feasibility": 4.0,
+          "novelty": 3.5,
+          "groundedness": 3.0,
+          "total": 3.75
+        }
+      },
+      "delta_pair": {
+        "targetedness": 0.5,
+        "feasibility": 1.0,
+        "novelty": 0.5,
+        "groundedness": 1.5,
+        "total": 0.875
+      },
+      "cross_outcome": "Tie",
+      "cross_backend": "deepseek",
+      "rubric_llm": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "rubric_hrw": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 4
+      },
+      "delta_rubric": {
+        "targetedness": 0,
+        "feasibility": 0,
+        "novelty": 0,
+        "groundedness": 1
+      }
+    },
+    {
+      "pdf_id": "b93fea400aedf898",
+      "pref_o1": "A",
+      "pref_o2": "Tie",
+      "outcome": "Tie",
+      "scores_pair": {
+        "llm": {
+          "targetedness": 5.0,
+          "feasibility": 4.5,
+          "novelty": 4.0,
+          "groundedness": 4.5,
+          "total": 4.5
+        },
+        "human": {
+          "targetedness": 4.5,
+          "feasibility": 4.0,
+          "novelty": 3.5,
+          "groundedness": 3.5,
+          "total": 3.875
+        }
+      },
+      "delta_pair": {
+        "targetedness": 0.5,
+        "feasibility": 0.5,
+        "novelty": 0.5,
+        "groundedness": 1.0,
+        "total": 0.625
+      },
+      "cross_outcome": "Tie",
+      "cross_backend": "deepseek",
+      "rubric_llm": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "rubric_hrw": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 5,
+        "groundedness": 3
+      },
+      "delta_rubric": {
+        "targetedness": 0,
+        "feasibility": 0,
+        "novelty": -1,
+        "groundedness": 2
+      }
+    },
+    {
+      "pdf_id": "c252b8a901feea74",
+      "pref_o1": "A",
+      "pref_o2": "B",
+      "outcome": "Win_LLM",
+      "scores_pair": {
+        "llm": {
+          "targetedness": 5.0,
+          "feasibility": 5.0,
+          "novelty": 4.0,
+          "groundedness": 3.0,
+          "total": 4.25
+        },
+        "human": {
+          "targetedness": 4.0,
+          "feasibility": 4.0,
+          "novelty": 3.5,
+          "groundedness": 2.5,
+          "total": 3.5
+        }
+      },
+      "delta_pair": {
+        "targetedness": 1.0,
+        "feasibility": 1.0,
+        "novelty": 0.5,
+        "groundedness": 0.5,
+        "total": 0.75
+      },
+      "cross_outcome": "Tie",
+      "cross_backend": "deepseek",
+      "rubric_llm": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "rubric_hrw": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "delta_rubric": {
+        "targetedness": 0,
+        "feasibility": 0,
+        "novelty": 0,
+        "groundedness": 0
+      }
+    },
+    {
+      "pdf_id": "d18c13d036b3708f",
+      "pref_o1": "Tie",
+      "pref_o2": "Tie",
+      "outcome": "Tie",
+      "scores_pair": {
+        "llm": {
+          "targetedness": 5.0,
+          "feasibility": 5.0,
+          "novelty": 4.0,
+          "groundedness": 5.0,
+          "total": 4.75
+        },
+        "human": {
+          "targetedness": 5.0,
+          "feasibility": 4.5,
+          "novelty": 4.0,
+          "groundedness": 4.5,
+          "total": 4.5
+        }
+      },
+      "delta_pair": {
+        "targetedness": 0.0,
+        "feasibility": 0.5,
+        "novelty": 0.0,
+        "groundedness": 0.5,
+        "total": 0.25
+      },
+      "cross_outcome": "Tie",
+      "cross_backend": "deepseek",
+      "rubric_llm": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "rubric_hrw": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "delta_rubric": {
+        "targetedness": 0,
+        "feasibility": 0,
+        "novelty": 0,
+        "groundedness": 0
+      }
+    },
+    {
+      "pdf_id": "e3d82bafe7cb11e7",
+      "pref_o1": "A",
+      "pref_o2": "B",
+      "outcome": "Win_LLM",
+      "scores_pair": {
+        "llm": {
+          "targetedness": 5.0,
+          "feasibility": 4.5,
+          "novelty": 4.0,
+          "groundedness": 4.0,
+          "total": 4.375
+        },
+        "human": {
+          "targetedness": 4.0,
+          "feasibility": 3.0,
+          "novelty": 3.5,
+          "groundedness": 2.5,
+          "total": 3.25
+        }
+      },
+      "delta_pair": {
+        "targetedness": 1.0,
+        "feasibility": 1.5,
+        "novelty": 0.5,
+        "groundedness": 1.5,
+        "total": 1.125
+      },
+      "cross_outcome": "Tie",
+      "cross_backend": "deepseek",
+      "rubric_llm": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "rubric_hrw": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 5,
+        "groundedness": 5
+      },
+      "delta_rubric": {
+        "targetedness": 0,
+        "feasibility": 0,
+        "novelty": -1,
+        "groundedness": 0
+      }
+    },
+    {
+      "pdf_id": "f948850caef3d25f",
+      "pref_o1": "A",
+      "pref_o2": "B",
+      "outcome": "Win_LLM",
+      "scores_pair": {
+        "llm": {
+          "targetedness": 5.0,
+          "feasibility": 5.0,
+          "novelty": 4.5,
+          "groundedness": 5.0,
+          "total": 4.875
+        },
+        "human": {
+          "targetedness": 4.5,
+          "feasibility": 4.0,
+          "novelty": 4.0,
+          "groundedness": 3.5,
+          "total": 4.0
+        }
+      },
+      "delta_pair": {
+        "targetedness": 0.5,
+        "feasibility": 1.0,
+        "novelty": 0.5,
+        "groundedness": 1.5,
+        "total": 0.875
+      },
+      "cross_outcome": "Tie",
+      "cross_backend": "deepseek",
+      "rubric_llm": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 4,
+        "groundedness": 5
+      },
+      "rubric_hrw": {
+        "targetedness": 5,
+        "feasibility": 4,
+        "novelty": 5,
+        "groundedness": 5
+      },
+      "delta_rubric": {
+        "targetedness": 0,
+        "feasibility": 0,
+        "novelty": -1,
+        "groundedness": 0
+      }
+    }
+  ],
+  "attribution": {
+    "items": [
+      {
+        "hypothesis": "检索召回假说",
+        "x": "recall",
+        "y": "groundedness",
+        "expect": "正相关(r_s>0):LLM 遗漏核心文献 -> Solution 失去继承性",
+        "spearman": {
+          "rho": 0.3857583749052298,
+          "p": 0.3452553199103344,
+          "n": 8
+        }
+      },
+      {
+        "hypothesis": "贴合度传导假说",
+        "x": "rel",
+        "y": "targetedness",
+        "expect": "正相关(r_s>0):相关工作偏离主题 -> 方案针对性差",
+        "spearman": {
+          "rho": -0.4825174911355035,
+          "p": 0.22589788041726871,
+          "n": 8
+        }
+      },
+      {
+        "hypothesis": "幻觉/噪音干扰假说",
+        "x": "halluc",
+        "y": "feasibility",
+        "expect": "负相关(r_s<0):幻觉文献误导 -> 方案不可行",
+        "spearman": {
+          "rho": 0.15523010514126656,
+          "p": 0.7135853588782847,
+          "n": 8
+        }
+      }
+    ],
+    "n_x": 8,
+    "n_delta": 8
+  }
+}

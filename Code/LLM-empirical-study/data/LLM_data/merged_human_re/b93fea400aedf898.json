@@ -1,0 +1,221 @@
+{
+  "observation": "Cloud providers offer spot instances at typically 3–10× cheaper prices than on-demand instances, but spot instances are preemptible and their availability is highly volatile, varying strongly across zones and over time; availability can change from 100% to 0% within hours. Many workloads accept this uncertainty by checkpointing or re-executing, yet deadline-sensitive applications—such as incorporating new user data into an AI recommendation model or making timely trading decisions—cannot tolerate spot preemptions and therefore rely on expensive on-demand instances, trading cost for predictability. Thus it was unclear how deadline-bound jobs could safely exploit cheap spot resources without missing their deadlines.",
+  "related_works": [
+    {
+      "claims": [
+        "Spot instance pricing has evolved from AWS's original bidding mechanism to more stable, diminishing-bid schemes across cloud providers.",
+        "While spot pricing is relatively stable, modeling spot instance availability is challenging because providers expose a black-box allocation system.",
+        "Prior work has attempted to model spot preemption patterns and to predict spot evictions or availability with machine-learning methods.",
+        "Bulk preemption of multiple spot instances has been observed in prior work."
+      ],
+      "works": [
+        {
+          "title": "Spotlake: Diverse spot instance dataset archive service",
+          "authors": [
+            "S. Lee"
+          ]
+        },
+        {
+          "title": "Modeling the temporally constrained preemptions of transient cloud vms",
+          "authors": [
+            "J. Kadupitige"
+          ]
+        },
+        {
+          "title": "Tributary: spot-dancing for elastic services with latency SLOs",
+          "authors": [
+            "A. Harlap"
+          ]
+        },
+        {
+          "title": "Spot virtual machine eviction prediction in microsoft cloud",
+          "authors": [
+            "F. Yang"
+          ]
+        },
+        {
+          "title": "Snape: Reliable and low-cost computing with mixture of spot and on-demand vms",
+          "authors": [
+            "F. Yang"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "A broad set of workloads—analytics, AI/ML training, HPC, and CI/CD—leverage spot instances to reduce costs.",
+        "To tolerate preemptions, these applications either checkpoint periodically and resume from the last checkpoint or re-execute the whole job.",
+        "Prior systems such as Bamboo, Spotnik, and Srifty were built for machine learning on spot instances, and CompuCache used spot instances for in-memory computable caching.",
+        "Narayanan et al. showed that using spot instances across multiple clouds can significantly reduce machine-learning training costs.",
+        "Preemptions can negatively affect application performance, and deadline-constrained applications may find it difficult to use spot instances effectively."
+      ],
+      "works": [
+        {
+          "title": "See spot run: using spot instances for mapreduce workflows",
+          "authors": [
+            "N. Chohan"
+          ]
+        },
+        {
+          "title": "Srifty: Swift and thrifty distributed neural network training on the cloud",
+          "authors": [
+            "L. Luo"
+          ]
+        },
+        {
+          "title": "Exploiting redundancy and application scalability for cost-effective, time-constrained execution of hpc applications on amazon ec2",
+          "authors": [
+            "A. Marathe"
+          ]
+        },
+        {
+          "title": "Bamboo: Making preemptible instances resilient for affordable training of large DNNs",
+          "authors": [
+            "J. Thorpe"
+          ]
+        },
+        {
+          "title": "Spotnik: Designing distributed machine learning for transient cloud resources",
+          "authors": [
+            "M. Wagenländer"
+          ]
+        },
+        {
+          "title": "Compucache: Remote computable caching using spot vms",
+          "authors": [
+            "Q. Zhang"
+          ]
+        },
+        {
+          "title": "Apache spark: A unified engine for big data processing",
+          "authors": [
+            "M. Zaharia"
+          ]
+        },
+        {
+          "title": "Analysis and exploitation of dynamic pricing in the public cloud for ml training",
+          "authors": [
+            "D. Narayanan"
+          ]
+        },
+        {
+          "title": "Providing SLOs for Resource-Harvesting VMs in cloud platforms",
+          "authors": [
+            "P. Ambati"
+          ]
+        },
+        {
+          "title": "Snape: Reliable and low-cost computing with mixture of spot and on-demand vms",
+          "authors": [
+            "F. Yang"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Preemptive execution has been studied in energy-harvesting intermittent systems, where many works schedule real-time IoT tasks under energy interruptions.",
+        "From the cloud provider's perspective, existing work has investigated maximizing revenue and enhancing runtime guarantees.",
+        "Earlier user-side studies explored bidding-based policies for deadline-constrained bag-of-task jobs on spot instances, but those policies are less applicable to today's spot markets because the pricing model changed.",
+        "Snape mixes spot and on-demand instances for long-running services and targets SLOs on the number of available instances, which differs from deadline-sensitive batch jobs that may remain idle as long as they finish by their deadline.",
+        "To the authors' knowledge, existing methods did not address switching between spot and on-demand instances in a cost-optimization and deadline-adherence setting for batch jobs."
+      ],
+      "works": [
+        {
+          "title": "Optimal scheduling for real-time jobs in energy harvesting computing systems",
+          "authors": [
+            "M. Chetto"
+          ]
+        },
+        {
+          "title": "A real-time scheduling framework for embedded systems with environmental energy harvesting",
+          "authors": [
+            "H. E. Ghor"
+          ]
+        },
+        {
+          "title": "Scheduling computational and energy harvesting tasks in deadline-aware intermittent systems",
+          "authors": [
+            "B. Islam"
+          ]
+        },
+        {
+          "title": "Maximizing cloud revenue using dynamic pricing of multiple class virtual machines",
+          "authors": [
+            "F. Alzhouri"
+          ]
+        },
+        {
+          "title": "Cospot: A cooperative vm allocation framework for increased revenue from spot instances",
+          "authors": [
+            "S. M. Iqbal"
+          ]
+        },
+        {
+          "title": "Near-optimal scheduling mechanisms for deadline-sensitive jobs in large computing clusters",
+          "authors": [
+            "N. Jain"
+          ]
+        },
+        {
+          "title": "On-demand, spot, or both: Dynamic resource allocation for executing batch jobs in the cloud",
+          "authors": [
+            "I. Menache"
+          ]
+        },
+        {
+          "title": "Fault-tolerant workflow scheduling using spot instances on clouds",
+          "authors": [
+            "D. Poola"
+          ]
+        },
+        {
+          "title": "Autobot: Resilient and cost-effective scheduling of a bag of tasks on spot vms",
+          "authors": [
+            "P. Varshney"
+          ]
+        },
+        {
+          "title": "Optimal bids for spot vms in a cloud for deadline constrained jobs",
+          "authors": [
+            "M. Zafer"
+          ]
+        },
+        {
+          "title": "Snape: Reliable and low-cost computing with mixture of spot and on-demand vms",
+          "authors": [
+            "F. Yang"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Some cloud applications are delay-sensitive and require a job to finish by a given deadline, for example machine-learning model development."
+      ],
+      "works": [
+        {
+          "title": "Hypersched: Dynamic resource reallocation for model development on a deadline",
+          "authors": [
+            "R. Liaw"
+          ]
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "Prior work falls into two camps: it either treats spot instances as the execution substrate and tolerates preemption with checkpoint/restart, without giving any deadline bound, or it abandons spot for deadline-sensitive work and uses expensive on-demand instances from the start. Snape mixes spot and on-demand for long-running services, but its goal is maintaining a fixed number of available instances over time, not finishing a batch job by a deadline. The key missed property of deadline-bound batch jobs is that progress may be discontinuous: a job can idle, run in bursts on spot, and still finish by its deadline, as long as at every instant enough durable work has already been accumulated to make the remaining work feasible on a guaranteed on-demand resource. The proposed idea is therefore to treat an on-demand instance as a guaranteed tail that is scheduled as late as possible, and to use spot only to push durable progress ahead of the latest-start-time curve of that tail. Concretely, for a job with total work W, an on-demand capacity R, a failover latency L, and current durable progress C(t), any spot failure at time t can be repaired without missing the deadline if C(t) + R(D - t - L) >= W. This inequality defines a failover horizon T = D - L - (W - C(t))/R. If a spot preemption happens before T, failover to on-demand still finishes exactly by the deadline. If no preemption happens before T, the controller must either checkpoint enough additional work to move T later or start the on-demand tail. Thus spot preemptions are never catastrophic: spot is used only inside a window in which every preemption is provably repairable. This gives a hard deadline guarantee even when spot availability changes from 100% to 0% in a short time, because the guarantee does not depend on predicting availability; prediction is used only to rank spot offers by cost-effectiveness. The core trade-off is that spot cannot be used as a pure slow substitute for on-demand: if spot throughput is so low that durable progress cannot keep ahead of the tail's latest start, the job will eventually reach its failover horizon and switch to on-demand, which is the safe and cost-correct behavior. Alternatives such as running an on-demand shadow instance concurrently from time zero are rejected because they always cost at least the on-demand price, while opportunistic checkpointing and retrying on spot alone is rejected because it provides no deadline guarantee.",
+    "implementation": "The system is implemented as a job controller that manages each accepted job as a two-mode automaton: spot mode and guaranteed on-demand tail mode. Each job j submits its total work W_j measured in work units, its deadline D_j, and an on-demand capacity R_j, which is the throughput in work units per second of the on-demand instance type or cluster that the job can use as a tail. The scheduler also defines L as the maximum failover latency, which includes controller polling interval, cloud API launch time, VM boot time, and time to load the latest checkpoint from durable storage. A job is accepted only if W_j <= R_j * (D_j - admission_time - L); if this fails, even a perfect on-demand execution started immediately cannot meet the deadline, so the job is rejected or R_j is increased. For every active job the controller maintains C_j, the amount of work confirmed by the last successful checkpoint. C_j is updated only after a checkpoint acknowledgement is durably stored. The central invariant is the failover horizon T_j = D_j - L - (W_j - C_j) / R_j. Intuitively, if a spot preemption happens at time T_j and the on-demand tail is started, the tail has exactly enough remaining time to finish by D_j; if the preemption happens earlier, there is positive slack. Therefore, operating spot workers before T_j can never cause a missed deadline. The controller performs the following steps at every polling interval. First, it detects spot preemptions; if a preempted job was relying on spot, the controller immediately starts an on-demand tail of capacity R_j and restores C_j from durable checkpoint. Because the preemption time is less than the current T_j, the tail is guaranteed to finish. Second, for each job still in spot mode, it recomputes T_j from the latest C_j. If now is within one polling interval of T_j, it starts the on-demand tail proactively, since no useful spot checkpoint can be guaranteed after that point. Third, it instructs each spot worker to checkpoint by min(now + delta_checkpoint, T_j - K), where delta_checkpoint is the application's normal checkpoint period and K is the worst-case time needed to make a checkpoint durable. If a checkpoint at time t_checkpoint is acknowledged and advances C_j, T_j moves later by delta_C / R_j; this renewed failover horizon purchases additional time to continue on spot. If a checkpoint is not acknowledged before T_j is reached, the job is moved to on-demand tail mode. The tail mode uses exactly enough on-demand capacity to finish the remaining work; if spot is still alive and appears cheaper, spot workers may continue concurrently, and each newly durable spot checkpoint reduces the amount of work the on-demand tail must still perform. To choose which spot offers to use, the controller gathers available spot instances from all zones with their current prices and, optionally, the output of a black-box availability predictor from prior work. For each spot offer it estimates the effective durable throughput after checkpoint and restart overhead; offers whose effective cost per durable work unit is not lower than the on-demand price are discarded. Surviving offers are sorted by effective cost per durable work unit, and jobs are considered in increasing order of T_j, because a job closer to its failover horizon has the highest marginal cost saving per spot work unit. A job receives no more spot capacity than its remaining work W_j - C_j, and no new spot work is assigned unless the spot workers can reach their next checkpoint before T_j. This greedy allocation is locally cost optimal: every durable spot work unit reduces the required on-demand tail work by one unit, so the scheduler should always consume the cheapest spot units first, while never violating the failover invariant. The final component is an admission and parameter-setting routine. If a user does not specify R_j, the scheduler chooses the cheapest on-demand type satisfying the admission inequality, thereby guaranteeing that in the worst case the cost of the job is no higher than the cost of running on-demand only from its latest feasible start time, and in the common case it is much lower because spot completes or advances a large fraction of the work before the on-demand tail ever starts."
+  },
+  "pdf_id": "b93fea400aedf898",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/Can’t-Be-Late.md",
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:39:38",
+  "task": "human_re",
+  "related_works_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/human_data/b93fea400aedf898.json",
+  "solution_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/solution_human_re/b93fea400aedf898.json",
+  "style_exemplar_ids": [
+    "7d3b6e61ea96cc4f",
+    "f948850caef3d25f"
+  ]
+}

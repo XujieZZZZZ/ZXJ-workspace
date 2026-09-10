@@ -1,0 +1,21 @@
+{
+  "task": "llm_sql",
+  "program": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/ADR-evaluator/tasks/llm_sql/initial_program.py",
+  "program_name": "initial_program.py",
+  "paper_id": "d18c13d036b3708f",
+  "status": "success",
+  "combined_score": 0.6775319873448582,
+  "metrics": {
+    "combined_score": 0.6775319873448582,
+    "runs_successfully": 1.0,
+    "total_runtime": 385.1886565685272
+  },
+  "artifacts": {
+    "hit_rates": "[0.79411378589929, 0.7073511457809135, 0.825728865302018, 0.3959744437617879, 0.8427895873868235]"
+  },
+  "elapsed_seconds": 431.1,
+  "returncode": 0,
+  "timed_out": false,
+  "log_file": "llm_sql__initial_program.log",
+  "evaluated_at": "2026-09-10T01:35:21.061654+00:00"
+}

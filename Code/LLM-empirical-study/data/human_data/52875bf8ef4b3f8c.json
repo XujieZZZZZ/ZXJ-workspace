@@ -1,0 +1,301 @@
+{
+  "observation": "Recent papers report that the frequency of major outages in large cloud provider WANs has remained roughly constant over the years, despite considerable effort and investment. Root-cause analysis of all major outages in a large cloud provider's SDN WAN over the last five years shows that over one third of these outages—the single largest contributing root cause—were caused by incorrect inputs to the SDN controller: the controller itself operates correctly but receives inputs that do not accurately reflect the current state of the network, for example an incomplete view of current traffic demand or an incorrect view of the topology. Incorrect inputs arise from complex control infrastructure with millions of lines of code and unavoidable bugs, router hardware/software bugs that corrupt telemetry or operator-intent signals, correct signals being mutated or delayed by aggregation services, and inputs collected outside the network; the inputs are often incorrect not because they are impossible or unlikely but because they do not reflect the currently occurring network state, and operators' current static sanity checks cannot catch this.",
+  "related_works": [
+    {
+      "claims": [
+        "Recent papers report that the frequency of major outages in large cloud provider WANs has remained roughly constant over the years.",
+        "There is a vast literature on increasing network availability through testing, emulation, and formal verification.",
+        "Almost all such existing approaches aim to prove that an output is correct given a particular input, e.g., a configuration or set of values, and do not focus on validating the input itself.",
+        "Techniques such as verification, replication, testing, and similar methods validate a system's output assuming correct inputs, so their guarantees are rendered meaningless when the inputs to the system themselves are incorrect.",
+        "Even extensive pre-rollout testing cannot catch all bugs before deployment because the wide range of configurations, network loads, and OS versions makes such testing infeasible."
+      ],
+      "works": [
+        {
+          "title": "A Decentralized SDN Architecture for the WAN",
+          "authors": [
+            "Alexander Krentsel",
+            "Nitika Saran",
+            "Bikash Koley",
+            "Subhasree Mandal",
+            "Ashok Narayanan",
+            "Sylvia Ratnasamy",
+            "Ali Al-Shabibi",
+            "Anees Shaikh",
+            "Rob Shakir",
+            "Ankit Singla",
+            "Hakim Weatherspoon"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Netcastle: Network Infrastructure Testing At Scale",
+          "authors": [
+            "Rob Sherwood",
+            "Jinghao Shi",
+            "Ying Zhang",
+            "Neil Spring",
+            "Srikanth Sundaresan",
+            "Jasmeet Bagga",
+            "Prathyusha Peddi",
+            "Vineela Kukkadapu",
+            "Rashmi Shrivastava",
+            "Manikantan KR",
+            "Pavan Patil",
+            "Srikrishna Gopu",
+            "Varun Varadan",
+            "Ethan Shi",
+            "Hany Morsy",
+            "Yuting Bu",
+            "Renjie Yang",
+            "Rasmus Jönsson",
+            "Wei Zhang",
+            "Jesus Jussepen Arredondo",
+            "Diana Saha",
+            "Sean Choi"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "CrystalNet: Faithfully Emulating Large Production Networks",
+          "authors": [
+            "Hongqiang Harry Liu",
+            "Yibo Zhu",
+            "Jitu Padhye",
+            "Jiaxin Cao",
+            "Sri Tallapragada",
+            "Nuno P. Lopes",
+            "Andrey Rybalchenko",
+            "Guohan Lu",
+            "Lihua Yuan"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "NetKAT: semantic foundations for networks",
+          "authors": [
+            "Carolyn Jane Anderson",
+            "Nate Foster",
+            "Arjun Guha",
+            "Jean-Baptiste Jeannin",
+            "Dexter Kozen",
+            "Cole Schlesinger",
+            "David Walker"
+          ],
+          "year": 2014
+        },
+        {
+          "title": "A general approach to network configuration analysis",
+          "authors": [
+            "Ari Fogel",
+            "Stanley Fung",
+            "Luis Pedrosa",
+            "Meg Walraed-Sullivan",
+            "Ramesh Govindan",
+            "Ratul Mahajan",
+            "Todd Millstein"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "Header Space Analysis: Static Checking for Networks",
+          "authors": [
+            "Peyman Kazemian",
+            "George Varghese",
+            "Nick McKeown"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "Scalable verification of border gateway protocol configurations with an SMT solver",
+          "authors": [
+            "Konstantin Weitz",
+            "Doug Woos",
+            "Emina Torlak",
+            "Michael D Ernst",
+            "Arvind Krishnamurthy",
+            "Zachary Tatlock"
+          ],
+          "year": 2016
+        }
+      ]
+    },
+    {
+      "claims": [
+        "The Evolve or Die paper extracts learnings from more than 100 outages at Google.",
+        "It includes examples of outages due to incorrect inputs but does not report incorrect inputs as their leading cause.",
+        "The difference from the authors' analysis may be because it looked across both SDN- and protocol-based WANs, is nearly a decade old, and some of its recommendations may now be common practice leading to new dominant causes."
+      ],
+      "works": [
+        {
+          "title": "Evolve or Die: High-Availability Design Principles Drawn from Google’s Network Infrastructure",
+          "authors": [
+            "Ramesh Govindan",
+            "Ina Minei",
+            "Mahesh Kallahalla",
+            "Bikash Koley",
+            "Amin Vahdat"
+          ],
+          "year": 2016
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Flexible Contracts for Resiliency provides a language for reasoning about chains of assumptions that connect ground-truth signals to higher-level abstractions."
+      ],
+      "works": [
+        {
+          "title": "A flexible contracts approach to system resiliency",
+          "authors": [
+            "Michael Sievers",
+            "Azad M. Madni"
+          ],
+          "year": 2014
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Anomaly detection approaches detect outliers in input data through statistical analysis of a signal's past history.",
+        "These approaches focus on outliers in a signal's history rather than on whether the signal reflects ground truth, which requires corroboration across signals."
+      ],
+      "works": [
+        {
+          "title": "A survey of network anomaly detection techniques",
+          "authors": [
+            "Mohiuddin Ahmed",
+            "Abdun Naser Mahmood",
+            "Jiankun Hu"
+          ],
+          "year": 2016
+        },
+        {
+          "title": "An overview of anomaly detection techniques: Existing solutions and latest technological trends",
+          "authors": [
+            "Animesh Patcha",
+            "Jung-Min Park"
+          ],
+          "year": 2007
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Network operators today maintain detailed network models that can describe router-level signals."
+      ],
+      "works": [
+        {
+          "title": "Automatic Life Cycle Management of Network Configurations",
+          "authors": [
+            "Hongqiang Harry Liu",
+            "Xin Wu",
+            "Wei Zhou",
+            "Weiguo Chen",
+            "Tao Wang",
+            "Hui Xu",
+            "Lei Zhou",
+            "Qing Ma",
+            "Ming Zhang"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Experiences with Modeling Network Topologies at Multiple Levels of Abstraction",
+          "authors": [
+            "Jeffrey C Mogul",
+            "Drago Goricanec",
+            "Martin Pool",
+            "Anees Shaikh",
+            "Douglas Turk",
+            "Bikash Koley",
+            "Xiaoxue Zhao"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Robotron: Top-down Network Management at Facebook Scale",
+          "authors": [
+            "Yu-Wei Eric Sung",
+            "Xiaozheng Tie",
+            "Starsky H Y Wong",
+            "Hongyi Zeng"
+          ],
+          "year": 2016
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Traffic demand information can be collected from measurements at end hosts rather than from routers directly, as in bandwidth-allocation systems."
+      ],
+      "works": [
+        {
+          "title": "BwE: Flexible, Hierarchical Bandwidth Allocation for WAN Distributed Computing",
+          "authors": [
+            "Alok Kumar",
+            "Sushant Jain",
+            "Uday Naik",
+            "Anand Raghuraman",
+            "Nikhil Kasinadhuni",
+            "Enrique Cauich Zermeno",
+            "C Stephen Gunn",
+            "Jing Ai",
+            "Björn Carlin",
+            "Mihai Amarandei-Stavila",
+            "Mathieu Robin",
+            "Aspi Siganporia",
+            "Stephen Stuart",
+            "Amin Vahdat"
+          ],
+          "year": 2015
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Routers can run simple applications that can issue active probes to check link status."
+      ],
+      "works": [
+        {
+          "title": "FBOSS: Building Switch Software at Scale",
+          "authors": [
+            "Sean Choi",
+            "Boris Burkov",
+            "Alex Eckert",
+            "Tian Fang",
+            "Saman Kazemkhani",
+            "Rob Sherwood",
+            "Ying Zhang",
+            "Hongyi Zeng"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "A Decentralized SDN Architecture for the WAN",
+          "authors": [
+            "Alexander Krentsel",
+            "Nitika Saran",
+            "Bikash Koley",
+            "Subhasree Mandal",
+            "Ashok Narayanan",
+            "Sylvia Ratnasamy",
+            "Ali Al-Shabibi",
+            "Anees Shaikh",
+            "Rob Shakir",
+            "Ankit Singla",
+            "Hakim Weatherspoon"
+          ],
+          "year": 2024
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "Signals in a networked system are heavily correlated: the same traffic is reflected in ingress/egress demand reports, in interface counters on every traversed link, and in link status and drain announcements. Therefore, an incorrect SDN-controller input will likely break these cross-signal correlations and is detectable as an inconsistency. Hodor's core insight is to use this redundancy as a dynamic validation mechanism. Rather than trusting any single signal, Hodor first hardens a low-level router-signal view by detecting and repairing signals that disagree with independent observations from link symmetry, flow conservation, alternative signals, and deliberately manufactured active probes. It then dynamically checks the high-level inputs to the SDN controller against this independently hardened view of the current network state. Hodor deliberately specializes the validation problem: instead of attempting to discover signal correlations from historical data with unsupervised methods, which can capture spurious or transient relationships, it uses expert knowledge of the system design to define low-level and high-level relationships manually. This makes Hodor less general but more trustworthy, at the cost of hand-written, input-specific invariants and operator-configured policies for what to do when a check fails.",
+    "implementation": "Hodor is envisioned as an always-on, three-step validation system that continuously checks inputs to the SDN controller as they arrive.\n\nStep 1 — Collection: Hodor first gathers all router-level signals that represent network state or operator intent and that are relevant to the SDN controller's inputs. The relevant signals are chosen once at design time using the detailed network models and vendor-agnostic APIs that operators already maintain, providing documentation for each available router signal. After this design-time selection, the signals are collected automatically and continuously.\n\nStep 2 — Hardening: Hodor detects and, when possible, repairs incorrect or missing router signals before using them. Detection is based on redundant observations. The primary redundancy (R1) is link symmetry: the value reported at one end of a link should approximately match the corresponding value at the other end, e.g., bytes-out on one end approximately equals bytes-in on the other, and the reported link status at one end equals the status at the other. If such paired measurements are missing or differ by more than a small hardening threshold tau_h, Hodor marks them as spurious and replaces their values with unknown variables. Repair uses flow conservation (R2): for every router v, the sum of the byte counters on all incoming interfaces must approximately equal the sum of byte counters on all outgoing interfaces plus the reported bytes dropped at the router. Hodor formulates this as a dot product between the network incidence matrix and a partial flow vector, and solves for the unknown/corrupted values; with this formulation it can recover up to |V|-1 unknowns for a graph with |V| routers. Two further redundancies increase confidence during repair: alternative signals (R3), e.g., inferring link up/down not only from reported link status but also from whether byte counters at both ends are zero, and manufactured signals (R4), e.g., limited active neighbor probes that directly test liveness. After hardening, Hodor has a low-level, current-network-state view that is independent of the controller infrastructure's processing and aggregation logic.\n\nStep 3 — Dynamic checking: Hodor checks each high-level SDN-controller input for consistency with the hardened low-level signals.\n\nFor the demand input, the high-level input is a matrix D, where D_ij is the rate of traffic arriving at ingress router i and destined for egress router j. The router signals used are per-interface counters collected over a few-second rolling window. Hodor first hardens these counters as described above. It then constructs checks at each ingress and egress router: at each router, the total externally arriving ingress traffic must equal the reported sum of demands from that router to all destination routers, and the total external egress traffic must equal the reported sum of demands from all source routers to that router. This yields 2|V| invariants, which do not fully re-derive D (which has |V|^2 entries) but significantly constrain D's acceptable values. A small equality threshold tau_e is used to tolerate measurement differences; for example, sensitivity analysis in the paper used tau_e=0.02 and found the approach detected 99.2% of artificially perturbed Abilene demand matrices with two zeroed-out values out of 144 and 100% of those with three or more zeroed-out values.\n\nFor the topology input, the high-level input is a graph view built from low-level link-status reports. The topology can be incorrect in two ways: it can misrepresent whether links exist, or a link can be reported up but still be unusable due to dataplane bugs, misconfigured access-control lists, or other semantic failures. Hodor hardens a link-status view by combining link-status reports from both ends of each link (R1) with interface-counter behavior (R3) and limited periodic active probes (R4); the operator can choose how conservatively to combine these signals. It then dynamically compares this hardened link-status view directly with the topology input presented to the SDN controller.\n\nFor the drain-status input, Hodor targets the two incorrect manifestations: drain is not marked when the router cannot carry traffic, or drain is marked when the router could still carry traffic. The first case is caught by the same mechanisms used for topology validation, because interface counters and probes reveal that traffic is not flowing even though status remains up. The second case is harder because a router may legitimately be drained ahead of maintenance while still being able to forward traffic. Hodor's proposed approach is to make drain semantics transparent enough to validate: assign reasons to drain labels so the reason can be checked, or require drains to be expressed as link drains rather than node drains. Link drains have natural symmetry, since both ends of a link must agree that the link is drained; a node drain can be represented as draining all of the node's links, and each announced link drain can be checked against the neighbor's announcements.\n\nFinally, the action when a check fails is operator-configurable: Hodor can reject an input and temporarily fall back to the last known-good input, raise an alert for a reliability engineer, or use another operational process. Hodor itself only reads and compares signals and does not perform the controller's processing or aggregation, so its own bug surface is intended to be small; it is explicitly positioned as an additional defense-in-depth layer rather than a replacement for existing validation and alerting systems."
+  },
+  "pdf_id": "52875bf8ef4b3f8c",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/Telemetry.md",
+  "model": "deepseek-v4-flash",
+  "extracted_at": "2026-09-03 06:38:06"
+}

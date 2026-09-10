@@ -1,0 +1,9 @@
+{
+  "total": 8,
+  "success": 8,
+  "failed": 0,
+  "skipped": 0,
+  "failed_files": [],
+  "pdf_dir": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/pdf",
+  "output_dir": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md"
+}

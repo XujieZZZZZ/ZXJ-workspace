@@ -1,0 +1,793 @@
+{
+  "observation": "Inference providers must keep many LLMs available, including low-volume but essential models, while token prices fall, making resource efficiency increasingly important. To meet strict SLOs they dedicate GPU groups per model, yet production GPU duty cycles commonly fall below 30%. Analyses of production traces from major inference providers (Hyperbolic, Novita AI) and Chatbot Arena reveal a dynamic, rapidly shifting bursty-group pattern: requests concentrate on a small subset of concurrently active models and that subset changes frequently (23%–50% of models active on average; active set changes 54–766 times per hour), and per-model request streams are extremely volatile with abrupt pattern shifts and many idle intervals. In such conditions pure time sharing causes repeated model swapping, thrashing, and SLO-violating queuing spikes, while pure space sharing leaves memory locked to idle models (in the Novita AI trace models are idle over 70% of the time and roughly 50% of GPU memory is occupied but unused), starving active models during bursts. Thus neither sharing strategy alone can satisfy SLOs and efficiency under realistic multi-LLM workloads; what is needed is a fluid combination of both.",
+  "related_works": [
+    {
+      "claims": [
+        "Prior studies have primarily profiled single-model LLM services.",
+        "Cross-model dynamics in multi-LLM serving remain largely under-examined.",
+        "Evaluations in recent multi-LLM serving work often rely on synthetic or simplified workloads, such as Poisson/Gamma arrivals, temporally rescaled traces from non-LLM domains, or dataset-driven replays."
+      ],
+      "works": [
+        {
+          "title": "Towards efficient and reliable llm serving: A real-world workload study",
+          "authors": [
+            "Y. Wang",
+            "Y. Chen",
+            "Z. Li",
+            "Z. Tang",
+            "R. Guo",
+            "X. Wang",
+            "Q. Wang",
+            "A. C. Zhou",
+            "X. Chu"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Kv cache cache in the wild: Characterizing and optimizing kvcache cache at a large cloud provider",
+          "authors": [
+            "Jiahao Wang",
+            "Jinbo Han",
+            "Xingda Wei",
+            "Sijie Shen",
+            "Dingyan Zhang",
+            "Chenguang Fang",
+            "Rong Chen",
+            "Wenyuan Yu",
+            "Haibo Chen"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "MuxServe: Flexible Multiplexing for Efficient Multiple LLM Serving",
+          "authors": [
+            "J. Duan",
+            "R. Lu",
+            "H. Duanmu",
+            "X. Li",
+            "X. Zhang",
+            "D. Lin",
+            "I. Stoica",
+            "H. Zhang"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Queue Management for SLO-Oriented Large Language Model Serving",
+          "authors": [
+            "A. Patke",
+            "D. Reddy",
+            "S. Jha",
+            "H. Qiu",
+            "C. Pinto",
+            "C. Narayanaswami",
+            "Z. Kalbarczyk",
+            "R. Iyer"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Aegaeon: Effective gpu pooling for concurrent llm serving on the market",
+          "authors": [
+            "Y. Xiang",
+            "X. Li",
+            "K. Qian",
+            "Y. Yang",
+            "D. Zhu",
+            "W. Yu",
+            "E. Zhai",
+            "X. Liu",
+            "X. Jin",
+            "J. Zhou"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "ServerlessLLM:Low-Latency Serverless Inference for Large Language Models",
+          "authors": [
+            "Y. Fu",
+            "L. Xue",
+            "Y. Huang",
+            "A.-O. Brabete",
+            "D. Ustiugov",
+            "Y. Patel",
+            "L. Mai"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Weaver: efficient multi-llm serving with attention offloading",
+          "authors": [
+            "S. Gao",
+            "Q. Wang",
+            "S. Zeng",
+            "Y. Lu",
+            "J. Shu"
+          ],
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Compute sharing has already been well studied through hardware and software mechanisms.",
+        "Effective GPU memory sharing for LLM serving remains comparatively underexplored."
+      ],
+      "works": [
+        {
+          "title": "Lithos: An operating system for efficient machine learning on gpus",
+          "authors": [
+            "P. H. Coppock",
+            "B. Zhang",
+            "E. H. Solomon",
+            "V. Kypriotis",
+            "L. Yang",
+            "B. Sharma",
+            "D. Schatzberg",
+            "T. C. Mowry",
+            "D. Skarlatos"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "Gpreempt: Gpu preemptive scheduling made general and efficient",
+          "authors": [
+            "R. Fan",
+            "T. Ren",
+            "M. Xie",
+            "S. Gao",
+            "J. Shu",
+            "Y. Lu"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "ServerlessLLM:Low-Latency Serverless Inference for Large Language Models",
+          "authors": [
+            "Y. Fu",
+            "L. Xue",
+            "Y. Huang",
+            "A.-O. Brabete",
+            "D. Ustiugov",
+            "Y. Patel",
+            "L. Mai"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Xsched: preemptive scheduling for diverse xpus",
+          "authors": [
+            "W. Shen",
+            "M. Han",
+            "J. Liu",
+            "R. Chen",
+            "H. Chen"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "Tally: Non-intrusive performance isolation for concurrent deep learning workloads",
+          "authors": [
+            "W. Zhao",
+            "A. Jayarajan",
+            "G. Pekhimenko"
+          ],
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Space sharing colocates multiple models on the same GPU to utilize unused memory and compute cycles.",
+        "Space sharing is effective for smaller, low-traffic models that are continuously accessed.",
+        "Time sharing swaps models in and out of GPU memory and is effective for sporadic requests because resources can be freed when models are idle.",
+        "These strategies are effective for specific cases but fail to adapt to complex and realistic multi-LLM usage scenarios."
+      ],
+      "works": [
+        {
+          "title": "MuxServe: Flexible Multiplexing for Efficient Multiple LLM Serving",
+          "authors": [
+            "J. Duan",
+            "R. Lu",
+            "H. Duanmu",
+            "X. Li",
+            "X. Zhang",
+            "D. Lin",
+            "I. Stoica",
+            "H. Zhang"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Queue Management for SLO-Oriented Large Language Model Serving",
+          "authors": [
+            "A. Patke",
+            "D. Reddy",
+            "S. Jha",
+            "H. Qiu",
+            "C. Pinto",
+            "C. Narayanaswami",
+            "Z. Kalbarczyk",
+            "R. Iyer"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Aegaeon: Effective gpu pooling for concurrent llm serving on the market",
+          "authors": [
+            "Y. Xiang",
+            "X. Li",
+            "K. Qian",
+            "Y. Yang",
+            "D. Zhu",
+            "W. Yu",
+            "E. Zhai",
+            "X. Liu",
+            "X. Jin",
+            "J. Zhou"
+          ],
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Existing multi-LLM solutions remain fragmented, handling spatial and temporal sharing separately.",
+        "MuxServe supports spatial sharing but pins models to devices even when idle.",
+        "Aegaeon performs temporal sharing via prefill–decode disaggregation, requiring weight duplication and struggling with diverse, dynamic access patterns.",
+        "QLM time-shares GPUs by packing pending requests into groups and dispatching each group under an SLO-aware stochastic policy, swapping models and preempting unfinished requests whenever consecutive groups target different models.",
+        "QLM's frequent swapping and inefficient scheduling lead to SLO attainment lower than that of static partitioning.",
+        "ServerlessLLM unloads inactive models and reactivates a model on the server with the fastest startup based on checkpoint locality; its cold-start process dominates request latency."
+      ],
+      "works": [
+        {
+          "title": "MuxServe: Flexible Multiplexing for Efficient Multiple LLM Serving",
+          "authors": [
+            "J. Duan",
+            "R. Lu",
+            "H. Duanmu",
+            "X. Li",
+            "X. Zhang",
+            "D. Lin",
+            "I. Stoica",
+            "H. Zhang"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Aegaeon: Effective gpu pooling for concurrent llm serving on the market",
+          "authors": [
+            "Y. Xiang",
+            "X. Li",
+            "K. Qian",
+            "Y. Yang",
+            "D. Zhu",
+            "W. Yu",
+            "E. Zhai",
+            "X. Liu",
+            "X. Jin",
+            "J. Zhou"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "Queue Management for SLO-Oriented Large Language Model Serving",
+          "authors": [
+            "A. Patke",
+            "D. Reddy",
+            "S. Jha",
+            "H. Qiu",
+            "C. Pinto",
+            "C. Narayanaswami",
+            "Z. Kalbarczyk",
+            "R. Iyer"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "ServerlessLLM:Low-Latency Serverless Inference for Large Language Models",
+          "authors": [
+            "Y. Fu",
+            "L. Xue",
+            "Y. Huang",
+            "A.-O. Brabete",
+            "D. Ustiugov",
+            "Y. Patel",
+            "L. Mai"
+          ],
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Under long-tail workloads, idle models waste GPU memory.",
+        "Prior work mitigates idle-model memory waste with model eviction and accelerated weight loading."
+      ],
+      "works": [
+        {
+          "title": "ServerlessLLM:Low-Latency Serverless Inference for Large Language Models",
+          "authors": [
+            "Y. Fu",
+            "L. Xue",
+            "Y. Huang",
+            "A.-O. Brabete",
+            "D. Ustiugov",
+            "Y. Patel",
+            "L. Mai"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Aegaeon: Effective gpu pooling for concurrent llm serving on the market",
+          "authors": [
+            "Y. Xiang",
+            "X. Li",
+            "K. Qian",
+            "Y. Yang",
+            "D. Zhu",
+            "W. Yu",
+            "E. Zhai",
+            "X. Liu",
+            "X. Jin",
+            "J. Zhou"
+          ],
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Mainstream LLM serving engines adopt block-based KV token management such as PagedAttention.",
+        "Block-based KV cache management pre-allocates a large portion of GPU memory as a KV block pool, leaving unused memory occupied and preventing redistribution across LLMs."
+      ],
+      "works": [
+        {
+          "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+          "authors": [
+            "W. Kwon",
+            "Z. Li",
+            "S. Zhuang",
+            "Y. Sheng",
+            "L. Zheng",
+            "C. H. Yu",
+            "J. Gonzalez",
+            "H. Zhang",
+            "I. Stoica"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "SGLang: Efficient Execution of Structured Language Model Programs",
+          "authors": [
+            "L. Zheng",
+            "L. Yin",
+            "Z. Xie",
+            "J. Huang",
+            "C. Sun",
+            "C. H. Yu",
+            "S. Cao",
+            "C. Kozyrakis",
+            "I. Stoica",
+            "J. E. Gonzalez",
+            "C. Barrett",
+            "Y. Sheng"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "vAttention and vTensor use CUDA virtual memory APIs to decouple physical and virtual memory allocation for LLM serving.",
+        "Their purpose is to simplify programming and improve kernel efficiency for single-LLM serving.",
+        "They require re-implementing a large portion of the current inference-engine stack."
+      ],
+      "works": [
+        {
+          "title": "vAttention: Dynamic Memory Management for Serving LLMs without PagedAttention",
+          "authors": [
+            "R. Prabhu",
+            "A. Nayak",
+            "J. Mohan",
+            "R. Ramjee",
+            "A. Panwar"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "vTensor: Flexible Virtual Tensor Management for Efficient LLM Serving",
+          "authors": [
+            "J. Xu",
+            "R. Zhang",
+            "C. Guo",
+            "W. Hu",
+            "Z. Liu",
+            "F. Wu",
+            "Y. Feng",
+            "S. Sun",
+            "C. Shao",
+            "Y. Guo"
+          ],
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "claims": [
+        "SLO-aware LLM scheduling systems explore request scheduling and resource allocation to improve LLM inference performance.",
+        "These systems primarily focus on single-model serving rather than efficient multi-model serving."
+      ],
+      "works": [
+        {
+          "title": "Llumnix: Dynamic Scheduling for Large Language Model Serving",
+          "authors": [
+            "B. Sun",
+            "Z. Huang",
+            "H. Zhao",
+            "W. Xiao",
+            "X. Zhang",
+            "Y. Li",
+            "W. Lin"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "SLOs-Serve: Optimized Serving of Multi-SLO LLMs",
+          "authors": [
+            "S. Chen",
+            "Z. Jia",
+            "S. Khan",
+            "A. Krishnamurthy",
+            "P. B. Gibbons"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "Exegpt: Constraint-Aware Resource Scheduling for LLM Inference",
+          "authors": [
+            "H. Oh",
+            "K. Kim",
+            "J. Kim",
+            "S. Kim",
+            "J. Lee",
+            "D.-s. Chang",
+            "J. Seo"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Serving Models, Fast and Slow: Optimizing Heterogeneous LLM Inferencing Workloads at Scale",
+          "authors": [
+            "S. Jaiswal",
+            "K. Jain",
+            "Y. Simmhan",
+            "A. Parayil",
+            "A. Mallick",
+            "R. Wang",
+            "R. S. Amant",
+            "C. Bansal",
+            "V. Rühle",
+            "A. Kulkarni"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "DistServe: Disaggregating prefill and decoding for goodput-optimized large language model serving",
+          "authors": [
+            "Y. Zhong",
+            "S. Liu",
+            "J. Chen",
+            "J. Hu",
+            "Y. Zhu",
+            "X. Liu",
+            "X. Jin",
+            "H. Zhang"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Mell: Memory-Efficient Large Language Model Serving via Multi-GPU KV Cache Management",
+          "authors": [
+            "L. Qianli",
+            "H. Zicong",
+            "C. Fahao",
+            "L. Peng",
+            "G. Song"
+          ],
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "claims": [
+        "GPU sharing has been extensively studied, but largely at the OS or runtime layer for application-agnostic, single-GPU workloads.",
+        "Compute-centric GPU sharing designs time-slice between latency-critical and best-effort co-tenants.",
+        "Other compute-centric approaches add preemptive scheduling across heterogeneous accelerators."
+      ],
+      "works": [
+        {
+          "title": "Effisha: A software framework for enabling efficient preemptive scheduling of gpu",
+          "authors": [
+            "G. Chen",
+            "Y. Zhao",
+            "X. Shen",
+            "H. Zhou"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Interference-aware multiplexing for deep learning in gpu clusters: A middleware approach",
+          "authors": [
+            "W. Chen",
+            "Z. Mo",
+            "H. Xu",
+            "K. Ye",
+            "C. Xu"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "MuxServe: Flexible Multiplexing for Efficient Multiple LLM Serving",
+          "authors": [
+            "J. Duan",
+            "R. Lu",
+            "H. Duanmu",
+            "X. Li",
+            "X. Zhang",
+            "D. Lin",
+            "I. Stoica",
+            "H. Zhang"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Gpreempt: Gpu preemptive scheduling made general and efficient",
+          "authors": [
+            "R. Fan",
+            "T. Ren",
+            "M. Xie",
+            "S. Gao",
+            "J. Shu",
+            "Y. Lu"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "ServerlessLLM:Low-Latency Serverless Inference for Large Language Models",
+          "authors": [
+            "Y. Fu",
+            "L. Xue",
+            "Y. Huang",
+            "A.-O. Brabete",
+            "D. Ustiugov",
+            "Y. Patel",
+            "L. Mai"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Pantheon: Preemptible Multi-DNN Inference on Mobile Edge GPUs",
+          "authors": [
+            "L. Han",
+            "Z. Zhou",
+            "Z. Li"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Microsecond-Scale Preemption for Concurrent GPU-Accelerated DNN Inferences",
+          "authors": [
+            "M. Han",
+            "H. Zhang",
+            "R. Chen",
+            "H. Chen"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "AlpaServe: Statistical Multiplexing with Model Parallelism for Deep Learning Serving",
+          "authors": [
+            "Z. Li",
+            "L. Zheng",
+            "Y. Zhong",
+            "V. Liu",
+            "Y. Sheng",
+            "X. Jin",
+            "Y. Huang",
+            "Z. Chen",
+            "H. Zhang",
+            "J. E. Gonzalez",
+            "I. Stoica"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Paella: Low-Latency Model Serving with Software-Defined GPU Scheduling",
+          "authors": [
+            "K. K. Ng",
+            "H. M. Demoulin",
+            "V. Liu"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Queue Management for SLO-Oriented Large Language Model Serving",
+          "authors": [
+            "A. Patke",
+            "D. Reddy",
+            "S. Jha",
+            "H. Qiu",
+            "C. Pinto",
+            "C. Narayanaswami",
+            "Z. Kalbarczyk",
+            "R. Iyer"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Xsched: preemptive scheduling for diverse xpus",
+          "authors": [
+            "W. Shen",
+            "M. Han",
+            "J. Liu",
+            "R. Chen",
+            "H. Chen"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "Orion: Interference Aware, Fine-Grained GPU Sharing for ML Applications",
+          "authors": [
+            "F. Strati",
+            "X. Ma",
+            "A. Klimovic"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Gcaps: Gpu context-aware preemptive priority-based scheduling for real-time tasks",
+          "authors": [
+            "Y. Wang",
+            "C. Liu",
+            "D. Wong",
+            "H. Kim"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Beware of fragmentation: Scheduling GPU-Sharing workloads with fragmentation gradient descent",
+          "authors": [
+            "Q. Weng",
+            "L. Yang",
+            "Y. Yu",
+            "W. Wang",
+            "X. Tang",
+            "G. Yang",
+            "L. Zhang"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Transparent GPU sharing in container clouds for deep learning workloads",
+          "authors": [
+            "B. Wu",
+            "Z. Zhang",
+            "Z. Bai",
+            "X. Liu",
+            "X. Jin"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Aegaeon: Effective gpu pooling for concurrent llm serving on the market",
+          "authors": [
+            "Y. Xiang",
+            "X. Li",
+            "K. Qian",
+            "Y. Yang",
+            "D. Zhu",
+            "W. Yu",
+            "E. Zhai",
+            "X. Liu",
+            "X. Jin",
+            "J. Zhou"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "AntMan: Dynamic scaling on GPU clusters for deep learning",
+          "authors": [
+            "W. Xiao",
+            "S. Ren",
+            "Y. Li",
+            "Y. Zhang",
+            "P. Hou",
+            "Z. Li",
+            "Y. Feng",
+            "W. Lin",
+            "Y. Jia"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Salus: Fine-grained gpu sharing primitives for deep learning applications",
+          "authors": [
+            "P. Yu",
+            "M. Chowdhury"
+          ],
+          "year": 2019
+        },
+        {
+          "title": "Improving GPU Sharing Performance through Adaptive Bubbleless Spatial-Temporal Sharing",
+          "authors": [
+            "S. Zhang",
+            "Q. Chen",
+            "W. Cui",
+            "H. Zhao",
+            "C. Xue",
+            "Z. Zheng",
+            "W. Lin",
+            "M. Guo"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "SGDRC: Software-Defined Dynamic Resource Control for Concurrent DNN Inference on NVIDIA GPUs",
+          "authors": [
+            "Y. Zhang",
+            "H. Yu",
+            "C. Han",
+            "C. Wang",
+            "B. Lu",
+            "Y. Li",
+            "Z. Jiang",
+            "Y. Li",
+            "X. Chu",
+            "H. Li"
+          ],
+          "year": 2025
+        },
+        {
+          "title": "Muxflow: Efficient and safe gpu sharing in large-scale production deep learning clusters",
+          "authors": [
+            "Y. Zhao",
+            "X. Liu",
+            "S. Liu",
+            "X. Li",
+            "Y. Zhu",
+            "G. Huang",
+            "X. Liu",
+            "X. Jin"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "MSched is a memory-centric GPU multitasking approach that schedules GPU–CPU paging after oversubscription."
+      ],
+      "works": [
+        {
+          "title": "Msched: Gpu multitasking via proactive memory scheduling",
+          "authors": [
+            "W. Shen",
+            "Y. Chen",
+            "R. Chen",
+            "H. Chen"
+          ],
+          "year": 2025
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The core insight is to treat GPU memory as the unifying bottleneck behind both forms of GPU sharing: time sharing moves model weights into and out of memory, while space sharing divides KV-cache capacity among concurrently served models. Prism applies virtualization-style memory ballooning at the GPU runtime so that physical GPU memory can be reclaimed from idle or low-rate models and reallocated to models that need to expand their weights or KV caches, thereby unifying spatial and temporal sharing under one elastic scheme and allowing the system to fluidly switch between sharing modes or apply them simultaneously. The control plane is memory-centric and hierarchical: global demand-complementary model placement minimizes per-GPU KV memory pressure so active models retain balloon headroom, while local slack-aware request arbitration steers memory and scheduling priority toward requests with tight deadlines. The key trade-off is between flexibility and transparency: memory management is pushed below application semantics into a GPU-runtime-level balloon driver with an elastic tensor abstraction, enabling cross-model reallocation with modest overhead and without modifying attention kernels.",
+    "implementation": "Prism is built on SGLang, with a balloon driver called kvcached implemented using CUDA VMM APIs and exposed through Python bindings; the frontend uses a Redis queue, the GPU-local scheduler broadcasts decisions to tensor-parallel ranks, and the global scheduler runs as a separate process communicating via ZeroMQ. Each GPU group is the strict scheduling boundary and is treated as an indivisible unit; tensor-parallel partitions of one model are scheduled as separate units with anti-affinity so they land on different GPUs. The balloon driver reserves a large contiguous virtual address space for each serving engine at initialization, but physical GPU pages (2 MB granularity) are mapped lazily on demand; kvcached manages both model weights and KV-cache memory uniformly. An internal KV cache manager maps token blocks onto underlying virtual/physical pages, segregating token blocks of different models onto distinct pages to support heterogeneous layer counts, head dimensions, and token sizes. The memory layout is reorganized so that all layers' K and V vectors of a token are contiguous in virtual space, reducing what would be 2L per-layer page allocations to a single batch allocation; a pre-allocation thread asynchronously buffers free GPU pages, released pages are returned to the buffer before physical freeing, and partially filled pages are prioritized to reduce fragmentation. Elastic tensors (eTensors) are provided through PyTorch's extension interface so serving engines use them like ordinary tensors, with no changes to attention kernels and CUDA-graph compatibility. To reduce swap-in latency, Prism maintains an engine pool with pre-initialized virtual address spaces and distributed contexts; when a new model is loaded, a KV-cache virtual-memory manager aligns a reserved virtual space to the new model's memory layout, and model weights are chunked and loaded in parallel across GPUs in the same node and aggregated via NVLink, with each GPU keeping only a small buffer (e.g., 30 MB). For model placement, Prism sorts models in descending order of SLO-weighted token rate (token_rate * token_size / TPOT SLO), then greedily assigns each model to the GPU whose KV Pressure Ratio (KVPR) is minimized; it migrates only when the KVPR improvement exceeds a threshold tau, and updates the GPU's SLO-weighted token rate and remaining shared KV memory after each assignment. The exact prose formula for KVPR is corrupted in the Markdown (Unavailable in source: corrupted or lost during Markdown conversion); from Algorithm 1 and surrounding text, KVPR is the ratio of the GPU's aggregate SLO-weighted token memory usage rate (w_token_rate_i) to its remaining shared KV memory (shared_kv_i), where w_token_rate_i is accumulated as token_rate * token_size / SLO. Idle models are evicted based on an empirically determined idle threshold, and reactivation places the model on the GPU with the lowest KVPR using the pre-warmed engine pool and parallel weight loading; migrations keep the source instance serving until the destination is ready, use NVLink or GPUDirect RDMA when available, and otherwise fall back to eviction and reactivation. For local request arbitration, Prism uses a shared per-GPU queue instead of separate per-model queues: it sorts requests by TTFT prefill deadline d_i = arrival_time_i + TTFT_SLO_i; for each request in deadline order it estimates chunked-prefill execution time e_i = prompt_length_i / prefill_speed_i, appends the request to the accepted schedule, and advances current_time by e_i; if the newly appended request would miss its deadline, it removes from the accepted schedule the request with the longest execution time, repeating until all requests are examined. The accepted requests are executed in schedule order, and long-running decode requests are preempted only under severe memory pressure, matching the batch-scheduling behavior of SGLang/vLLM. TTFT is prioritized because its prompt length is known, while TPOT benefits indirectly from reduced memory contention and fewer preemptions."
+  },
+  "pdf_id": "f948850caef3d25f",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/Prism.md",
+  "model": "deepseek-v4-flash",
+  "extracted_at": "2026-09-03 06:59:17"
+}

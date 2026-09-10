@@ -1,0 +1,76 @@
+{
+  "observation": "Datacenter networks must serve cloud applications that require extremely low latency and high bandwidth, yet traffic is commonly bursty and emerging reconfigurable datacenters introduce rapid bandwidth changes, making congestion control a key enabler or limiter of system performance. The reaction time and accuracy of existing datacenter congestion control schemes are inherently limited because they react either only to the absolute network state (queue length, delay, ECN, or loss, called voltage) or only to state variations (e.g., RTT gradient, called current). A voltage-based reaction is oblivious to the rate at which the queue builds up and over-reacts when the queue drains, losing throughput; a current-based reaction is oblivious to the absolute queue length and, having no unique equilibrium, cannot stabilize queue lengths. Consequently, neither class of algorithms alone can deliver both fast, accurate reaction to perturbations and the strict near-zero-queue, high-throughput equilibrium that datacenter workloads demand.",
+  "related_works": [
+    {
+      "claims": [
+        "DCTCP and DCQCN make congestion decisions based on a thresholded ECN signal; the switch marks packets when its queue length exceeds an absolute threshold, so the feedback that reaches the sender is determined by the absolute network state rather than by the rate at which that state is changing.",
+        "HPCC uses in-network telemetry to acquire the current queue occupancy at every switch and treats that absolute occupancy as the control signal, even though the telemetry itself is much more precise than ECN.",
+        "These absolute-state control loops therefore only begin to react once a queue has formed and do not observe the queue's derivative."
+      ],
+      "works": [
+        {
+          "title": "Data Center TCP (DCTCP)",
+          "authors": [
+            "Mohammad Alizadeh"
+          ]
+        },
+        {
+          "title": "Congestion Control for Large-Scale RDMA Deployments",
+          "authors": [
+            "Yibo Zhu"
+          ]
+        },
+        {
+          "title": "HPCC: High Precision Congestion Control",
+          "authors": [
+            "Yuliang Li"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "TIMELY computes the sender rate from the per-RTT gradient of the measured RTT and does not use the absolute RTT or queue occupancy as a reference.",
+        "Because the gradient signal is zero in any steady state, a current-based controller has no unique equilibrium at which the queue length is pinned; this is a structural property of TIMELY's design.",
+        "The resulting current-based reaction is fast, but it is accurate only in the transient and cannot enforce a near-zero-queue operating point."
+      ],
+      "works": [
+        {
+          "title": "TIMELY: RTT-based Congestion Control for the Datacenter",
+          "authors": [
+            "Radhika Mittal"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "RotorNet reconfigures the datacenter's optical switches on a fast periodic schedule, which makes the bandwidth available to a pair of racks change repeatedly over time even when traffic demand is steady.",
+        "This time-varying capacity breaks the fixed-link-rate assumption that the absolute-queue and gradient-based congestion controllers above rely on."
+      ],
+      "works": [
+        {
+          "title": "RotorNet: A Scalable, Low-complexity, Optical Datacenter Network",
+          "authors": [
+            "William M. Mellette"
+          ]
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The prior schemes treat queue information as a single scalar: either an absolute network state (voltage) or a variation of state (current). DCTCP, DCQCN, and HPCC are voltage-only: their switches mark or senders compute only when a queue exceeds an absolute threshold, so the controller acts after a queue has already formed and continues to throttle while the queue drains because the absolute signal remains high. TIMELY is current-only: its feedback is the RTT gradient, which is zero in any steady state and therefore gives no unique reference, so it cannot pin the queue length to a near-zero operating point. The observation is not about tuning but about a structural mismatch: voltage and current are complementary measurements that should feed a single control law. The proposed solution treats them as two terms of a predictive controller. Define at each switch a signal s(t) = q(t) + tau * q'(t), where q(t) is the smoothed queue occupancy and q'(t) its time derivative. This is the projected queue length tau seconds into the future if the current trend is sustained. Using s as the feedback signal gives a clean diagnosis: the q term (voltage) supplies an equilibrium anchor, while the q' term (current) supplies phase lead. When a burst begins, q' is positive and s crosses the target before q itself does, so senders reduce early; when the queue is draining because capacity has increased, q' is negative and s falls below the target before the queue is empty, so senders resume sending early and do not lose throughput. At steady state q'=0 and s=q, so a target queue q_ref is a unique fixed point; this directly removes TIMELY's continuum of equilibria. The derivative also appears naturally as the difference between arrival rate and current service rate, so the scheme does not rely on a fixed link rate and reacts to RotorNet's periodic capacity changes at the instant the capacity mismatch appears, rather than only after the queue has grown. The chosen design uses a rate/window controller with the bottleneck switch's INT-reported queue, derivative, and service rate, rather than a pure ECN/AIMD loop, because RotorNet changes capacity far faster than an additive-increase probe can track. A simple proportional-derivative controller on the projected signal q + tau*q' around a small positive q_ref is the core.",
+    "implementation": "The scheme extends the INT-based HPCC loop with one additional per-hop INT field and changes the sender's control law from an absolute-queue response to a projective voltage-plus-current response.\n\nSwitch-side measurement: Each switch output port maintains a smoothed queue length q_s. The switch samples the instantaneous queue length at a high fixed period T_s (e.g., every 10 microseconds) and updates q_s as q_s = (1-w_q)*q_s + w_q*q_inst. From consecutive samples it computes a raw derivative dq_raw = (q_s_new - q_s_old)/T_s and then low-pass filters this into a smoothed derivative d_s = (1-w_d)*d_s + w_d*dq_raw. The weights w_q and w_d are chosen so that the derivative is stable under short microbursts yet fast enough to observe a RotorNet rotor slot. When a packet is forwarded, the switch attaches its current q_s and d_s and the instantaneous transmit rate c_s of the port into the INT header. This adds one field to HPCC's INT record: instead of only q, each hop reports q, d, and c.\n\nPath aggregation: The receiver inspects all hop records in each returning ACK and computes, for each hop, s_i = q_s_i + tau * d_s_i, where tau is the prediction horizon. It selects the hop with the largest s_i as the bottleneck hop and returns that hop's q, d, and c to the sender. Choosing the maximum of the projected signal identifies the switch whose queue would overshoot the target first; this is more accurate than selecting by q alone because a switch whose queue is still small but growing quickly is already the near-future bottleneck.\n\nSender state: Each flow maintains a pacing rate R (bytes/sec), a window W = max(1, R * RTT_min) where RTT_min is the minimum measured round-trip time, and sender-side smoothed estimates q_est and d_est of the bottleneck q and d. On every control update (every RTT, or every ACK that carries telemetry, whichever is earlier), the sender updates its estimates q_est = (1-a_q)*q_est + a_q * q, d_est = (1-a_d)*d_est + a_d * d, and C_hat = c from the INT report. It then computes the projected signal S = q_est + tau * d_est. The control law is: R_new = C_hat + K * (q_ref - S). Here q_ref is the target queue occupancy, a small positive value chosen to be a few maximum-sized packets (near-zero queue in the datacenter sense, but nonzero to keep a small amount of buffering for rotor-slot boundaries); K is a dimensionless gain that determines the closed-loop response. R_new is clamped to a positive range [R_min, R_max], where R_max is the maximum line rate and R_min is small but nonzero. Finally the sender sets R = R_new and W = max(1, R_new * RTT_min). Intuitively, if q is above q_ref, the negative q term pulls R below C_hat to drain the queue; if q is below q_ref, the positive q term pushes R above C_hat to build the queue; if d is positive, the derivative term subtracts a rate proportional to tau*d and therefore blocks an incipient queue buildup before q crosses the target; if d is negative, the derivative term adds rate and accelerates filling of the link after a capacity increase.\n\nRotorNet adaptation: When a rotor reconfiguration changes the capacity available to a flow, the bottleneck port's service rate c changes. The switch-level queue derivative immediately becomes nonzero because the arrival rate differs from the new service rate. The INT report carries this new d and the new c in the same round, so R_new is recomputed from the updated C_hat and S. This makes the controller track capacity changes within one feedback interval instead of after many RTTs of additive probing. If the rotor schedule is known to the sender or switch, tau can be set to the rotor slot duration or the RTT_min; otherwise tau can be a fixed value comparable to the link RTT. The projective signal smooths the periodic, time-varying service rate by controlling to the net mismatch over the feedback interval, so it does not assume a fixed link rate.\n\nInitialization and probing: On flow startup, R is initialized to the line rate of the sender's access link, and W follows. To handle the case where the network is underutilized and the queue is empty, q_ref is larger than zero, so the proportional term C_hat + K*(q_ref - 0) slightly exceeds C_hat, making the sender add a controlled amount of traffic until q reaches q_ref. If the queue is already empty and q_est < q_ref but d_est is zero, the same proportional term keeps R above C_hat; this provides a continuous probing signal without an AIMD recovery period. A minimum rate R_min is retained to avoid closing the window when a long RotorNet queueing transient momentarily produces a large positive S.\n\nOptional ECN fallback: In networks that do not support INT, the same s = q + tau*d signal can be computed entirely in the switch and used as an AQM marking criterion: the switch marks a packet when S > q_ref. The sender then runs a DCTCP-style estimator of the fraction of marked packets and reduces its window multiplicatively when that fraction is nonzero, while increasing on unmarked rounds. This fallback embeds both voltage and current in the marking decision, preserving the early-reaction and early-recovery properties, but it is less precise than the INT-rate controller and is intended only for legacy hardware. The INT-based design above is the primary implementation because it supplies the service rate c needed to ride through RotorNet capacity changes without slow additive probing."
+  },
+  "pdf_id": "7d3b6e61ea96cc4f",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/NS3.md",
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:40:29",
+  "task": "llm_re_withoutsearch",
+  "related_works_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/relatedworks_withoutsearch/7d3b6e61ea96cc4f.json",
+  "solution_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/solution_llm_re/7d3b6e61ea96cc4f_withoutsearch.json",
+  "style_exemplar_ids": [
+    "f948850caef3d25f",
+    "e3d82bafe7cb11e7"
+  ]
+}

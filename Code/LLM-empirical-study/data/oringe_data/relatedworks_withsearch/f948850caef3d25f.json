@@ -1,0 +1,90 @@
+{
+  "pdf_id": "f948850caef3d25f",
+  "mode": "withsearch",
+  "observation": "Inference providers must keep many LLMs available, including low-volume but essential models, while token prices fall, making resource efficiency increasingly important. To meet strict SLOs they dedicate GPU groups per model, yet production GPU duty cycles commonly fall below 30%. Analyses of production traces from major inference providers (Hyperbolic, Novita AI) and Chatbot Arena reveal a dynamic, rapidly shifting bursty-group pattern: requests concentrate on a small subset of concurrently active models and that subset changes frequently (23%–50% of models active on average; active set changes 54–766 times per hour), and per-model request streams are extremely volatile with abrupt pattern shifts and many idle intervals. In such conditions pure time sharing causes repeated model swapping, thrashing, and SLO-violating queuing spikes, while pure space sharing leaves memory locked to idle models (in the Novita AI trace models are idle over 70% of the time and roughly 50% of GPU memory is occupied but unused), starving active models during bursts. Thus neither sharing strategy alone can satisfy SLOs and efficiency under realistic multi-LLM workloads; what is needed is a fluid combination of both.",
+  "related_works": [
+    {
+      "claims": [
+        "Iteration-level scheduling in LLM serving systems lets one GPU interleave tokens from many requests and suppresses the queueing stalls that appear when requests are scheduled at request granularity.",
+        "Paged cache management in vLLM keeps GPU memory under tight control during a single model's decode phase, but the parameters of every loaded model remain pinned in GPU memory.",
+        "These advances target one preinstalled LLM per serving pool and do not provide a mechanism for deciding which set of full-size models should reside in memory at any instant."
+      ],
+      "works": [
+        {
+          "title": "Orca: A Distributed Serving System for Transformer-Based Generative Models",
+          "authors": [
+            "Gyeong-In Yu"
+          ]
+        },
+        {
+          "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+          "authors": [
+            "Woosuk Kwon"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "AlpaServe demonstrated that statistical multiplexing across deep learning models can reduce the GPU footprint of inference serving while still satisfying latency SLOs.",
+        "To make large models multiplexable, AlpaServe partitions a model and places its shards together with shards of other models in a common resource pool.",
+        "The model placement in AlpaServe is determined ahead of serving from profiled request rates, rather than by dynamically evicting and reactivating whole models when the popular model set shifts."
+      ],
+      "works": [
+        {
+          "title": "AlpaServe: Statistical Multiplexing with Model Parallelism for Deep Learning Serving",
+          "authors": [
+            "Zhuohan Li"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Disaggregated serving schedules prefill and decoding on separate GPU stages in order to honor independent first-token and per-token latency objectives.",
+        "Prefill-decode disaggregation is designed around the demand of one LLM or of a few high-rate LLMs and does not reclaim GPU memory occupied by many low-volume models between their bursts."
+      ],
+      "works": [
+        {
+          "title": "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving",
+          "authors": [
+            "Yinmin Zhong"
+          ]
+        },
+        {
+          "title": "Splitwise: Efficient Generative LLM Inference Using Phase Splitting",
+          "authors": [
+            "Pratyush Patel"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Adapter-serving systems such as S-LoRA and Punica co-locate large populations of LoRA adapters above one resident base LLM by paging and multiplexing only the lightweight adapter state.",
+        "A full-size LLM is orders of magnitude larger than an adapter delta, so the cheap paging and switching techniques used for adapter state do not directly transfer to a pool of independent full-size models.",
+        "This leaves open the core problem of fluidly trading GPU memory between active and idle complete LLMs."
+      ],
+      "works": [
+        {
+          "title": "S-LoRA: Serving Thousands of Concurrent LoRA Adapters",
+          "authors": [
+            "Ying Sheng"
+          ]
+        },
+        {
+          "title": "Punica: Multi-Tenant LoRA Serving",
+          "authors": [
+            "Lequn Chen"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "e3d82bafe7cb11e7",
+    "5dd2d839c66d339a"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 08:51:44"
+}

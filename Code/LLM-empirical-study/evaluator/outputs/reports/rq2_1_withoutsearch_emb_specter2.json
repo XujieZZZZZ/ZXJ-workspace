@@ -1,0 +1,841 @@
+{
+  "variant": "withoutsearch",
+  "emb": "specter2",
+  "per_sample": [
+    {
+      "pdf_id": "52875bf8ef4b3f8c",
+      "variant": "withoutsearch",
+      "retrieval": {
+        "recall": 0.4375,
+        "precision": 0.875,
+        "jaccard": 0.4117647058823529,
+        "matched": 7,
+        "n_h": 16,
+        "n_l": 8
+      },
+      "failure": {
+        "H": {
+          "total": 16,
+          "s2_fail": 0,
+          "s2_fail_rate": 0.0
+        },
+        "L": {
+          "total": 8,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.125
+        }
+      },
+      "temporal": {
+        "rr_h": 0.125,
+        "rr_l": 0.0,
+        "n_years_h": 16,
+        "n_years_l": 7,
+        "w1": 5.660714285714284,
+        "w1_n_h": 16,
+        "w1_n_l": 7
+      },
+      "semantic": {
+        "intra_h": 0.89283686876297,
+        "intra_l": 0.8936008214950562,
+        "inter": 0.9874373539724847,
+        "rel_h": 0.9046263694763184,
+        "rel_l": 0.9086326360702515
+      },
+      "quality_h": {
+        "mlc": 4.870430798098373,
+        "n_mlc": 16,
+        "tvr": 0.8125,
+        "n_tvr": 16,
+        "n_venue_known": 16
+      },
+      "quality_l": {
+        "mlc": 7.010344514362926,
+        "n_mlc": 7,
+        "tvr": 0.5,
+        "n_tvr": 8,
+        "n_venue_known": 8
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 1,
+          "2": 0,
+          "3": 14
+        },
+        "n_h": 16,
+        "n_l": 8,
+        "matched_l_idx": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          7
+        ],
+        "l_titles_matched": [
+          "B4: Experience with a Globally-Deployed Software Defined WAN",
+          "Achieving high utilization with software-driven WAN",
+          "B4 and after: Managing hierarchy, partitioning, and asymmetry for availability and scale in Google's software-defined WAN",
+          "Header Space Analysis: Static Checking for Networks",
+          "VeriFlow: Verifying Network-Wide Invariants in Real Time",
+          "Detecting BGP Configuration Faults with Static Analysis",
+          "HyperFlow: A Distributed Control Plane for OpenFlow"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9981684684753418,
+        "n_nli_pairs": 1,
+        "n_atoms": 35,
+        "coverage": 0.08571428571428572,
+        "n_supported": 3,
+        "logic": 4
+      }
+    },
+    {
+      "pdf_id": "5dd2d839c66d339a",
+      "variant": "withoutsearch",
+      "retrieval": {
+        "recall": 0.25,
+        "precision": 1.0,
+        "jaccard": 0.25,
+        "matched": 14,
+        "n_h": 56,
+        "n_l": 14
+      },
+      "failure": {
+        "H": {
+          "total": 56,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.017857142857142856
+        },
+        "L": {
+          "total": 14,
+          "s2_fail": 0,
+          "s2_fail_rate": 0.0
+        }
+      },
+      "temporal": {
+        "rr_h": 0.625,
+        "rr_l": 0.6428571428571429,
+        "n_years_h": 56,
+        "n_years_l": 14,
+        "w1": 5.624999999999998,
+        "w1_n_h": 56,
+        "w1_n_l": 14
+      },
+      "semantic": {
+        "intra_h": 0.8851621747016907,
+        "intra_l": 0.907340943813324,
+        "inter": 0.9915069739925945,
+        "rel_h": 0.8892462849617004,
+        "rel_l": 0.9119550585746765
+      },
+      "quality_h": {
+        "mlc": 6.182281761610105,
+        "n_mlc": 55,
+        "tvr": 0.5,
+        "n_tvr": 56,
+        "n_venue_known": 56
+      },
+      "quality_l": {
+        "mlc": 7.294303926486107,
+        "n_mlc": 14,
+        "tvr": 0.7857142857142857,
+        "n_tvr": 14,
+        "n_venue_known": 14
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 5,
+          "2": 0,
+          "3": 91
+        },
+        "n_h": 56,
+        "n_l": 14,
+        "matched_l_idx": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "l_titles_matched": [
+          "ChatDev: Communicative Agents for Software Development",
+          "MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework",
+          "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation",
+          "AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors",
+          "ReAct: Synergizing Reasoning and Acting in Language Models",
+          "Reflexion: Language Agents with Verbal Reinforcement Learning",
+          "Self-Refine: Iterative Refinement with Self-Feedback",
+          "Large Language Models Cannot Self-Correct Reasoning Yet",
+          "Evaluating Large Language Models Trained on Code",
+          "Competition-level code generation with AlphaCode",
+          "Teaching Large Language Models to Self-Debug",
+          "CodeT: Code Generation with Generated Tests",
+          "Program Synthesis with Large Language Models",
+          "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9982964992523193,
+        "n_nli_pairs": 13,
+        "n_atoms": 81,
+        "coverage": 0.24691358024691357,
+        "n_supported": 20,
+        "logic": 4
+      }
+    },
+    {
+      "pdf_id": "7d3b6e61ea96cc4f",
+      "variant": "withoutsearch",
+      "retrieval": {
+        "recall": 0.18518518518518517,
+        "precision": 1.0,
+        "jaccard": 0.18518518518518517,
+        "matched": 5,
+        "n_h": 27,
+        "n_l": 5
+      },
+      "failure": {
+        "H": {
+          "total": 27,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.037037037037037035
+        },
+        "L": {
+          "total": 5,
+          "s2_fail": 0,
+          "s2_fail_rate": 0.0
+        }
+      },
+      "temporal": {
+        "rr_h": 0.0,
+        "rr_l": 0.0,
+        "n_years_h": 27,
+        "n_years_l": 5,
+        "w1": 4.281481481481482,
+        "w1_n_h": 27,
+        "w1_n_l": 5
+      },
+      "semantic": {
+        "intra_h": 0.9116331934928894,
+        "intra_l": 0.9372870326042175,
+        "inter": 0.9900185448830263,
+        "rel_h": 0.9219696521759033,
+        "rel_l": 0.9373273849487305
+      },
+      "quality_h": {
+        "mlc": 6.069131806625091,
+        "n_mlc": 26,
+        "tvr": 0.6296296296296297,
+        "n_tvr": 27,
+        "n_venue_known": 27
+      },
+      "quality_l": {
+        "mlc": 6.765538468384497,
+        "n_mlc": 5,
+        "tvr": 0.6,
+        "n_tvr": 5,
+        "n_venue_known": 5
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 4,
+          "2": 0,
+          "3": 10
+        },
+        "n_h": 27,
+        "n_l": 5,
+        "matched_l_idx": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "l_titles_matched": [
+          "Data Center TCP (DCTCP)",
+          "Congestion Control for Large-Scale RDMA Deployments",
+          "HPCC: High Precision Congestion Control",
+          "TIMELY: RTT-based Congestion Control for the Datacenter",
+          "RotorNet: A Scalable, Low-complexity, Optical Datacenter Network"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9962620139122009,
+        "n_nli_pairs": 4,
+        "n_atoms": 95,
+        "coverage": 0.21052631578947367,
+        "n_supported": 20,
+        "logic": 5
+      }
+    },
+    {
+      "pdf_id": "b93fea400aedf898",
+      "variant": "withoutsearch",
+      "retrieval": {
+        "recall": 0.08,
+        "precision": 0.5,
+        "jaccard": 0.07407407407407407,
+        "matched": 2,
+        "n_h": 25,
+        "n_l": 4
+      },
+      "failure": {
+        "H": {
+          "total": 25,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.04
+        },
+        "L": {
+          "total": 4,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.25
+        }
+      },
+      "temporal": {
+        "rr_h": 0.08,
+        "rr_l": 0.25,
+        "n_years_h": 25,
+        "n_years_l": 3,
+        "w1": 5.093333333333334,
+        "w1_n_h": 25,
+        "w1_n_l": 3
+      },
+      "semantic": {
+        "intra_h": 0.8876132965087891,
+        "intra_l": 0.8548747897148132,
+        "inter": 0.9787386140172037,
+        "rel_h": 0.8987005352973938,
+        "rel_l": 0.876299262046814
+      },
+      "quality_h": {
+        "mlc": 3.818358660891812,
+        "n_mlc": 24,
+        "tvr": 0.72,
+        "n_tvr": 25,
+        "n_venue_known": 25
+      },
+      "quality_l": {
+        "mlc": 5.693935844713604,
+        "n_mlc": 3,
+        "tvr": 0.75,
+        "n_tvr": 4,
+        "n_venue_known": 4
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 0,
+          "2": 0,
+          "3": 10
+        },
+        "n_h": 25,
+        "n_l": 4,
+        "matched_l_idx": [
+          0,
+          2
+        ],
+        "l_titles_matched": [
+          "Deconstructing Amazon EC2 Spot Instance Pricing",
+          "Large-scale cluster management at Google with Borg"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9993840456008911,
+        "n_nli_pairs": 2,
+        "n_atoms": 38,
+        "coverage": 0.18421052631578946,
+        "n_supported": 7,
+        "logic": 3
+      }
+    },
+    {
+      "pdf_id": "c252b8a901feea74",
+      "variant": "withoutsearch",
+      "retrieval": {
+        "recall": 0.0875,
+        "precision": 0.875,
+        "jaccard": 0.08641975308641975,
+        "matched": 7,
+        "n_h": 80,
+        "n_l": 8
+      },
+      "failure": {
+        "H": {
+          "total": 80,
+          "s2_fail": 5,
+          "s2_fail_rate": 0.0625
+        },
+        "L": {
+          "total": 8,
+          "s2_fail": 0,
+          "s2_fail_rate": 0.0
+        }
+      },
+      "temporal": {
+        "rr_h": 0.0625,
+        "rr_l": 0.0,
+        "n_years_h": 80,
+        "n_years_l": 8,
+        "w1": 15.687500000000004,
+        "w1_n_h": 80,
+        "w1_n_l": 8
+      },
+      "semantic": {
+        "intra_h": 0.8707110285758972,
+        "intra_l": 0.8974120020866394,
+        "inter": 0.9804436590311041,
+        "rel_h": 0.8902843594551086,
+        "rel_l": 0.8759317398071289
+      },
+      "quality_h": {
+        "mlc": 5.099021988233247,
+        "n_mlc": 75,
+        "tvr": 0.5125,
+        "n_tvr": 80,
+        "n_venue_known": 80
+      },
+      "quality_l": {
+        "mlc": 6.913945506552087,
+        "n_mlc": 8,
+        "tvr": 0.625,
+        "n_tvr": 8,
+        "n_venue_known": 8
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 2,
+          "2": 0,
+          "3": 56
+        },
+        "n_h": 80,
+        "n_l": 8,
+        "matched_l_idx": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "l_titles_matched": [
+          "Concurrency Control and Recovery in Database Systems",
+          "The Notions of Consistency and Predicate Locks in a Database System",
+          "On Optimistic Methods for Concurrency Control",
+          "System Level Concurrency Control for Distributed Database Systems",
+          "Calvin: Fast Distributed Transactions for Partitioned Database Systems",
+          "An Evaluation of the Advantages and Disadvantages of Deterministic Database Systems",
+          "NP-Complete Scheduling Problems"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.999582052230835,
+        "n_nli_pairs": 2,
+        "n_atoms": 89,
+        "coverage": 0.1797752808988764,
+        "n_supported": 16,
+        "logic": 4
+      }
+    },
+    {
+      "pdf_id": "d18c13d036b3708f",
+      "variant": "withoutsearch",
+      "retrieval": {
+        "recall": 0.2777777777777778,
+        "precision": 1.0,
+        "jaccard": 0.2777777777777778,
+        "matched": 5,
+        "n_h": 18,
+        "n_l": 5
+      },
+      "failure": {
+        "H": {
+          "total": 18,
+          "s2_fail": 5,
+          "s2_fail_rate": 0.2777777777777778
+        },
+        "L": {
+          "total": 5,
+          "s2_fail": 3,
+          "s2_fail_rate": 0.6
+        }
+      },
+      "temporal": {
+        "rr_h": 0.3333333333333333,
+        "rr_l": 0.4,
+        "n_years_h": 18,
+        "n_years_l": 2,
+        "w1": 6.666666666666667,
+        "w1_n_h": 18,
+        "w1_n_l": 2
+      },
+      "semantic": {
+        "intra_h": 0.8648526072502136,
+        "intra_l": 0.8815809488296509,
+        "inter": 0.981320338315852,
+        "rel_h": 0.8901647925376892,
+        "rel_l": 0.8999984860420227
+      },
+      "quality_h": {
+        "mlc": 6.104994618087425,
+        "n_mlc": 13,
+        "tvr": 0.5555555555555556,
+        "n_tvr": 18,
+        "n_venue_known": 18
+      },
+      "quality_l": {
+        "mlc": 8.089537328516029,
+        "n_mlc": 2,
+        "tvr": 0.4,
+        "n_tvr": 5,
+        "n_venue_known": 5
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 1,
+          "2": 0,
+          "3": 9
+        },
+        "n_h": 18,
+        "n_l": 5,
+        "matched_l_idx": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "l_titles_matched": [
+          "Orca: A Distributed Serving System for Transformer-Based Generative Models",
+          "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+          "SGLang: Efficient Execution of Structured Language Model Programs",
+          "Prompt Cache: Modular Attention Reuse for Low-Latency LLM Inference",
+          "LOTUS: Enabling Semantic Queries with LLMs over Tables of Unstructured and Structured Data"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.999509334564209,
+        "n_nli_pairs": 2,
+        "n_atoms": 36,
+        "coverage": 0.3611111111111111,
+        "n_supported": 13,
+        "logic": 4
+      }
+    },
+    {
+      "pdf_id": "e3d82bafe7cb11e7",
+      "variant": "withoutsearch",
+      "retrieval": {
+        "recall": 0.3448275862068966,
+        "precision": 1.0,
+        "jaccard": 0.3448275862068966,
+        "matched": 10,
+        "n_h": 29,
+        "n_l": 10
+      },
+      "failure": {
+        "H": {
+          "total": 29,
+          "s2_fail": 4,
+          "s2_fail_rate": 0.13793103448275862
+        },
+        "L": {
+          "total": 10,
+          "s2_fail": 2,
+          "s2_fail_rate": 0.2
+        }
+      },
+      "temporal": {
+        "rr_h": 0.0,
+        "rr_l": 0.0,
+        "n_years_h": 29,
+        "n_years_l": 8,
+        "w1": 8.439655172413794,
+        "w1_n_h": 29,
+        "w1_n_l": 8
+      },
+      "semantic": {
+        "intra_h": 0.8878926038742065,
+        "intra_l": 0.8982313275337219,
+        "inter": 0.9881874738248854,
+        "rel_h": 0.8970324397087097,
+        "rel_l": 0.8876792788505554
+      },
+      "quality_h": {
+        "mlc": 4.715965487412519,
+        "n_mlc": 25,
+        "tvr": 0.6896551724137931,
+        "n_tvr": 29,
+        "n_venue_known": 29
+      },
+      "quality_l": {
+        "mlc": 6.830211977762597,
+        "n_mlc": 8,
+        "tvr": 0.6,
+        "n_tvr": 10,
+        "n_venue_known": 10
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 3,
+          "2": 0,
+          "3": 28
+        },
+        "n_h": 29,
+        "n_l": 10,
+        "matched_l_idx": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "l_titles_matched": [
+          "B4: Experience with a globally-deployed software defined WAN",
+          "Achieving high utilization with software-driven WAN",
+          "Overcast: Reliable multicasting with an overlay network",
+          "A case for end system multicast",
+          "Bullet: High bandwidth data dissemination using an overlay mesh",
+          "SplitStream: High-Bandwidth Multicast in Cooperative Environments",
+          "Routing of multipoint connections",
+          "Multicast routing for multimedia communication",
+          "DepSky: Dependable and secure storage in a cloud-of-clouds",
+          "SIRIUS: A distributed file system for web services and social applications in multi-cloud environments"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9993366599082947,
+        "n_nli_pairs": 1,
+        "n_atoms": 99,
+        "coverage": 0.26262626262626265,
+        "n_supported": 26,
+        "logic": 3
+      }
+    },
+    {
+      "pdf_id": "f948850caef3d25f",
+      "variant": "withoutsearch",
+      "retrieval": {
+        "recall": 0.13513513513513514,
+        "precision": 0.8333333333333334,
+        "jaccard": 0.13157894736842105,
+        "matched": 5,
+        "n_h": 37,
+        "n_l": 6
+      },
+      "failure": {
+        "H": {
+          "total": 37,
+          "s2_fail": 6,
+          "s2_fail_rate": 0.16216216216216217
+        },
+        "L": {
+          "total": 6,
+          "s2_fail": 1,
+          "s2_fail_rate": 0.16666666666666666
+        }
+      },
+      "temporal": {
+        "rr_h": 0.8918918918918919,
+        "rr_l": 0.6666666666666666,
+        "n_years_h": 37,
+        "n_years_l": 5,
+        "w1": 1.264864864864866,
+        "w1_n_h": 37,
+        "w1_n_l": 5
+      },
+      "semantic": {
+        "intra_h": 0.898743212223053,
+        "intra_l": 0.8987151980400085,
+        "inter": 0.9733895013631524,
+        "rel_h": 0.9072001576423645,
+        "rel_l": 0.899547815322876
+      },
+      "quality_h": {
+        "mlc": 4.215662718427926,
+        "n_mlc": 31,
+        "tvr": 0.6486486486486487,
+        "n_tvr": 37,
+        "n_venue_known": 37
+      },
+      "quality_l": {
+        "mlc": 5.9298512544146496,
+        "n_mlc": 5,
+        "tvr": 0.6666666666666666,
+        "n_tvr": 6,
+        "n_venue_known": 6
+      },
+      "match_detail": {
+        "cnt": {
+          "1": 2,
+          "2": 0,
+          "3": 22
+        },
+        "n_h": 37,
+        "n_l": 6,
+        "matched_l_idx": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "l_titles_matched": [
+          "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+          "InferLine: Latency-aware Provisioning and Resource Scaling for Prediction Serving",
+          "AlpaServe: Statistical Multiplexing with Model Parallelism for Deep Learning Serving",
+          "MuxServe: Flexible Spatial-Temporal Multiplexing for Multiple LLM Serving",
+          "S-LoRA: Serving Thousands of Concurrent LoRA Adapters"
+        ]
+      },
+      "claim": {
+        "faithfulness": 0.9989374876022339,
+        "n_nli_pairs": 5,
+        "n_atoms": 58,
+        "coverage": 0.1724137931034483,
+        "n_supported": 10,
+        "logic": 3
+      }
+    }
+  ],
+  "aggregate": {
+    "n_samples": 8,
+    "retrieval": {
+      "recall": {
+        "mean": 0.22474071053812433,
+        "std": 0.11859438214511354,
+        "n": 8
+      },
+      "precision": {
+        "mean": 0.8854166666666667,
+        "std": 0.1596844762162072,
+        "n": 8
+      },
+      "jaccard": {
+        "mean": 0.2202035036976409,
+        "std": 0.11443446874586255,
+        "n": 8
+      },
+      "matched": {
+        "mean": 6.875,
+        "std": 3.4437443284889775,
+        "n": 8
+      },
+      "n_h": {
+        "mean": 36.0,
+        "std": 20.346989949375804,
+        "n": 8
+      },
+      "n_l": {
+        "mean": 7.5,
+        "std": 3.082207001484488,
+        "n": 8
+      }
+    },
+    "temporal": {
+      "rr_h": {
+        "mean": 0.26471565315315315,
+        "std": 0.3087360304004064,
+        "n": 8
+      },
+      "rr_l": {
+        "mean": 0.2449404761904762,
+        "std": 0.27391674272385114,
+        "n": 8
+      },
+      "w1": {
+        "mean": 6.589901975559303,
+        "std": 3.935618410990591,
+        "n": 8
+      },
+      "n_years_h": {
+        "mean": 36.0,
+        "std": 20.346989949375804,
+        "n": 8
+      },
+      "n_years_l": {
+        "mean": 6.5,
+        "std": 3.5,
+        "n": 8
+      }
+    },
+    "semantic": {
+      "intra_h": {
+        "mean": 0.8874306231737137,
+        "std": 0.013863940967342154,
+        "n": 8
+      },
+      "intra_l": {
+        "mean": 0.896130383014679,
+        "std": 0.021657541867669928,
+        "n": 8
+      },
+      "inter": {
+        "mean": 0.983880307425038,
+        "std": 0.005936184396476706,
+        "n": 8
+      },
+      "rel_h": {
+        "mean": 0.8999030739068985,
+        "std": 0.010446879981250594,
+        "n": 8
+      },
+      "rel_l": {
+        "mean": 0.8996714577078819,
+        "std": 0.019049037866150823,
+        "n": 8
+      }
+    },
+    "quality_h": {
+      "mlc": {
+        "mean": 5.134480979923312,
+        "std": 0.8467508030860958,
+        "n": 8
+      },
+      "tvr": {
+        "mean": 0.6335611257809534,
+        "std": 0.10090817065553413,
+        "n": 8
+      }
+    },
+    "quality_l": {
+      "mlc": {
+        "mean": 6.815958602649062,
+        "std": 0.702234913186866,
+        "n": 8
+      },
+      "tvr": {
+        "mean": 0.615922619047619,
+        "std": 0.11727691694453718,
+        "n": 8
+      }
+    },
+    "failure": {
+      "H": {
+        "n_total": 288,
+        "n_fail": 23,
+        "s2_fail_rate": 0.0798611111111111
+      },
+      "L": {
+        "n_total": 60,
+        "n_fail": 8,
+        "s2_fail_rate": 0.13333333333333333
+      }
+    }
+  }
+}

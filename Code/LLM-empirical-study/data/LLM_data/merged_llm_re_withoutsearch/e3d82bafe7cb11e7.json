@@ -1,0 +1,113 @@
+{
+  "observation": "Bulk data replication across multiple cloud regions and providers is essential for data analytics, disaster recovery, and geo-distributed model serving, yet cloud multicast can be expensive due to per-GB network egress fees and slow due to cloud network constraints. Egress prices vary by up to 23× across region pairs, with intra-cloud egress costing $0.01–$0.19 per GB and inter-cloud egress costing $0.08–$0.23 per GB, and cross-region bandwidth varies by up to 202×. Cloud providers impose per-VM egress/ingress limits (for example, AWS throttles egress to 5 Gbps per VM), so a single source VM is often the bottleneck, while users must still meet target replication times. Existing throughput-oriented multicast optimizers do not handle monetary cost, and existing cost-aware multicast work either ignores throughput or assumes a capacity-based pricing model that is inconsistent with today's per-GB egress pricing.",
+  "related_works": [
+    {
+      "claims": [
+        "Centralized software-defined WAN controllers have shown that inter-datacenter transfer capacity can be scheduled dynamically to improve utilization and meet bandwidth demands.",
+        "These systems formulate traffic engineering in terms of bandwidth allocation and aggregate flow demands; they do not incorporate the per-GB egress charges that a cloud customer pays when data leaves a region or provider."
+      ],
+      "works": [
+        {
+          "title": "B4: Experience with a globally-deployed software defined WAN",
+          "authors": [
+            "Sushant Jain"
+          ]
+        },
+        {
+          "title": "Achieving high utilization with software-driven WAN",
+          "authors": [
+            "Chi-Yao Hong"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Overlay multicast systems organize end hosts into trees or meshes to provide multi-point distribution without relying on IP multicast.",
+        "High-bandwidth dissemination systems optimize the use of available upload and download bandwidth among participants to maximize throughput.",
+        "These systems do not model monetary transfer charges or per-VM egress caps imposed by cloud providers, treating bandwidth as the only scarce resource."
+      ],
+      "works": [
+        {
+          "title": "Overcast: Reliable multicasting with an overlay network",
+          "authors": [
+            "John Jannotti"
+          ]
+        },
+        {
+          "title": "A case for end system multicast",
+          "authors": [
+            "Yang-Hua Chu"
+          ]
+        },
+        {
+          "title": "Bullet: High bandwidth data dissemination using an overlay mesh",
+          "authors": [
+            "Dejan Kostic"
+          ]
+        },
+        {
+          "title": "SplitStream: High-Bandwidth Multicast in Cooperative Environments",
+          "authors": [
+            "Miguel Castro"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Classical multicast routing research formulates distribution-tree construction as a Steiner-tree problem where each link has a fixed cost or weight.",
+        "The fixed per-link cost abstraction does not represent usage-sensitive, per-GB egress pricing that commercial clouds charge for traffic leaving a region or provider."
+      ],
+      "works": [
+        {
+          "title": "Routing of multipoint connections",
+          "authors": [
+            "Bernard M. Waxman"
+          ]
+        },
+        {
+          "title": "Multicast routing for multimedia communication",
+          "authors": [
+            "V. P. Kompella"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Cloud-of-clouds storage systems replicate or erasure-code data across multiple providers to achieve durability and availability while accounting for provider pricing.",
+        "These systems target long-lived object and file replicas at storage services, so they do not address deadline-constrained replay or bulk fan-out from a single source VM to many receiving regions."
+      ],
+      "works": [
+        {
+          "title": "DepSky: Dependable and secure storage in a cloud-of-clouds",
+          "authors": [
+            "Alysson Bessani"
+          ]
+        },
+        {
+          "title": "SIRIUS: A distributed file system for web services and social applications in multi-cloud environments",
+          "authors": [
+            "Emmanuel Cecchet"
+          ]
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The observation points to a mismatch between what prior systems optimize and what a cloud customer actually pays. Overlay multicast systems such as Overcast, Bullet, and SplitStream treat upload/download bandwidth as the only scarce resource and therefore build trees or meshes that maximize throughput, ignoring the fact that every byte leaving a VM is metered by the source region/provider. Classical Steiner-tree multicast gives each link a fixed cost, but that abstraction cannot represent usage-sensitive per-GB egress prices that are charged on the amount of data, not on the link itself. Centralized SD-WAN controllers schedule aggregate inter-datacenter capacity, but they act as a network operator and do not model the customer's per-GB bill, and cloud-of-clouds storage systems address long-lived replica placement, not deadline-constrained one-shot fan-out from a single source VM. The key observation from the problem statement is that egress prices differ drastically across region/provider pairs, and each VM has a hard per-VM egress/ingress cap, so the source VM is simultaneously expensive and a throughput bottleneck. A correct model must therefore treat every multicast edge as having two independent but coupled attributes: a per-GB price paid when the parent VM pushes data, and a transfer rate capped by the parent's egress limit, the child's ingress limit, and the achievable cross-region/provider bandwidth. I propose a cost- and deadline-aware overlay tree of relay VMs. The source sends the full dataset once to each of a small number of relay roots in cheaply reachable regions; each relay then fans the dataset out to a subset of destination regions, possibly through additional relays. This transforms multicast into a tree of $S$-byte edge transmissions, where the monetary cost is exactly dataset size times the sum of per-GB prices on all selected edges, and the completion deadline is the makespan of a store-and-forward schedule over that tree. The core insight is that relays serve two purposes simultaneously: they move the point of expensive fanout from the source region to cheaper regions, and they multiply the aggregate egress bandwidth because each relay VM brings an additional per-VM cap. Thus the optimization problem is to choose a minimum-cost directed Steiner-like tree, with optional relay VMs, whose recursive broadcast schedule finishes by the deadline. I considered and rejected pure mesh dissemination because overlapping redundant transfers improve throughput but inflate the metered byte count; I also rejected a capacity-priced bandwidth model because current cloud invoices are per-GB, not per reserved capacity, and I rejected a fixed-cost Steiner formulation because prices must be multiplied by data volume and must be combined with rate caps.",
+    "implementation": "The solution is implemented as a centralized control plane plus lightweight transfer agents on every participating VM. The control plane has four components: input collection, graph construction, tree optimizer, and schedule dispatcher. Input collection gathers: (i) the dataset size $S$, (ii) the source VM $s_0$, (iii) the set of destination VMs $D$ in their regions/providers, (iv) the deadline $T$, (v) the per-VM egress and ingress caps $B_{\\mathrm{out}}(v)$ and $B_{\\mathrm{in}}(v)$, and (vi) the egress price matrix $p(u,v)$ charged by $u$'s region/provider for sending one byte to $v$, and the achievable edge rate matrix $r(u,v)$ between region/provider pairs. Candidate relay VMs are one or more VMs that the user can create in each region/provider appearing in the price matrix; relay VMs are optional internal tree nodes that need not be final destinations. From these inputs the system builds a directed graph $G=(V,E)$, where $V$ contains the source, all destination VMs, and all candidate relay VMs. For every ordered pair $(u,v)$, an edge exists if the user's account can launch/use VM $u$ and $v$ and if the region/provider pair can transfer data. The effective rate of edge $(u,v)$ is $c_{uv}=\\min(B_{\\mathrm{out}}(u), B_{\\mathrm{in}}(v), r(u,v))$, and the cost per transferred byte is $p(u,v)$. If the transfer would leave a provider and enter another provider, $p(u,v)$ is the inter-cloud egress price; otherwise it is the intra-cloud inter-region egress price. The control plane does not directly model the network as capacity-reserved; instead it treats every edge as a metered link with a maximum achievable rate.\n\nThe core optimizer evaluates a proposed tree with a recursive schedule-feasibility oracle. A tree is a rooted arborescence over a subset of $V$ that includes $s_0$, all vertices in $D$, and possibly some relays. Each selected edge carries the full dataset $S$, because each child VM must end up with the complete dataset before it can forward a full copy to its own children. For a node $v$, let $F(v)$ be the minimum time, after $v$ has already received the complete dataset, until every destination in $v$'s subtree has received the complete dataset. For a destination leaf with no children, $F(v)=0$. For an internal node $v$ with children $c_1,\\ldots,c_k$, the parent sends a full copy to one child at a time at that child's effective edge rate, because a single VM has one egress pipe and sending concurrently to many children would merely split the same cap. Define $p_i=S/c_{v,c_i}$, the time to transmit the complete dataset to child $c_i$, and $F_i=F(c_i)$, the time that child's subtree needs after it receives the data. If children are ordered, child $c_i$ starts its own subtree at time $C_i=\\sum_{j<i} p_j$, and the completion time of that child's entire subtree is $C_i+F_i$. To minimize the maximum over children, the control plane orders children by non-increasing $F_i$; this is justified by an interchange argument. Then $F(v)=\\max_{i}(C_i+F_i)$. The whole transfer is deadline-feasible exactly when $F(s_0)\\le T$.\n\nBecause the underlying optimization generalizes Steiner tree, the control plane uses an exact branch-and-bound search for small instances and a local-search heuristic for large instances. In both cases a candidate tree is represented by a parent pointer for every selected vertex other than the source. The initial solution is the direct star: $s_0$ sends the dataset to every destination VM, which is always feasible with regard to connectivity but often violates the deadline and is expensive. The search then improves this tree with relay insertions. A relay insertion picks a currently selected relay or source $v$ and a candidate relay $r$, and re-parents a subset of $v$'s children from $v$ to $r$, adding edge $(v,r)$ and edges $(r, child)$; if $r$ is not yet in the tree it is added. Each such move changes the monetary cost by $S\\cdot p(v,r)+\\sum_{\\text{moved child }c} S\\cdot p(r,c)-\\sum_{\\text{moved child }c} S\\cdot p(v,c)$. The move is accepted only if the updated schedule oracle still satisfies $F(s_0)\\le T$. Local-search neighborhood moves include re-parenting one child from its current parent to another already selected node, inserting an unused relay between a parent and one or more children, deleting a relay that has only one child (collapsing the relay and replacing it by the direct edge), and swapping the order of subtree roots. The objective is total monetary cost $\\sum_{(u,v)\\in E(T)} S\\cdot p(u,v)$; ties are broken by smaller $F(s_0)$, which gives more slack against bandwidth fluctuations. For exact search, the optimizer enumerates parent choices in increasing marginal cost and prunes when the current partial cost plus a lower bound on connecting remaining destinations already exceeds the best feasible solution, or when a partial tree cannot possibly finish within $T$ even if every future edge ran at infinite speed except for the already fixed bottleneck nodes.\n\nAfter the optimizer selects a tree and computes the child order and implied rates, the schedule dispatcher sends a transfer plan to each VM. The plan for VM $v$ contains a list of children, the order in which they must be served, the maximum rate to use for each child, and the start criterion that $v$ must have received its complete copy from its parent before beginning its own child transmissions. Transfer agents on each VM are small daemons that receive chunks over a reliable stream protocol, write them to local disk, and check integrity with hashes. Once an agent has the complete dataset, it begins transmitting, sequentially, to the first child in its assigned order at the assigned rate; similarly, when a destination VM that also serves as a relay has the dataset, it immediately starts its own children while its parent may already be serving the next child upstream. The dispatcher also handles failures: if an agent observes that a child transmission stalls, the control plane is notified and re-runs the optimizer on a modified topology that removes the failed edge. No final destinations forward data unless they are also selected as relays for other destinations.\n\nKey parameters of the system are therefore $S$ (dataset bytes), $T$ (deadline in seconds), $B_{\\mathrm{out}}(v)$ and $B_{\\mathrm{in}}(v)$ (per-VM caps), $p(u,v)$ (per-GB egress price from source VM's region/provider to destination VM), and $r(u,v)$ (measured or provider-available region-pair bandwidth). These parameters appear in every decision: edge prices enter the objective multiplied by $S$, the per-VM caps enter $c_{uv}$ and the $p_i$ durations, and the deadline enters through the root feasibility check $F(s_0)\\le T$. This design directly resolves the observed shortcomings: it minimizes the actual per-GB invoice, it accounts for per-VM rate caps by scheduling one full-copy transmission at a time per VM, it uses relays as bandwidth multipliers, and it does not assume capacity-based pricing or ignore the deadline."
+  },
+  "pdf_id": "e3d82bafe7cb11e7",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/Cloudcast.md",
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:47:07",
+  "task": "llm_re_withoutsearch",
+  "related_works_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/relatedworks_withoutsearch/e3d82bafe7cb11e7.json",
+  "solution_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/solution_llm_re/e3d82bafe7cb11e7_withoutsearch.json",
+  "style_exemplar_ids": [
+    "5dd2d839c66d339a",
+    "d18c13d036b3708f"
+  ]
+}

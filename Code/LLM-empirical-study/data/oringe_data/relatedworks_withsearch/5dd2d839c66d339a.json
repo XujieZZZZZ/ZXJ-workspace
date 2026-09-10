@@ -1,0 +1,131 @@
+{
+  "pdf_id": "5dd2d839c66d339a",
+  "mode": "withsearch",
+  "observation": "Existing LLM-based multi-agent systems can handle simple dialogue tasks, but complex tasks remain difficult because naively chaining LLMs induces cascading hallucinations and logic inconsistencies. Real-world LLM agent frameworks tend to oversimplify the complexities of collaborative problem solving and often rely on unstructured natural-language dialogue, which loses information across rounds and produces unproductive chatter. Existing code-generation methods also lack self-correction mechanisms that verify runtime executability, leaving complex software engineering tasks unmet.",
+  "related_works": [
+    {
+      "claims": [
+        "LLM-based multi-agent applications are frequently built as systems of conversational agents that exchange natural-language messages; AutoGen is a canonical framework for such conversations, and ChatDev instantiates the idea for collaborative software development.",
+        "In these conversation-centric designs, the agentic state is carried by the message history rather than by a structured external artifact, so false or off-topic content from an early turn can be propagated to all later agents."
+      ],
+      "works": [
+        {
+          "title": "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation",
+          "authors": [
+            "Qingyun Wu"
+          ]
+        },
+        {
+          "title": "ChatDev: Communicative Agents for Software Development",
+          "authors": [
+            "Chen Qian"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Several frameworks address the weaknesses of fully open-ended dialogue by imposing process structure: ChatDev organizes role-played chat along a software-waterfall lifecycle, and MetaGPT uses standardized operating procedures that assign concrete intermediate deliverables to roles.",
+        "MetaGPT explicitly motivates this structured decomposition as a way to reduce the cascading hallucinations and logic inconsistencies that arise when LLM-based agents are simply chained through unstructured dialogue."
+      ],
+      "works": [
+        {
+          "title": "ChatDev: Communicative Agents for Software Development",
+          "authors": [
+            "Chen Qian"
+          ]
+        },
+        {
+          "title": "MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework",
+          "authors": [
+            "Sirui Hong"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "A complementary body of work tries to improve the reliability of individual LLM outputs through multi-agent debate or self-refinement: independent LLM agents that read and critique each other's answers improve factuality and reasoning, and prompting for divergent multi-agent debate yields similar gains.",
+        "Self-refinement methods allow a model to revise its own generations from feedback, and Reflexion extends self-improvement by maintaining verbal self-reflections over episodes; these protocols nonetheless reason over unconstrained natural-language hypotheses rather than executable or formally checkable artifacts."
+      ],
+      "works": [
+        {
+          "title": "Improving Factuality and Reasoning in Language Models through Multiagent Debate",
+          "authors": [
+            "Yilun Du"
+          ]
+        },
+        {
+          "title": "Encouraging Divergent Thinking in Large Language Models through Multi-Agent Debate",
+          "authors": [
+            "Tian Liang"
+          ]
+        },
+        {
+          "title": "Self-Refine: Iterative Refinement with Self-Feedback",
+          "authors": [
+            "Aman Madaan"
+          ]
+        },
+        {
+          "title": "Reflexion: Language Agents with Verbal Reinforcement Learning",
+          "authors": [
+            "Noah Shinn"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "In code generation, execution has become an important feedback signal: CodeT samples candidate programs and generated tests and selects the candidates that pass those tests, while Teaching Large Language Models to Self-Debug shows that a model can repair code after reading compiler errors and unit-test failures.",
+        "These execution-guided methods are defined for a single code generator operating on self-contained programming problems, and they do not provide a runtime-verification protocol for multi-agent teams producing repository-scale code."
+      ],
+      "works": [
+        {
+          "title": "CodeT: Code Generation with Generated Tests",
+          "authors": [
+            "Bei Chen"
+          ]
+        },
+        {
+          "title": "Teaching Large Language Models to Self-Debug",
+          "authors": [
+            "Xinyun Chen"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Benchmarks that approximate real, long-horizon agent use confirm the remaining gap: AgentBench evaluates LLM agents across diverse interactive environments and shows that even the best models underperform substantially on tasks that require many steps and tool interactions.",
+        "At the repository level, SWE-bench measures models on real GitHub issues and reports very low patch-success rates; SWE-agent adds an agent-computer interface for browsing, editing, and running tests, which improves performance considerably but still leaves most repository-level software-engineering tasks unresolved."
+      ],
+      "works": [
+        {
+          "title": "AgentBench: Evaluating LLMs as Agents",
+          "authors": [
+            "Xiao Liu"
+          ]
+        },
+        {
+          "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+          "authors": [
+            "Carlos E. Jimenez"
+          ]
+        },
+        {
+          "title": "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering",
+          "authors": [
+            "John Yang"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "d18c13d036b3708f",
+    "52875bf8ef4b3f8c"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:01:30"
+}

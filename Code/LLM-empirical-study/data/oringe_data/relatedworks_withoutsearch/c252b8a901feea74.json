@@ -1,0 +1,99 @@
+{
+  "pdf_id": "c252b8a901feea74",
+  "mode": "withoutsearch",
+  "observation": "Transaction throughput is critically affected by the order in which conflicting transactions execute, yet practical systems generally process transactions in FIFO order and resolve conflicts reactively, and recent scheduling techniques explore only a small subset of possible schedules. The resulting performance gap is large and systematic: for a batch of four conflicting transactions one schedule can reduce makespan by 25% over another, the gap grows arbitrarily for larger workloads, and on real workload traces FIFO can increase makespan over optimized schedules by 43.2% for Epinions, 8.0% for SmallBank, 96.2% for TAOBench, 101.6% for TPC-C, and 99.3% for YCSB. Finding an optimal schedule is NP-complete, and existing heuristics sacrifice schedule quality for efficiency.",
+  "related_works": [
+    {
+      "claims": [
+        "Classical serializable concurrency-control mechanisms resolve contention reactively: two-phase locking blocks transactions that request conflicting locks, optimistic concurrency control restarts transactions that fail validation, and timestamp ordering gives precedence to the transaction with the smaller timestamp.",
+        "Because lock acquisition, validation, and timestamp assignment all occur at runtime, the order in which conflicting transactions are serialized is an emergent property of arrival and timing rather than the product of an explicit scheduling decision."
+      ],
+      "works": [
+        {
+          "title": "Concurrency Control and Recovery in Database Systems",
+          "authors": [
+            "Philip A. Bernstein"
+          ]
+        },
+        {
+          "title": "The Notions of Consistency and Predicate Locks in a Database System",
+          "authors": [
+            "K. P. Eswaran"
+          ]
+        },
+        {
+          "title": "On Optimistic Methods for Concurrency Control",
+          "authors": [
+            "H. T. Kung"
+          ]
+        },
+        {
+          "title": "System Level Concurrency Control for Distributed Database Systems",
+          "authors": [
+            "D. J. Rosenkrantz"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Deterministic database systems make serial order a protocol-level decision by executing a precomputed transaction sequence at every replica, thereby avoiding most runtime deadlock and abort handling.",
+        "In the representative deterministic system Calvin, the serial order is taken from a replication/sequencing layer, so the system realizes one schedule—the order in which transactions are submitted—rather than searching over alternative schedules for a batch of conflicting transactions."
+      ],
+      "works": [
+        {
+          "title": "Calvin: Fast Distributed Transactions for Partitioned Database Systems",
+          "authors": [
+            "Alexander Thomson"
+          ]
+        },
+        {
+          "title": "An Evaluation of the Advantages and Disadvantages of Deterministic Database Systems",
+          "authors": [
+            "Kun Ren"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Empirical studies in deterministic database research treat ordering and batching as tunable design choices and measure their performance consequences, demonstrating that schedule quality is not fixed by the concurrency-control protocol alone.",
+        "The ordering policies considered in those studies are simple fixed heuristics and do not optimize a cost model over the space of possible serial orders."
+      ],
+      "works": [
+        {
+          "title": "An Evaluation of the Advantages and Disadvantages of Deterministic Database Systems",
+          "authors": [
+            "Kun Ren"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Any method that seeks the minimum-makespan order of conflicting jobs faces an NP-complete scheduling problem in general, even when the only constraints are precedence relations.",
+        "The hardness of this optimization means that exact schedule search is confined to small instances and that practical approaches are heuristic, trading away optimal schedule quality for computational efficiency."
+      ],
+      "works": [
+        {
+          "title": "NP-Complete Scheduling Problems",
+          "authors": [
+            "J. D. Ullman"
+          ]
+        },
+        {
+          "title": "Computers and Intractability: A Guide to the Theory of NP-Completeness",
+          "authors": [
+            "Michael R. Garey"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "b93fea400aedf898",
+    "7d3b6e61ea96cc4f"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 08:38:28"
+}

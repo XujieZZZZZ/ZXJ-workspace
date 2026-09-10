@@ -1,0 +1,20 @@
+{
+  "task": "txn_scheduling",
+  "program": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/ADR-evaluator/tasks/txn_scheduling/initial_program_reference.py",
+  "program_name": "initial_program_reference.py",
+  "paper_id": "c252b8a901feea74",
+  "status": "success",
+  "combined_score": 2840.909090909091,
+  "metrics": {
+    "makespan": 351.0,
+    "schedule": 3.0,
+    "validity": 1.0,
+    "combined_score": 2840.909090909091
+  },
+  "artifacts": {},
+  "elapsed_seconds": 1.7,
+  "returncode": 0,
+  "timed_out": false,
+  "log_file": "txn_scheduling__initial_program_reference.log",
+  "evaluated_at": "2026-09-10T01:28:09.997502+00:00"
+}

@@ -1,0 +1,69 @@
+{
+  "pdf_id": "7d3b6e61ea96cc4f",
+  "mode": "withoutsearch",
+  "observation": "Datacenter networks must serve cloud applications that require extremely low latency and high bandwidth, yet traffic is commonly bursty and emerging reconfigurable datacenters introduce rapid bandwidth changes, making congestion control a key enabler or limiter of system performance. The reaction time and accuracy of existing datacenter congestion control schemes are inherently limited because they react either only to the absolute network state (queue length, delay, ECN, or loss, called voltage) or only to state variations (e.g., RTT gradient, called current). A voltage-based reaction is oblivious to the rate at which the queue builds up and over-reacts when the queue drains, losing throughput; a current-based reaction is oblivious to the absolute queue length and, having no unique equilibrium, cannot stabilize queue lengths. Consequently, neither class of algorithms alone can deliver both fast, accurate reaction to perturbations and the strict near-zero-queue, high-throughput equilibrium that datacenter workloads demand.",
+  "related_works": [
+    {
+      "claims": [
+        "DCTCP and DCQCN make congestion decisions based on a thresholded ECN signal; the switch marks packets when its queue length exceeds an absolute threshold, so the feedback that reaches the sender is determined by the absolute network state rather than by the rate at which that state is changing.",
+        "HPCC uses in-network telemetry to acquire the current queue occupancy at every switch and treats that absolute occupancy as the control signal, even though the telemetry itself is much more precise than ECN.",
+        "These absolute-state control loops therefore only begin to react once a queue has formed and do not observe the queue's derivative."
+      ],
+      "works": [
+        {
+          "title": "Data Center TCP (DCTCP)",
+          "authors": [
+            "Mohammad Alizadeh"
+          ]
+        },
+        {
+          "title": "Congestion Control for Large-Scale RDMA Deployments",
+          "authors": [
+            "Yibo Zhu"
+          ]
+        },
+        {
+          "title": "HPCC: High Precision Congestion Control",
+          "authors": [
+            "Yuliang Li"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "TIMELY computes the sender rate from the per-RTT gradient of the measured RTT and does not use the absolute RTT or queue occupancy as a reference.",
+        "Because the gradient signal is zero in any steady state, a current-based controller has no unique equilibrium at which the queue length is pinned; this is a structural property of TIMELY's design.",
+        "The resulting current-based reaction is fast, but it is accurate only in the transient and cannot enforce a near-zero-queue operating point."
+      ],
+      "works": [
+        {
+          "title": "TIMELY: RTT-based Congestion Control for the Datacenter",
+          "authors": [
+            "Radhika Mittal"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "RotorNet reconfigures the datacenter's optical switches on a fast periodic schedule, which makes the bandwidth available to a pair of racks change repeatedly over time even when traffic demand is steady.",
+        "This time-varying capacity breaks the fixed-link-rate assumption that the absolute-queue and gradient-based congestion controllers above rely on."
+      ],
+      "works": [
+        {
+          "title": "RotorNet: A Scalable, Low-complexity, Optical Datacenter Network",
+          "authors": [
+            "William M. Mellette"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "f948850caef3d25f",
+    "e3d82bafe7cb11e7"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 08:49:37"
+}

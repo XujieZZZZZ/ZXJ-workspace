@@ -1,0 +1,1016 @@
+{
+  "observation": "Transaction throughput is critically affected by the order in which conflicting transactions execute, yet practical systems generally process transactions in FIFO order and resolve conflicts reactively, and recent scheduling techniques explore only a small subset of possible schedules. The resulting performance gap is large and systematic: for a batch of four conflicting transactions one schedule can reduce makespan by 25% over another, the gap grows arbitrarily for larger workloads, and on real workload traces FIFO can increase makespan over optimized schedules by 43.2% for Epinions, 8.0% for SmallBank, 96.2% for TAOBench, 101.6% for TPC-C, and 99.3% for YCSB. Finding an optimal schedule is NP-complete, and existing heuristics sacrifice schedule quality for efficiency.",
+  "related_works": [
+    {
+      "claims": [
+        "Most existing concurrency control protocols execute requests based on arrival-FIFO-order and handle conflicting operations only after they have arrived or executed, missing opportunities to avoid conflicts by planning ahead.",
+        "Most concurrency-control techniques operate within the implicit constraint of arrival order and deal with conflicts as they appear.",
+        "Existing techniques that address the schedule explicitly do so only by assigning a schedule based on arrival order or by reordering the schedule after transaction commit and/or abort."
+      ],
+      "works": [
+        {
+          "title": "Multiversion Concurrency Control—Theory and Algorithms",
+          "authors": [
+            "Philip A Bernstein",
+            "Nathan Goodman"
+          ],
+          "year": 1983
+        },
+        {
+          "title": "Concurrency Control and Recovery in Database Systems",
+          "authors": [
+            "Philip A. Bernstein",
+            "Vassos Hadzilacos",
+            "Nathan Goodman"
+          ],
+          "year": 1987
+        },
+        {
+          "title": "Aria: A Fast and Practical Deterministic OLTP Database",
+          "authors": [
+            "Yi Lu",
+            "Xiangyao Yu",
+            "Lei Cao",
+            "Samuel Madden"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Contention-Aware Lock Scheduling for Transactional Databases",
+          "authors": [
+            "Boyu Tian",
+            "Jiamin Huang",
+            "Barzan Mozafari",
+            "Grant Schoenebeck"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Morty: Scaling Concurrency Control with Re-Execution",
+          "authors": [
+            "Matthew Burke",
+            "Florian Suri-Payer",
+            "Jeffrey Helt",
+            "Lorenzo Alvisi",
+            "Natacha Crooks"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Fine-Grained Re-Execution for Efficient Batched Commit of Distributed Transactions",
+          "authors": [
+            "Zhiyuan Dong",
+            "Zhaoguo Wang",
+            "Xiaodong Zhang",
+            "Xian Xu",
+            "Changgeng Zhao",
+            "Haibo Chen",
+            "Aurojit Panda",
+            "Jinyang Li"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Releasing locks as early as you can: Reducing contention of hotspots by violating two-phase locking",
+          "authors": [
+            "Zhihan Guo",
+            "Kan Wu",
+            "Cong Yan",
+            "Xiangyao Yu"
+          ],
+          "year": 2021
+        },
+        {
+          "title": "Cicada: Dependably Fast Multi-Core In-Memory Transactions",
+          "authors": [
+            "Hyeontaek Lim",
+            "Michael Kaminsky",
+            "David G Andersen"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Fast Serializable Multi-Version Concurrency Control for Main-Memory Database Systems",
+          "authors": [
+            "Thomas Neumann",
+            "Tobias Mühlbauer",
+            "Alfons Kemper"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "Serializable Snapshot Isolation in PostgreSQL",
+          "authors": [
+            "Dan R. K. Ports",
+            "Kevin Grittner"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "Bringing Modular Concurrency Control to the Next Level",
+          "authors": [
+            "Chunzhi Su",
+            "Natacha Crooks",
+            "Cong Ding",
+            "Lorenzo Alvisi",
+            "Chao Xie"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Speedy Transactions in Multicore In-Memory Databases",
+          "authors": [
+            "Stephen Tu",
+            "Wenting Zheng",
+            "Eddie Kohler",
+            "Barbara Liskov",
+            "Samuel Madden"
+          ],
+          "year": 2013
+        },
+        {
+          "title": "Polyjuice: High-Performance Transactions via Learned Concurrency Control",
+          "authors": [
+            "Jia-Chen Wang",
+            "Ding Ding",
+            "Huan Wang",
+            "Conrad Christensen",
+            "Zhaoguo Wang",
+            "Haibo Chen",
+            "Jinyang Li"
+          ],
+          "year": 2021
+        },
+        {
+          "title": "Scaling Multicore Databases via Constrained Parallel Execution",
+          "authors": [
+            "Zhaoguo Wang",
+            "Shuai Mu",
+            "Yang Cui",
+            "Han Yi",
+            "Haibo Chen",
+            "Jinyang Li"
+          ],
+          "year": 2016
+        },
+        {
+          "title": "High-Performance ACID via Modular Concurrency Control",
+          "authors": [
+            "Chao Xie",
+            "Chunzhi Su",
+            "Cody Littley",
+            "Lorenzo Alvisi",
+            "Manos Kapritsos",
+            "Yang Wang"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "TicToc: Time Traveling Optimistic Concurrency Control",
+          "authors": [
+            "Xiangyao Yu",
+            "Andrew Pavlo",
+            "Daniel Sanchez",
+            "Srinivas Devadas"
+          ],
+          "year": 2016
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Recent work schedules transactions more intelligently by using full read-write access sets in deterministic databases or predicted key accesses, but for efficiency considers only a small subset of the schedule space such as partitioning workloads on hot keys or randomly deferring requests, resulting in suboptimal decisions.",
+        "Deterministic databases schedule batches of requests explicitly; many use FIFO order, while some improve schedules by partitioning workloads based on hot keys.",
+        "More recent scheduling proposals predict hot keys and probabilistically delay requests, or learn abort patterns, instead of systematically searching the schedule space."
+      ],
+      "works": [
+        {
+          "title": "Transaction Scheduling: From Conflicts to Runtime Conflicts",
+          "authors": [
+            "Yang Cao",
+            "Wenfei Fan",
+            "Weijie Ou",
+            "Rui Xie",
+            "Wenyue Zhao"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Schism: A Workload-Driven Approach to Database Replication and Partitioning",
+          "authors": [
+            "Carlo Curino",
+            "Evan Jones",
+            "Yang Zhang",
+            "Sam Madden"
+          ],
+          "year": 2010
+        },
+        {
+          "title": "Skew-aware automatic database partitioning in shared-nothing, parallel OLTP systems",
+          "authors": [
+            "Andrew Pavlo",
+            "Carlo Curino",
+            "Stanley Zdonik"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "Handling Highly Contended OLTP Workloads Using Fast Dynamic Partitioning",
+          "authors": [
+            "Guna Prasaad",
+            "Alvin Cheung",
+            "Dan Suciu"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Chiller: Contention-centric Transaction Execution and Data Partitioning for Modern Networks",
+          "authors": [
+            "Erfan Zamanian",
+            "Julian Shun",
+            "Carsten Binnig",
+            "Tim Kraska"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Rethinking Serializable Multiversion Concurrency Control",
+          "authors": [
+            "Jose M. Faleiro",
+            "Daniel J. Abadi"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "High Performance Transactions via Early Write Visibility",
+          "authors": [
+            "Jose M Faleiro",
+            "Daniel J Abadi",
+            "Joseph M Hellerstein"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Lazy Evaluation of Transactions in Database Systems",
+          "authors": [
+            "Jose M Faleiro",
+            "Alexander Thomson",
+            "Daniel J Abadi"
+          ],
+          "year": 2014
+        },
+        {
+          "title": "Calvin: Fast Distributed Transactions for Partitioned Database Systems",
+          "authors": [
+            "Alexander Thomson",
+            "Thaddeus Diamond",
+            "Shu-Chun Weng",
+            "Kun Ren",
+            "Philip Shao",
+            "Daniel J. Abadi"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "QueCC: A Queue-oriented, Control-free Concurrency Architecture",
+          "authors": [
+            "Thamir M Qadah",
+            "Mohammad Sadoghi"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Caracal: Contention Management with Deterministic Concurrency Control",
+          "authors": [
+            "Dai Qin",
+            "Angela Demke Brown",
+            "Ashvin Goel"
+          ],
+          "year": 2021
+        },
+        {
+          "title": "Scheduling OLTP Transactions via Learned Abort Prediction",
+          "authors": [
+            "Yangjun Sheng",
+            "Anthony Tomasic",
+            "Tieying Zhang",
+            "Andrew Pavlo"
+          ],
+          "year": 2019
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Concurrency-control mechanisms generally do not proactively control the sequence in which individual operations complete and do not treat the transaction schedule as a first-class component.",
+        "Systems that do enforce schedules incur high costs, either by serializing all requests in a single thread or by requiring developers to manually construct custom rendezvous points to coordinate dependencies."
+      ],
+      "works": [
+        {
+          "title": "Multiversion Concurrency Control—Theory and Algorithms",
+          "authors": [
+            "Philip A Bernstein",
+            "Nathan Goodman"
+          ],
+          "year": 1983
+        },
+        {
+          "title": "Concurrency Control and Recovery in Database Systems",
+          "authors": [
+            "Philip A. Bernstein",
+            "Vassos Hadzilacos",
+            "Nathan Goodman"
+          ],
+          "year": 1987
+        },
+        {
+          "title": "Calvin: Fast Distributed Transactions for Partitioned Database Systems",
+          "authors": [
+            "Alexander Thomson",
+            "Thaddeus Diamond",
+            "Shu-Chun Weng",
+            "Kun Ren",
+            "Philip Shao",
+            "Daniel J. Abadi"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "High Performance Transactions via Early Write Visibility",
+          "authors": [
+            "Jose M Faleiro",
+            "Daniel J Abadi",
+            "Joseph M Hellerstein"
+          ],
+          "year": 2017
+        }
+      ]
+    },
+    {
+      "claims": [
+        "MVTSO assigns each transaction a unique timestamp corresponding to its serialization order, exposes uncommitted writes, and aborts transactions whose writes would violate the order of earlier reads.",
+        "MVTSO assigns timestamps in arrival order and does not delay later-scheduled transactions from executing before earlier ones, causing unnecessary aborts even though it enables high concurrency.",
+        "MVTSO imposes minimal execution constraints to ensure serializability compared with pessimistic locking such as two-phase locking."
+      ],
+      "works": [
+        {
+          "title": "Multiversion Concurrency Control—Theory and Algorithms",
+          "authors": [
+            "Philip A Bernstein",
+            "Nathan Goodman"
+          ],
+          "year": 1983
+        },
+        {
+          "title": "Concurrency Control and Recovery in Database Systems",
+          "authors": [
+            "Philip A. Bernstein",
+            "Vassos Hadzilacos",
+            "Nathan Goodman"
+          ],
+          "year": 1987
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Optimal transaction scheduling is NP-complete, so exhaustive search for the best schedule is infeasible in practice.",
+        "Many greedy scheduling algorithms exist in the scheduling literature, but they are not designed for transactional workloads with complex conflict patterns."
+      ],
+      "works": [
+        {
+          "title": "The Serializability of Concurrent Database Updates",
+          "authors": [
+            "Christos H. Papadimitriou"
+          ],
+          "year": 1979
+        },
+        {
+          "title": "A Time-Driven Scheduling Model for Real-Time Operating Systems",
+          "authors": [
+            "E Douglas Jensen",
+            "C Douglass Locke",
+            "Hideyuki Tokuda"
+          ],
+          "year": 1985
+        },
+        {
+          "title": "Iterated Greedy methods for the distributed permutation flowshop scheduling problem",
+          "authors": [
+            "Rubén Ruiz",
+            "Quan-Ke Pan",
+            "Bahman Naderi"
+          ],
+          "year": 2019
+        },
+        {
+          "title": "A simple and effective iterated greedy algorithm for the permutation flowshop scheduling problem",
+          "authors": [
+            "Rubén Ruiz",
+            "Thomas Stützle"
+          ],
+          "year": 2007
+        },
+        {
+          "title": "On the complexity of scheduling in wireless networks",
+          "authors": [
+            "Gaurav Sharma",
+            "Ravi R Mazumdar",
+            "Ness B Shroff"
+          ],
+          "year": 2006
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Physical resource scheduling has been addressed in prior work, while logical execution constraints from conflicts remain a bottleneck in many transactional workloads."
+      ],
+      "works": [
+        {
+          "title": "Retro: Targeted Resource Management in Multi-Tenant Distributed Systems",
+          "authors": [
+            "Jonathan Mace",
+            "Peter Bodik",
+            "Rodrigo Fonseca",
+            "Madanlal Musuvathi"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "SQLVM: Performance Isolation in Multi-Tenant Relational Database-as-a-Service",
+          "authors": [
+            "Vivek Narasayya",
+            "Sudipto Das",
+            "Manoj Syamala",
+            "Badrish Chandramouli",
+            "Surajit Chaudhuri"
+          ],
+          "year": 2013
+        },
+        {
+          "title": "Performance Isolation and Fairness for Multi-Tenant Cloud Storage",
+          "authors": [
+            "David Shue",
+            "Michael J. Freedman",
+            "Anees Shaikh"
+          ],
+          "year": 2012
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Many applications and OLTP benchmarks provide hot key information up front or embed it in transaction metadata, so hot key conflict patterns can be predicted from transaction type and initial arguments.",
+        "At scale, application awareness of hot keys is important for preventing one application from affecting the performance of other applications sharing the same data.",
+        "Hot-key access information can be inferred automatically from other metadata such as application stack traces and client endpoints, so explicit annotation is not strictly required."
+      ],
+      "works": [
+        {
+          "title": "Challenges to Adopting Stronger Consistency at Scale",
+          "authors": [
+            "Phillipe Ajoux",
+            "Nathan Bronson",
+            "Sanjeev Kumar",
+            "Wyatt Lloyd",
+            "Kaushik Veeraraghavan"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "OLTP-Bench: An Extensible Testbed for Benchmarking Relational Databases",
+          "authors": [
+            "Djellel Eddine Difallah",
+            "Andrew Pavlo",
+            "Carlo Curino",
+            "Philippe Cudre-Mauroux"
+          ],
+          "year": 2013
+        },
+        {
+          "title": "Transaction Scheduling: From Conflicts to Runtime Conflicts",
+          "authors": [
+            "Yang Cao",
+            "Wenfei Fan",
+            "Weijie Ou",
+            "Rui Xie",
+            "Wenyue Zhao"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Handling Highly Contended OLTP Workloads Using Fast Dynamic Partitioning",
+          "authors": [
+            "Guna Prasaad",
+            "Alvin Cheung",
+            "Dan Suciu"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Scheduling OLTP Transactions via Learned Abort Prediction",
+          "authors": [
+            "Yangjun Sheng",
+            "Anthony Tomasic",
+            "Tieying Zhang",
+            "Andrew Pavlo"
+          ],
+          "year": 2019
+        },
+        {
+          "title": "Adaptive Concurrency Control: Despite the Looking Glass, One Concurrency Control Does Not Fit All",
+          "authors": [
+            "Dixin Tang",
+            "Hao Jiang",
+            "Aaron J. Elmore"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Polyjuice: High-Performance Transactions via Learned Concurrency Control",
+          "authors": [
+            "Jia-Chen Wang",
+            "Ding Ding",
+            "Huan Wang",
+            "Conrad Christensen",
+            "Zhaoguo Wang",
+            "Haibo Chen",
+            "Jinyang Li"
+          ],
+          "year": 2021
+        },
+        {
+          "title": "Leveraging Lock Contention to Improve OLTP Application Performance",
+          "authors": [
+            "Cong Yan",
+            "Alvin Cheung"
+          ],
+          "year": 2016
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Uniformly sampling over all possible serializable schedules for a workload is equivalent to uniformly sampling over acyclic orientations of the underlying serialization graph.",
+        "The Interval-Reversal random walk can uniformly sample acyclic orientations of an undirected graph, and nonparametric one-sided tolerance intervals provide confidence bounds without assumptions about the underlying distribution."
+      ],
+      "works": [
+        {
+          "title": "Functions of random walks on hyperplane arrangements",
+          "authors": [
+            "Christos A Athanasiadis",
+            "Persi Diaconis"
+          ],
+          "year": 2010
+        },
+        {
+          "title": "Statistical Intervals",
+          "authors": [
+            "G.J. Hahn",
+            "W.Q. Meeker"
+          ],
+          "year": 1991
+        },
+        {
+          "title": "Combinatorics of acyclic orientations of graphs: algebra, geometry and probability",
+          "authors": [
+            "Benjamin Iriarte Giraldo"
+          ],
+          "year": 2015
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Most transaction-scheduling techniques focus on throughput, and a separate line of work reduces latency by scheduling transactions based on dependency-set sizes or assigned priorities."
+      ],
+      "works": [
+        {
+          "title": "A Top-Down Approach to Achieving Performance Predictability in Database Systems",
+          "authors": [
+            "Jiamin Huang",
+            "Barzan Mozafari",
+            "Grant Schoenebeck",
+            "Thomas F Wenisch"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Contention-Aware Lock Scheduling for Transactional Databases",
+          "authors": [
+            "Boyu Tian",
+            "Jiamin Huang",
+            "Barzan Mozafari",
+            "Grant Schoenebeck"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Plor: General Transactions with Predictable, Low Tail Latency",
+          "authors": [
+            "Youmin Chen",
+            "Xiangyao Yu",
+            "Paraschos Koutris",
+            "Andrea C. Arpaci-Dusseau",
+            "Remzi H. Arpaci-Dusseau",
+            "Jiwu Shu"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Natto: Providing Distributed Transaction Prioritization for High-Contention Workloads",
+          "authors": [
+            "Linguan Yang",
+            "Xinan Yan",
+            "Bernard Wong"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Polaris: Enabling Transaction Priority in Optimistic Concurrency Control",
+          "authors": [
+            "Chenhao Ye",
+            "Wuh-Chwen Hwang",
+            "Keren Chen",
+            "Xiangyao Yu"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Real-time transaction scheduling work assumes each transaction has a pre-specified deadline and focuses on minimizing missed deadlines, so it is not applicable to general DBMSs whose goal is maximizing throughput."
+      ],
+      "works": [
+        {
+          "title": "Scheduling Real-Time Transactions",
+          "authors": [
+            "Robert Abbott",
+            "Hector Garcia-Molina"
+          ],
+          "year": 1988
+        },
+        {
+          "title": "Scheduling Real-Time Transactions: A Performance Evaluation",
+          "authors": [
+            "Robert K Abbott",
+            "Hector Garcia-Molina"
+          ],
+          "year": 1992
+        },
+        {
+          "title": "Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment",
+          "authors": [
+            "C. L. Liu",
+            "James W. Layland"
+          ],
+          "year": 1973
+        },
+        {
+          "title": "Temporal and real-time databases: A survey",
+          "authors": [
+            "Gultekin Ozsoyoglu",
+            "Richard T Snodgrass"
+          ],
+          "year": 1995
+        },
+        {
+          "title": "Real-time databases",
+          "authors": [
+            "Krithi Ramamritham"
+          ],
+          "year": 1993
+        },
+        {
+          "title": "Deadline Scheduling for Real-Time Systems: EDF and Related Algorithms",
+          "authors": [
+            "John A Stankovic",
+            "Marco Spuri",
+            "Krithi Ramamritham",
+            "Giorgio Buttazzo"
+          ],
+          "year": 1998
+        },
+        {
+          "title": "Real-time transaction scheduling in database systems",
+          "authors": [
+            "Özgür Ulusoy",
+            "Geneva G Belford"
+          ],
+          "year": 1993
+        },
+        {
+          "title": "On earliest deadline first scheduling for temporal consistency maintenance",
+          "authors": [
+            "Ming Xiong",
+            "Qiong Wang",
+            "Krithi Ramamritham"
+          ],
+          "year": 2008
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Transaction scheduling can be framed as an instance of the well-known job-shop scheduling problem, which has a large corpus of solution techniques.",
+        "Exact job-shop optimization methods rely on full enumeration and can be applied only to small problems, while approximation methods are used for larger problems.",
+        "Job-shop approximation methods include construction heuristics such as NEH, iterative approaches such as genetic algorithms, simulated annealing, tabu search, and hybrid methods, and recent work also applies Monte Carlo Tree Search to job-shop scheduling.",
+        "Modeling transaction scheduling as job-shop scheduling requires accounting for read and write operation types and for sequence-dependent execution requirements studied in some job-shop problems."
+      ],
+      "works": [
+        {
+          "title": "A Non-Numerical Approach to Production Scheduling Problems",
+          "authors": [
+            "Sheldon B. Akers, Jr.",
+            "Joyce Friedman"
+          ],
+          "year": 1955
+        },
+        {
+          "title": "Deterministic job-shop scheduling: Past, present and future",
+          "authors": [
+            "A.S. Jain",
+            "S. Meeran"
+          ],
+          "year": 1999
+        },
+        {
+          "title": "Sequencing and scheduling: Algorithms and complexity",
+          "authors": [
+            "Eugene L Lawler",
+            "Jan Karel Lenstra",
+            "Alexander HG Rinnooy Kan",
+            "David B Shmoys"
+          ],
+          "year": 1993
+        },
+        {
+          "title": "The Shifting Bottleneck Procedure for Job Shop Scheduling",
+          "authors": [
+            "Joseph Adams",
+            "Egon Balas",
+            "Daniel Zawack"
+          ],
+          "year": 1988
+        },
+        {
+          "title": "Different initial sequences for the heuristic of Nawaz, Enscore and Ham to minimize makespan, idletime or flowtime in the static permutation flowshop sequencing problem",
+          "authors": [
+            "J. M. Framinan",
+            "R. Leisten",
+            "C. Rajendran"
+          ],
+          "year": 2003
+        },
+        {
+          "title": "Priority dispatching with operation due dates in a job shop",
+          "authors": [
+            "John J Kanet",
+            "Jack C Hayya"
+          ],
+          "year": 1982
+        },
+        {
+          "title": "A new improved NEH heuristic for permutation flowshop scheduling problems",
+          "authors": [
+            "Weibo Liu",
+            "Yan Jin",
+            "Mark Price"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "A heuristic algorithm for the m-machine, n-job flow-shop sequencing problem",
+          "authors": [
+            "Muhammad Nawaz",
+            "E Emory Enscore Jr",
+            "Inyong Ham"
+          ],
+          "year": 1983
+        },
+        {
+          "title": "Review on flexible job shop scheduling",
+          "authors": [
+            "Jin Xie",
+            "Liang Gao",
+            "Kunkun Peng",
+            "Xinyu Li",
+            "Haoran Li"
+          ],
+          "year": 2019
+        },
+        {
+          "title": "A tutorial survey of job-shop scheduling problems using genetic algorithms—I. Representation",
+          "authors": [
+            "Runwei Cheng",
+            "Mitsuo Gen",
+            "Yasuhiro Tsujimura"
+          ],
+          "year": 1996
+        },
+        {
+          "title": "Job Shop Scheduling with Genetic Algorithms",
+          "authors": [
+            "Lawrence Davis"
+          ],
+          "year": 2014
+        },
+        {
+          "title": "An Efficient Approach to Job Shop Scheduling Problem Using Simulated Annealing",
+          "authors": [
+            "Shouvik Chakraborty",
+            "Sandeep Bhowmik"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "Job Shop Scheduling by Simulated Annealing",
+          "authors": [
+            "Peter JM Van Laarhoven",
+            "Emile HL Aarts",
+            "Jan Karel Lenstra"
+          ],
+          "year": 1992
+        },
+        {
+          "title": "Routing and scheduling in a flexible job shop by tabu search",
+          "authors": [
+            "Paolo Brandimarte"
+          ],
+          "year": 1993
+        },
+        {
+          "title": "Applying tabu search to the job-shop scheduling problem",
+          "authors": [
+            "Mauro Dell'Amico",
+            "Marco Trubian"
+          ],
+          "year": 1993
+        },
+        {
+          "title": "Tabu search for the job-shop scheduling problem with multi-purpose machines",
+          "authors": [
+            "Johann Hurink",
+            "Bernd Jurisch",
+            "Monika Thole"
+          ],
+          "year": 1994
+        },
+        {
+          "title": "Flexible job shop scheduling with tabu search algorithms",
+          "authors": [
+            "Mohammad Saidi-Mehrabad",
+            "Parviz Fattahi"
+          ],
+          "year": 2007
+        },
+        {
+          "title": "A tutorial survey of job-shop scheduling problems using genetic algorithms, part II: hybrid genetic search strategies",
+          "authors": [
+            "Runwei Cheng",
+            "Mitsuo Gen",
+            "Yasuhiro Tsujimura"
+          ],
+          "year": 1999
+        },
+        {
+          "title": "A Hybrid Genetic Algorithm for the Job Shop Scheduling Problem",
+          "authors": [
+            "José Fernando Gonçalves",
+            "Jorge José de Magalhães Mendes",
+            "Maurício G. C. Resende"
+          ],
+          "year": 2005
+        },
+        {
+          "title": "A hybrid particle swarm optimization for job shop scheduling problem",
+          "authors": [
+            "DY Sha",
+            "Cheng-Yu Hsu"
+          ],
+          "year": 2006
+        },
+        {
+          "title": "An effective hybrid optimization strategy for job-shop scheduling problems",
+          "authors": [
+            "Ling Wang",
+            "Da-Zhong Zheng"
+          ],
+          "year": 2001
+        },
+        {
+          "title": "A hybrid immune simulated annealing algorithm for the job shop scheduling problem",
+          "authors": [
+            "Rui Zhang",
+            "Cheng Wu"
+          ],
+          "year": 2010
+        },
+        {
+          "title": "An effective MCTS-based algorithm for minimizing makespan in dynamic flexible job shop scheduling problem",
+          "authors": [
+            "Kexin Li",
+            "Qianwang Deng",
+            "Like Zhang",
+            "Qing Fan",
+            "Guiliang Gong",
+            "Sun Ding"
+          ],
+          "year": 2021
+        },
+        {
+          "title": "A Monte-Carlo tree search algorithm for the flexible job-shop scheduling in manufacturing systems",
+          "authors": [
+            "M Saqlain",
+            "S Ali",
+            "JY Lee"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Solving the flexible job shop scheduling problem with sequence-dependent setup times",
+          "authors": [
+            "Liji Shen",
+            "Stéphane Dauzère-Pérès",
+            "Janis S Neufeld"
+          ],
+          "year": 2018
+        }
+      ]
+    },
+    {
+      "claims": [
+        "State-of-the-art job-shop scheduling search techniques find fast schedules but have very high overheads; for example, scheduling 15 transactions can take up to 30 minutes.",
+        "NEH is a known high-performing construction heuristic for minimizing makespan.",
+        "Defer, LDSF, and TS_KD[C] are prior transaction-scheduling policies that are highly dependent on arrival order and produce schedules with higher makespan and variance than a systematic search policy."
+      ],
+      "works": [
+        {
+          "title": "Flexible job shop scheduling with tabu search algorithms",
+          "authors": [
+            "Mohammad Saidi-Mehrabad",
+            "Parviz Fattahi"
+          ],
+          "year": 2007
+        },
+        {
+          "title": "A new improved NEH heuristic for permutation flowshop scheduling problems",
+          "authors": [
+            "Weibo Liu",
+            "Yan Jin",
+            "Mark Price"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Different initial sequences for the heuristic of Nawaz, Enscore and Ham to minimize makespan, idletime or flowtime in the static permutation flowshop sequencing problem",
+          "authors": [
+            "J. M. Framinan",
+            "R. Leisten",
+            "C. Rajendran"
+          ],
+          "year": 2003
+        },
+        {
+          "title": "A heuristic algorithm for the m-machine, n-job flow-shop sequencing problem",
+          "authors": [
+            "Muhammad Nawaz",
+            "E Emory Enscore Jr",
+            "Inyong Ham"
+          ],
+          "year": 1983
+        },
+        {
+          "title": "Transaction Scheduling: From Conflicts to Runtime Conflicts",
+          "authors": [
+            "Yang Cao",
+            "Wenfei Fan",
+            "Weijie Ou",
+            "Rui Xie",
+            "Wenyue Zhao"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Contention-Aware Lock Scheduling for Transactional Databases",
+          "authors": [
+            "Boyu Tian",
+            "Jiamin Huang",
+            "Barzan Mozafari",
+            "Grant Schoenebeck"
+          ],
+          "year": 2018
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The core idea is to make the transaction schedule an explicit search target rather than an incidental side effect of arrival order. Observing that makespan is increased by conflict costs and that optimal scheduling is NP-complete, SMF greedily builds a schedule by repeatedly appending the unscheduled transaction whose addition produces the smallest incremental makespan. To keep search tractable and deployable online, SMF makes decisions from predicted hot-key conflict patterns instead of full read/write sets, relies on a small random sample of candidates, and computes only the incremental cost of the latest conflicting operation per hot key; focusing on hot keys preserves most of the scheduling benefit because hot-key conflicts dominate makespan. Once a low-makespan schedule is found, a schedule-first MVTSO-derived protocol, MVSchedO, enforces the selected order only for hot keys, delaying later conflicting operations until earlier ones complete, thereby avoiding the aborts and race conditions that would otherwise undo the schedule's benefit.",
+    "implementation": "R-SMF has three main components: a classifier, an SMF scheduler, and the MVSchedO protocol. Applications annotate the START statement with a transaction-type id and a set of hot key names (or other metadata). The classifier is trained on transaction traces: each transaction is converted into an integer metadata vector; clustering is run over training vectors using Euclidean distance; the number of clusters k is chosen by validation error; and each cluster is assigned the canonical set of hot key operations, i.e., the operation type and position that occurs most frequently among its transactions. At runtime a KNN classifier maps the hints of a new transaction to a cluster and returns its canonical predicted hot-key operation set.\n\nThe SMF scheduler works online over in-flight transactions. It seeds the schedule with a random transaction, then repeatedly samples s=5 unscheduled transactions uniformly at random, computes for each candidate the incremental makespan that would result from appending it to the current schedule using the predicted hot-key operations and the makespan model from Section 2.1 (operations take unit time, conflicting operations are serialized, transactions have internal operation order), and appends the candidate with the smallest increase, breaking ties randomly. Transactions with no predicted hot keys are assumed not to affect makespan and execute immediately. For each hot key, only the latest transaction's conflicting operation is retained when computing costs because earlier conflicts were already accounted for when that transaction was added to the schedule. Barriers in the scheduling queues prevent starvation. The scheduler has O(n*s) runtime for n in-flight transactions and s sampled candidates. Optionally, schedule quality can be checked in the background by uniformly sampling schedules using the acyclic-orientation random walk and one-sided tolerance intervals; if SMF's makespan deviates significantly, the system can fall back to FIFO.\n\nMVSchedO starts from MVTSO. SMF assigns each transaction a unique timestamp and serialization order at START_TXN. For each predicted hot key operation, PREDICT_HOT_KEY_OPS inserts the operation into pred_ops for that key. When a transaction executes READ_KEY or WRITE_KEY on a key in hot_keys, the operation first invokes SCHED_KEY, which waits until the minimum timestamp among not-yet-executed predicted operations on that key is at least the transaction's timestamp, meaning all predicted earlier conflicting operations on the key have executed. It then performs the ordinary MVTSO read or write and removes its predicted operation from pred_ops. If a predicted hot key access never occurs, no deadlock occurs because COMMIT or abort calls FREE_HOT_KEY_DEPS to remove the transaction's remaining predicted operations before MVTSO commit validation. All other MVTSO mechanisms, including commit checks and write-dependency tracking, remain unchanged. Since MVTSO timestamp assignment is arbitrary and MVSchedO only delays operations that could otherwise execute under MVTSO, serializability is preserved; MVSchedO executes a schedule with the maximum concurrency permitted under the schedule.\n\nIn the R-SMF system, these components are integrated into RocksDB's transaction manager: START accepts hints, runs the classifier, SMF may queue the transaction until it is scheduled, and scheduled transactions register predicted hot-key operations with MVSchedO. A bolt-on variant starts transactions according to SMF but lets the original OCC, Lock, or TAO protocol execute them without further operation-level control; this also gives substantial gains, though smaller than using MVSchedO."
+  },
+  "pdf_id": "c252b8a901feea74",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/TXN.md",
+  "model": "deepseek-v4-flash",
+  "extracted_at": "2026-09-03 06:58:56"
+}

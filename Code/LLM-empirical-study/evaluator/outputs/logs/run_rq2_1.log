@@ -1,0 +1,87 @@
+[13:34:40] RQ2-1 开始,样本数: 8
+[13:34:40] 限定样本 8 篇,待解析唯一论文: 354
+[13:34:40] 待解析唯一论文数: 354
+[13:34:40] [S2 resolve] 全部 354 条已完成,无需运行
+[13:34:40] S2 解析完成: found=318 missing=36 放弃待续跑=0 失败率(未找到)=10.17%
+[13:34:40] [withsearch] 计算文档级指标…
+[13:34:40]   52875bf8ef4b3f8c: R=18.75% P=25.00% matched=3
+[13:34:40]   5dd2d839c66d339a: R=19.64% P=91.67% matched=11
+[13:34:40]   7d3b6e61ea96cc4f: R=22.22% P=85.71% matched=6
+[13:34:40]   b93fea400aedf898: R=4.00% P=25.00% matched=1
+[13:34:41]   c252b8a901feea74: R=5.00% P=44.44% matched=4
+[13:34:41]   d18c13d036b3708f: R=22.22% P=57.14% matched=4
+[13:34:41]   e3d82bafe7cb11e7: R=17.24% P=71.43% matched=5
+[13:34:41]   f948850caef3d25f: R=16.22% P=85.71% matched=6
+[13:34:41] [atomic-decompose] 全部 8 条已完成,无需运行
+[13:34:41] [support:withsearch] 全部 8 条已完成,无需运行
+[13:34:41] [logic:withsearch] 全部 8 条已完成,无需运行
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1788615286.765656 1434718 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1788615286.933059 1434718 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1788615288.740543 1434718 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+[13:34:52] NLI 模型已加载: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/model/nli-deberta-v3-base (device=cuda:0)
+[13:34:54] [withoutsearch] 计算文档级指标…
+[13:34:54]   52875bf8ef4b3f8c: R=12.50% P=25.00% matched=2
+[13:34:54]   5dd2d839c66d339a: R=23.21% P=92.86% matched=13
+[13:34:54]   7d3b6e61ea96cc4f: R=18.52% P=100.00% matched=5
+[13:34:54]   b93fea400aedf898: R=4.00% P=25.00% matched=1
+[13:34:54]   c252b8a901feea74: R=7.50% P=75.00% matched=6
+[13:34:54]   d18c13d036b3708f: R=22.22% P=80.00% matched=4
+[13:34:54]   e3d82bafe7cb11e7: R=17.24% P=50.00% matched=5
+[13:34:54]   f948850caef3d25f: R=13.51% P=83.33% matched=5
+[13:34:54] [atomic-decompose] 全部 8 条已完成,无需运行
+[13:34:54] [support:withoutsearch] 全部 8 条已完成,无需运行
+[13:34:54] [logic:withoutsearch] 全部 8 条已完成,无需运行
+[13:34:55] NLI 模型已加载: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/model/nli-deberta-v3-base (device=cuda:0)
+[13:34:56] 各变体文档指标计算完成
+[13:34:56] RQ2-1 完成,耗时 16s,LLM usage: {'prompt': 0, 'completion': 0}
+
+==============================================================================
+RQ2-1 摘要 [变体: withsearch]  (完整报告: outputs/reports/rq2_1_withsearch.md)
+==============================================================================
+样本数 = 8
+ 52875bf8ef4b3f8c
+  Recall 18.8%  Precision 25.0%  Jaccard 0.120  |S_M|=3 | RR_L 0.0%  W1 4.71 | MLC_L 6.60  TVR_L 58.3% | Faith 0.998  Coverage 15.0%  Logic 5.0
+ 5dd2d839c66d339a
+  Recall 19.6%  Precision 91.7%  Jaccard 0.193  |S_M|=11 | RR_L 91.7%  W1 6.05 | MLC_L 6.92  TVR_L 91.7% | Faith 0.998  Coverage 27.1%  Logic 5.0
+ 7d3b6e61ea96cc4f
+  Recall 22.2%  Precision 85.7%  Jaccard 0.214  |S_M|=6 | RR_L 0.0%  W1 4.54 | MLC_L 6.90  TVR_L 42.9% | Faith 0.993  Coverage 22.1%  Logic 5.0
+ b93fea400aedf898
+  Recall 4.0%  Precision 25.0%  Jaccard 0.036  |S_M|=1 | RR_L 0.0%  W1 6.62 | MLC_L 6.56  TVR_L 100.0% | Faith nan  Coverage 26.3%  Logic 3.0
+ c252b8a901feea74
+  Recall 5.0%  Precision 44.4%  Jaccard 0.047  |S_M|=4 | RR_L 0.0%  W1 20.19 | MLC_L 7.15  TVR_L 44.4% | Faith 0.999  Coverage 13.7%  Logic 5.0
+ d18c13d036b3708f
+  Recall 22.2%  Precision 57.1%  Jaccard 0.190  |S_M|=4 | RR_L 71.4%  W1 6.33 | MLC_L 6.21  TVR_L 57.1% | Faith 0.991  Coverage 26.7%  Logic 5.0
+ e3d82bafe7cb11e7
+  Recall 17.2%  Precision 71.4%  Jaccard 0.161  |S_M|=5 | RR_L 0.0%  W1 9.49 | MLC_L 6.82  TVR_L 57.1% | Faith 0.997  Coverage 16.9%  Logic 5.0
+ f948850caef3d25f
+  Recall 16.2%  Precision 85.7%  Jaccard 0.158  |S_M|=6 | RR_L 85.7%  W1 1.24 | MLC_L 6.38  TVR_L 71.4% | Faith 0.999  Coverage 18.8%  Logic 5.0
+-- 聚合 --
+  Recall 15.7%  Precision 60.8%  Jaccard 0.1400
+  RR_L 31.1%  W1 7.3962  | MLC_L 6.6933  TVR_L 65.4%
+
+==============================================================================
+RQ2-1 摘要 [变体: withoutsearch]  (完整报告: outputs/reports/rq2_1_withoutsearch.md)
+==============================================================================
+样本数 = 8
+ 52875bf8ef4b3f8c
+  Recall 12.5%  Precision 25.0%  Jaccard 0.091  |S_M|=2 | RR_L 0.0%  W1 5.66 | MLC_L 7.01  TVR_L 50.0% | Faith 0.998  Coverage 10.0%  Logic 5.0
+ 5dd2d839c66d339a
+  Recall 23.2%  Precision 92.9%  Jaccard 0.228  |S_M|=13 | RR_L 64.3%  W1 5.62 | MLC_L 7.29  TVR_L 78.6% | Faith 0.998  Coverage 23.7%  Logic 5.0
+ 7d3b6e61ea96cc4f
+  Recall 18.5%  Precision 100.0%  Jaccard 0.185  |S_M|=5 | RR_L 0.0%  W1 4.28 | MLC_L 6.77  TVR_L 60.0% | Faith 0.996  Coverage 23.5%  Logic 5.0
+ b93fea400aedf898
+  Recall 4.0%  Precision 25.0%  Jaccard 0.036  |S_M|=1 | RR_L 25.0%  W1 5.09 | MLC_L 5.69  TVR_L 75.0% | Faith 0.999  Coverage 21.1%  Logic 3.0
+ c252b8a901feea74
+  Recall 7.5%  Precision 75.0%  Jaccard 0.073  |S_M|=6 | RR_L 0.0%  W1 15.69 | MLC_L 6.91  TVR_L 62.5% | Faith 1.000  Coverage 20.5%  Logic 5.0
+ d18c13d036b3708f
+  Recall 22.2%  Precision 80.0%  Jaccard 0.211  |S_M|=4 | RR_L 40.0%  W1 6.67 | MLC_L 8.09  TVR_L 40.0% | Faith 1.000  Coverage 36.7%  Logic 5.0
+ e3d82bafe7cb11e7
+  Recall 17.2%  Precision 50.0%  Jaccard 0.147  |S_M|=5 | RR_L 0.0%  W1 8.44 | MLC_L 6.83  TVR_L 60.0% | Faith 0.999  Coverage 26.8%  Logic 4.0
+ f948850caef3d25f
+  Recall 13.5%  Precision 83.3%  Jaccard 0.132  |S_M|=5 | RR_L 66.7%  W1 1.26 | MLC_L 5.93  TVR_L 66.7% | Faith 0.999  Coverage 31.2%  Logic 4.0
+-- 聚合 --
+  Recall 14.8%  Precision 66.4%  Jaccard 0.1378
+  RR_L 24.5%  W1 6.5899  | MLC_L 6.8160  TVR_L 61.6%

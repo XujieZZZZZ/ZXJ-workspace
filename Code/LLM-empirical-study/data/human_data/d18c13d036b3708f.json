@@ -1,0 +1,342 @@
+{
+  "observation": "Running large language model (LLM) inference over large relational datasets for batch data analytics is extremely slow and expensive: an NVIDIA L4 GPU serving Llama3-8B processes only about 6 KB of text per second, taking roughly a day to handle 15 GB of data, and processing a comparable amount of data on OpenAI's GPT-4o costs about $10K. Although LLM invocations are increasingly offered as operators on relational tables, naively sending rows in their default order to a serving backend with a prompt KV cache leads to low cache-hit rates. Real relational workloads contain repeated cell values, joined-feature repetition, popular-item reuse, and shared RAG contexts that could serve as cached prefixes; but tables also contain highly unique leading fields such as IDs or review text, and the fixed row/field order in which requests are sent critically limits how much prefix reuse is possible.",
+  "related_works": [
+    {
+      "claims": [
+        "LLMs are autoregressive Transformer models that generate text token by token and can store computed attention states as key-value (KV) cache.",
+        "LLM inference engines typically batch requests continuously to improve throughput, but KV-cache memory can be very large: up to 800KB per token for a 13B model and up to 1.6GB for a typical 2,000-token request.",
+        "Recent work leverages prompt caching by storing attention states of frequently reused prompt segments in KV cache and reusing shared prefixes to reduce inference latency.",
+        "Cached-prompt reuse is now offered as a service by model providers at a fraction of the price of uncached prompts."
+      ],
+      "works": [
+        {
+          "title": "Attention is all you need",
+          "authors": [
+            "A. Vaswani",
+            "N. Shazeer",
+            "N. Parmar",
+            "J. Uszkoreit",
+            "L. Jones",
+            "A. N. Gomez",
+            "L. Kaiser",
+            "I. Polosukhin"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Efficient memory management for large language model serving with pagedattention",
+          "authors": [
+            "W. Kwon",
+            "Z. Li",
+            "S. Zhuang",
+            "Y. Sheng",
+            "L. Zheng",
+            "C. H. Yu",
+            "J. Gonzalez",
+            "H. Zhang",
+            "I. Stoica"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Orca: A distributed serving system for Transformer-Based generative models",
+          "authors": [
+            "G.-I. Yu",
+            "J. S. Jeong",
+            "G.-W. Kim",
+            "S. Kim",
+            "B.-G. Chun"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Efficiently programming large language models using sglang",
+          "authors": [
+            "L. Zheng",
+            "L. Yin",
+            "Z. Xie",
+            "J. Huang",
+            "C. Sun",
+            "C. H. Yu",
+            "S. Cao",
+            "C. Kozyrakis",
+            "I. Stoica",
+            "J. E. Gonzalez",
+            "C. Barrett",
+            "Y. Sheng"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Hydragen: High-throughput llm inference with shared prefixes",
+          "authors": [
+            "J. Juravsky",
+            "B. Brown",
+            "R. Ehrlich",
+            "D. Y. Fu",
+            "C. Re",
+            "A. Mirhoseini"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Prompt cache: Modular attention reuse for low-latency inference",
+          "authors": [
+            "I. Gim",
+            "G. Chen",
+            "S. seob Lee",
+            "N. Sarda",
+            "A. Khandelwal",
+            "L. Zhong"
+          ],
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Dedicated LLM serving systems such as vLLM and SGLang provide high-throughput inference with efficient memory management and prefix-aware KV-cache scheduling.",
+        "Several optimized inference systems already reuse shared prefixes in the KV cache to reduce redundant computation."
+      ],
+      "works": [
+        {
+          "title": "Efficient memory management for large language model serving with pagedattention",
+          "authors": [
+            "W. Kwon",
+            "Z. Li",
+            "S. Zhuang",
+            "Y. Sheng",
+            "L. Zheng",
+            "C. H. Yu",
+            "J. Gonzalez",
+            "H. Zhang",
+            "I. Stoica"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Efficiently programming large language models using sglang",
+          "authors": [
+            "L. Zheng",
+            "L. Yin",
+            "Z. Xie",
+            "J. Huang",
+            "C. Sun",
+            "C. H. Yu",
+            "S. Cao",
+            "C. Kozyrakis",
+            "I. Stoica",
+            "J. E. Gonzalez",
+            "C. Barrett",
+            "Y. Sheng"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Hydragen: High-throughput llm inference with shared prefixes",
+          "authors": [
+            "J. Juravsky",
+            "B. Brown",
+            "R. Ehrlich",
+            "D. Y. Fu",
+            "C. Re",
+            "A. Mirhoseini"
+          ],
+          "year": 2024
+        },
+        {
+          "title": "Prompt cache: Modular attention reuse for low-latency inference",
+          "authors": [
+            "I. Gim",
+            "G. Chen",
+            "S. seob Lee",
+            "N. Sarda",
+            "A. Khandelwal",
+            "L. Zhong"
+          ],
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Several systems and APIs support calling LLMs as operators over relational data, and LOTUS is an example programming framework that enables semantic queries with LLMs over tables of unstructured and structured data.",
+        "These LLM-over-tables systems provide SQL/DataFrame-style integration, but they do not explore reordering table rows and fields to optimize KV-cache hits."
+      ],
+      "works": [
+        {
+          "title": "Lotus: Enabling semantic queries with llms over tables of unstructured and structured data",
+          "authors": [
+            "L. Patel",
+            "S. Jha",
+            "C. Guestrin",
+            "M. Zaharia"
+          ],
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Real-world relational databases exhibit repetitive data patterns, and columnar storage systems exploit repeated values across fields for compression while related techniques such as run-length encoding, multi-relational data mining, and correlation analysis use data relationships to optimize query execution.",
+        "Relational queries create data groupings based on access patterns, and techniques such as database cracking, multidimensional clustering, and Delta Lake Z-order reorganize data according to query patterns."
+      ],
+      "works": [
+        {
+          "title": "C-store: a column-oriented dbms",
+          "authors": [
+            "M. Stonebraker",
+            "D. J. Abadi",
+            "A. Batkin",
+            "X. Chen",
+            "M. Cherniack",
+            "M. Ferreira",
+            "E. Lau",
+            "A. Lin",
+            "S. Madden",
+            "E. O'Neil"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Reordering columns for smaller indexes",
+          "authors": [
+            "D. Lemire",
+            "O. Kaser"
+          ],
+          "year": 2011
+        },
+        {
+          "title": "Multi-relational data mining: an introduction",
+          "authors": [
+            "S. Dzeroski"
+          ],
+          "year": 2003
+        },
+        {
+          "title": "Cords: Automatic discovery of correlations and soft functional dependencies",
+          "authors": [
+            "I. F. Ilyas",
+            "V. Markl",
+            "P. Haas",
+            "P. Brown",
+            "A. Aboulnaga"
+          ],
+          "year": 2004
+        },
+        {
+          "title": "Database cracking",
+          "authors": [
+            "S. Idreos",
+            "M. L. Kersten",
+            "S. Manegold"
+          ],
+          "year": 2007
+        },
+        {
+          "title": "Model-based multidimensional clustering of categorical data",
+          "authors": [
+            "T. Chen",
+            "N. L. Zhang",
+            "T. Liu",
+            "K. M. Poon",
+            "Y. Wang"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "Delta lake: high-performance acid table storage over cloud object stores",
+          "authors": [
+            "M. Armbrust",
+            "T. Das",
+            "L. Sun",
+            "B. Yavuz",
+            "S. Zhu",
+            "M. Murthy",
+            "J. Torres",
+            "H. van Hovell",
+            "A. Ionescu",
+            "A. Łuszczak"
+          ],
+          "year": 2020
+        }
+      ]
+    },
+    {
+      "claims": [
+        "In the data-management community, prior work explores using cheaper ML models or probabilistic predicates to avoid running expensive inference on every row, and this line of work is orthogonal to ordering the calls to full LLMs inside a given SQL query."
+      ],
+      "works": [
+        {
+          "title": "Noscope: optimizing neural network queries over video at scale",
+          "authors": [
+            "D. Kang",
+            "J. Emmons",
+            "F. Abuzaid",
+            "P. Bailis",
+            "M. Zaharia"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Accelerating machine learning inference with probabilistic predicates",
+          "authors": [
+            "Y. Lu",
+            "A. Chowdhery",
+            "S. Kandula",
+            "S. Chaudhuri"
+          ],
+          "year": 2018
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Apache Spark is a widely adopted large-scale data processing engine, and Spark SQL/PySpark provide relational data processing APIs over it."
+      ],
+      "works": [
+        {
+          "title": "Resilient distributed datasets: A fault-tolerant abstraction for in-memory cluster computing",
+          "authors": [
+            "M. Zaharia",
+            "M. Chowdhury",
+            "T. Das",
+            "A. Dave",
+            "J. Ma",
+            "M. McCauly",
+            "M. J. Franklin",
+            "S. Shenker",
+            "I. Stoica"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "Spark sql: Relational data processing in spark",
+          "authors": [
+            "M. Armbrust",
+            "R. S. Xin",
+            "C. Lian",
+            "Y. Huai",
+            "D. Liu",
+            "J. K. Bradley",
+            "X. Meng",
+            "T. Kaftan",
+            "M. J. Franklin",
+            "A. Ghodsi",
+            "M. Zaharia"
+          ],
+          "year": 2015
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The core idea is to exploit full knowledge of the batch of LLM requests generated by one relational query. For each row, the request prompt is a sequence of field values, so by reordering both the rows and the fields within each row one can place repeated values and shared contexts consecutively across requests. When a later request starts with the same prefix as an earlier one, the serving backend can reuse the already-computed KV cache for that prefix instead of recomputing it. Because real tables contain highly repeated field values, popular join keys, and common RAG contexts, dynamic per-row field ordering can extract far more prefix sharing than the fixed field order stored in a table. The authors propose an optimal recursive procedure (OPHR), but its exponential cost is impractical; therefore they design a greedy approximation (GGR) that recursively groups rows sharing the most valuable repeated prefix value, using functional dependencies and table statistics to reduce the search space and the solver overhead.",
+    "implementation": "The executed LLM query is modeled as a table T with n rows and m selected fields. A request schedule is a list L of n row tuples; rearranging tuples changes row order, and rearranging elements inside a tuple changes that row's field order. Each tuple L[r] is mapped into fields L[r][f]. The optimization objective is prefix hit count PHC(L) = sum over rows r=1..n of hit(L,r), where hit(L,r) is zero if the first cell of row r differs from row r-1, otherwise it sums len(L[r][f])^2 over the longest consecutive prefix of cells (starting with f=1) whose values exactly equal the corresponding cell values in row r-1. Squared lengths are used because token processing cost grows with prompt length. The design assumes at least one tuple fits in the KV cache and assumes exact cell-value equality only (no substring matches).\n\nThe optimal algorithm, OPHR, starts from two base cases: a one-row table has PHC 0, and a one-field table is ordered by grouping equal values, whose PHC is the sum over distinct values v of len(v)^2 multiplied by (count(v)-1). In the recursive case, OPHR considers every field c and every distinct value v in that field. Let R_v be the rows where T[i,c]=v. It splits the table into two sub-tables: one containing rows not in R_v, and one containing the rows R_v with column c removed. It recursively optimizes both sub-tables, adds the PHC contribution of grouping v, and selects the split that maximizes total PHC. This enumerates all possible grouping choices and yields optimal PHC, but its search space is exponential in rows and fields.\n\nGGR approximates OPHR greedily. For each candidate value v in field c, the subroutine HITCOUNT(v,c,T,FD) computes R_v = rows where T[i,c]=v and looks up functional dependencies from c to infer columns that must repeat for those rows. It estimates a hit-count score for placing c and its inferred columns first as: (len(v)^2 + the average length over R_v of values in the inferred columns) * (|R_v|-1). The list of fields placed first is [c] plus the inferred fields. At each recursion level, GGR scans all columns and all distinct values, chooses the (v,c) with the largest HITCOUNT, and partitions the current table just as OPHR does: recursively reorder rows not containing v, and recursively reorder rows containing v after removing the already-placed fields c plus any inferred fields. The total PHC is the sum of the two recursive PHC values plus the HITCOUNT contribution of the chosen group. The selected group rows are placed so that v and its inferred field values form a shared prefix; the remaining rows are appended with their recursively computed order. GGR's base cases match OPHR. Functional dependencies reduce the candidate fields at each recursion step, because once a value in field c is placed, a field c' with c->c' can be placed immediately after c and does not need to be separately reordered. This improves both solution quality and runtime. The recursion depth is bounded by O(min(n,m)), though the per-step scan over distinct values can make the overall runtime quadratic in table size. In addition, table statistics such as distinct-value cardinality and length distributions can stop recursion early at a configured row/column recursion depth or when the estimated HITCOUNT is below a threshold; if recursion stops, a fixed field ordering is chosen using per-field expected HITCOUNT estimates of avg_len(c)^2. When FDs cover all fields, GGR can recover the optimal ordering, but with ties it can be suboptimal.\n\nThe implementation is written in about 1.3K lines of Python and evaluated with PySpark on Apache Spark. The LLM operator is implemented as a PySpark UDF that accepts a system prompt, a query prompt, and one row of data. Row order and per-row field order are taken from the schedule returned by the reordering algorithm. The operator constructs each prompt by encoding the row's field names and values in JSON, allowing the LLM to associate each value with its field semantically. The generated requests are sent to a configurable model-serving endpoint that provides KV-cache reuse (e.g., vLLM). Note: the exact text of one line in Algorithm 1's final tuple-concatenation appears corrupted in the Markdown conversion, but the surrounding description and figure caption make the recursive partition scheme clear enough to state the method at the level given here.",
+    "solution_prompt": "Describe the paper's solution to the problem in the observation, in two fields: idea and implementation."
+  },
+  "pdf_id": "d18c13d036b3708f",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/LLM-SQL.md",
+  "model": "deepseek-v4-flash",
+  "extracted_at": "2026-09-03 06:47:08"
+}

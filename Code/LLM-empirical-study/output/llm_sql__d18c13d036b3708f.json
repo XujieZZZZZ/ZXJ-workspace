@@ -1,0 +1,21 @@
+{
+  "task": "llm_sql",
+  "program": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/initial-code/llm_sql__d18c13d036b3708f.py",
+  "program_name": "llm_sql__d18c13d036b3708f.py",
+  "paper_id": "d18c13d036b3708f",
+  "status": "success",
+  "combined_score": 0.6928172824502885,
+  "metrics": {
+    "combined_score": 0.6928172824502885,
+    "runs_successfully": 1.0,
+    "total_runtime": 11.840171098709106
+  },
+  "artifacts": {
+    "hit_rates": "[0.7802831952805264, 0.6732465032648229, 0.8168346263401951, 0.3222071846345619, 0.8426079204757506]"
+  },
+  "elapsed_seconds": 57.6,
+  "returncode": 0,
+  "timed_out": false,
+  "log_file": "llm_sql__d18c13d036b3708f.log",
+  "evaluated_at": "2026-09-10T01:25:21.222478+00:00"
+}

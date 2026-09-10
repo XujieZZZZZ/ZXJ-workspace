@@ -1,0 +1,22 @@
+[13:34:59] RQ2-2 Rubric 打分任务: 8 条(LLM Sol)+ 8 条(Human Sol 基线)
+[13:34:59] [rubric:human_re] 全部 8 条已完成,无需运行
+[13:34:59] [rubric:human_sol_baseline] 全部 8 条已完成,无需运行
+[13:34:59] Aspect 抽取任务: 8 条
+[13:34:59] [aspect-extract] 全部 8 条已完成,无需运行
+[13:34:59] [aspect-coverage] 全部 8 条已完成,无需运行
+
+==============================================================================
+RQ2-2 摘要 [Observation + Human RW -> Solution](完整报告: outputs/reports/rq2_2.md)
+==============================================================================
+  52875bf8ef4b3f8c | tgt=5 feas=4 nov=5 grd=5 total=4.75 | Human基线total=4.50 | cos=0.953 | AspectRecall=81.8% (9/11)
+  5dd2d839c66d339a | tgt=3 feas=3 nov=3 grd=3 total=3.00 | Human基线total=4.50 | cos=0.939 | AspectRecall=80.0% (8/10)
+  7d3b6e61ea96cc4f | tgt=5 feas=4 nov=4 grd=5 total=4.50 | Human基线total=4.75 | cos=0.945 | AspectRecall=30.0% (3/10)
+  b93fea400aedf898 | tgt=5 feas=5 nov=4 grd=5 total=4.75 | Human基线total=4.50 | cos=0.950 | AspectRecall=58.3% (7/12)
+  c252b8a901feea74 | tgt=3 feas=3 nov=3 grd=3 total=3.00 | Human基线total=4.50 | cos=0.950 | AspectRecall=40.0% (4/10)
+  d18c13d036b3708f | tgt=5 feas=4 nov=4 grd=5 total=4.50 | Human基线total=4.50 | cos=0.938 | AspectRecall=100.0% (10/10)
+  e3d82bafe7cb11e7 | tgt=5 feas=4 nov=5 grd=5 total=4.75 | Human基线total=4.75 | cos=0.959 | AspectRecall=58.3% (7/12)
+  f948850caef3d25f | tgt=5 feas=4 nov=5 grd=5 total=4.75 | Human基线total=4.75 | cos=0.945 | AspectRecall=30.0% (3/10)
+-- 平均 --
+  tgt=4.5000 feas=3.8750 nov=4.1250 grd=4.5000 total=4.25 | cos=0.947 | AspectRecall=60.0% (51/85)
+  [人类 Sol 基线] total=4.59 (tgt=5.0000, feas=4.0000, nov=4.5000, grd=4.8750) | LLM−Human Δtotal=-0.34
+[13:34:59] RQ2-2 完成,耗时 0s,LLM usage: {'prompt': 0, 'completion': 0}

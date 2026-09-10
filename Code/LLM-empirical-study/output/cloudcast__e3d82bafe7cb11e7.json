@@ -1,0 +1,24 @@
+{
+  "task": "cloudcast",
+  "program": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/initial-code/cloudcast__e3d82bafe7cb11e7.py",
+  "program_name": "cloudcast__e3d82bafe7cb11e7.py",
+  "paper_id": "e3d82bafe7cb11e7",
+  "status": "success",
+  "combined_score": 0.0005817835076903693,
+  "metrics": {
+    "combined_score": 0.0005817835076903693,
+    "runs_successfully": 1.0,
+    "total_cost": 1717.8524370000007,
+    "avg_cost": 343.57048740000016,
+    "successful_configs": 5.0,
+    "failed_configs": 0.0,
+    "cost_score": 0.0005817835076903693,
+    "success_rate": 1.0
+  },
+  "artifacts": {},
+  "elapsed_seconds": 9.3,
+  "returncode": 0,
+  "timed_out": false,
+  "log_file": "cloudcast__e3d82bafe7cb11e7.log",
+  "evaluated_at": "2026-09-10T01:24:23.603653+00:00"
+}

@@ -1,0 +1,178 @@
+{
+  "observation": "Recent papers report that the frequency of major outages in large cloud provider WANs has remained roughly constant over the years, despite considerable effort and investment. Root-cause analysis of all major outages in a large cloud provider's SDN WAN over the last five years shows that over one third of these outages—the single largest contributing root cause—were caused by incorrect inputs to the SDN controller: the controller itself operates correctly but receives inputs that do not accurately reflect the current state of the network, for example an incomplete view of current traffic demand or an incorrect view of the topology. Incorrect inputs arise from complex control infrastructure with millions of lines of code and unavoidable bugs, router hardware/software bugs that corrupt telemetry or operator-intent signals, correct signals being mutated or delayed by aggregation services, and inputs collected outside the network; the inputs are often incorrect not because they are impossible or unlikely but because they do not reflect the currently occurring network state, and operators' current static sanity checks cannot catch this.",
+  "related_works": [
+    {
+      "claims": [
+        "Recent papers report that the frequency of major outages in large cloud provider WANs has remained roughly constant over the years.",
+        "There is a vast literature on increasing network availability through testing, emulation, and formal verification.",
+        "Almost all such existing approaches aim to prove that an output is correct given a particular input, e.g., a configuration or set of values, and do not focus on validating the input itself.",
+        "Techniques such as verification, replication, testing, and similar methods validate a system's output assuming correct inputs, so their guarantees are rendered meaningless when the inputs to the system themselves are incorrect.",
+        "Even extensive pre-rollout testing cannot catch all bugs before deployment because the wide range of configurations, network loads, and OS versions makes such testing infeasible."
+      ],
+      "works": [
+        {
+          "title": "A Decentralized SDN Architecture for the WAN",
+          "authors": [
+            "Alexander Krentsel"
+          ]
+        },
+        {
+          "title": "Netcastle: Network Infrastructure Testing At Scale",
+          "authors": [
+            "Rob Sherwood"
+          ]
+        },
+        {
+          "title": "CrystalNet: Faithfully Emulating Large Production Networks",
+          "authors": [
+            "Hongqiang Harry Liu"
+          ]
+        },
+        {
+          "title": "NetKAT: semantic foundations for networks",
+          "authors": [
+            "Carolyn Jane Anderson"
+          ]
+        },
+        {
+          "title": "A general approach to network configuration analysis",
+          "authors": [
+            "Ari Fogel"
+          ]
+        },
+        {
+          "title": "Header Space Analysis: Static Checking for Networks",
+          "authors": [
+            "Peyman Kazemian"
+          ]
+        },
+        {
+          "title": "Scalable verification of border gateway protocol configurations with an SMT solver",
+          "authors": [
+            "Konstantin Weitz"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "The Evolve or Die paper extracts learnings from more than 100 outages at Google.",
+        "It includes examples of outages due to incorrect inputs but does not report incorrect inputs as their leading cause.",
+        "The difference from the authors' analysis may be because it looked across both SDN- and protocol-based WANs, is nearly a decade old, and some of its recommendations may now be common practice leading to new dominant causes."
+      ],
+      "works": [
+        {
+          "title": "Evolve or Die: High-Availability Design Principles Drawn from Google’s Network Infrastructure",
+          "authors": [
+            "Ramesh Govindan"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Flexible Contracts for Resiliency provides a language for reasoning about chains of assumptions that connect ground-truth signals to higher-level abstractions."
+      ],
+      "works": [
+        {
+          "title": "A flexible contracts approach to system resiliency",
+          "authors": [
+            "Michael Sievers"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Anomaly detection approaches detect outliers in input data through statistical analysis of a signal's past history.",
+        "These approaches focus on outliers in a signal's history rather than on whether the signal reflects ground truth, which requires corroboration across signals."
+      ],
+      "works": [
+        {
+          "title": "A survey of network anomaly detection techniques",
+          "authors": [
+            "Mohiuddin Ahmed"
+          ]
+        },
+        {
+          "title": "An overview of anomaly detection techniques: Existing solutions and latest technological trends",
+          "authors": [
+            "Animesh Patcha"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Network operators today maintain detailed network models that can describe router-level signals."
+      ],
+      "works": [
+        {
+          "title": "Automatic Life Cycle Management of Network Configurations",
+          "authors": [
+            "Hongqiang Harry Liu"
+          ]
+        },
+        {
+          "title": "Experiences with Modeling Network Topologies at Multiple Levels of Abstraction",
+          "authors": [
+            "Jeffrey C Mogul"
+          ]
+        },
+        {
+          "title": "Robotron: Top-down Network Management at Facebook Scale",
+          "authors": [
+            "Yu-Wei Eric Sung"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Traffic demand information can be collected from measurements at end hosts rather than from routers directly, as in bandwidth-allocation systems."
+      ],
+      "works": [
+        {
+          "title": "BwE: Flexible, Hierarchical Bandwidth Allocation for WAN Distributed Computing",
+          "authors": [
+            "Alok Kumar"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Routers can run simple applications that can issue active probes to check link status."
+      ],
+      "works": [
+        {
+          "title": "FBOSS: Building Switch Software at Scale",
+          "authors": [
+            "Sean Choi"
+          ]
+        },
+        {
+          "title": "A Decentralized SDN Architecture for the WAN",
+          "authors": [
+            "Alexander Krentsel"
+          ]
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The observation isolates a failure class that existing approaches do not address. Verification, testing, emulation, and formal methods—whether CrystalNet, NetKAT, Header Space Analysis, Netcastle, or configuration-analysis tools—take a given input such as a topology graph, a traffic matrix, or a set of configuration values and prove properties of the controller's output. Replication and pre-rollout testing have the same blind spot: if the controller receives inputs that are internally plausible but not true of the current physical network, every correct controller or verifier will produce outputs that are valid for a world that does not exist. Anomaly detection, in contrast, examines a signal's history; a delayed aggregate or a router bug can produce a value that is perfectly ordinary for that signal's past yet does not describe today's ground truth. The missing capability is validation of inputs themselves against current physical reality, not validation of outputs given assumed inputs.\n\nWe therefore propose a solution direction: place an Input Reconciliation Service (IRS) between all controller input sources and the SDN controller. The IRS maintains a continuously refreshed set of independent ground-truth views of the same network facts. It exploits three sources already available in large cloud-provider environments: (i) router-resident simple applications that send active probes to check link and endpoint status, as suggested by routers being able to run simple applications; (ii) operator-maintained detailed network models that encode intended topology and capabilities; and (iii) end-host-based traffic measurement and allocation, as used in BwE, which observes traffic demand independently of router telemetry and aggregation services. Every candidate input entering the controller is decomposed into primitive facts—edge liveness, capacity, demand volume—and compared with the corresponding independent reference. An input is accepted only if it is corroborated by a relevant independent source and is not contradicted by another. When a discrepancy is found, the input is withheld or marked unverified, and the controller continues with the last mutually corroborated state or with an explicit fallback synthesized from the independent source.\n\nThe core insight is that one telemetry path cannot validate itself; but the physical state of a network can be observed through at least two disjoint paths whose failure modes are largely independent. A traffic-demand input that has been delayed or mutated by an aggregation service will not match end-host measurements for the same interval. A topology input claiming a link is down can be checked by an active probe emitted from the router at one endpoint. An operator-maintained model provides the intended, slowly changing structural context that distinguishes a real but transient state from a corrupt input. This directly addresses the observation's root cause: inputs are incorrect because they do not reflect the currently occurring network state, and static sanity checks cannot detect that. The IRS turns input correctness into an online, operational property.\n\nWe considered and rejected alternatives. Strengthening static checks or adding more invariants cannot capture time-varying physical facts. Replicating the controller with identical inputs would not help because all replicas would share the same false input. Applying anomaly detection over a signal's own history is insufficient because a false input can be historically normal and because the ground truth is defined by the network now, not by the signal's past. Testing and emulation before rollout cannot cover every post-deployment state and, more fundamentally, validate outputs rather than input fidelity. The key trade-off is between latency and certainty: cross-checking takes time and could, in rare transient cases, delay a legitimate input. We manage this by using event-driven active probes, short holdoff windows, and conservative acceptance rules that favor withholding high-risk facts unless corroborated, while still forwarding emergencies such as a probe-confirmed down link. Another trade-off is coverage: validating every conceivable input is unrealistic, so we prioritize the two classes identified in the observation—topology/liveness state and traffic demand—and design the mechanism so additional semantic input types can be added through the same contract mechanism.",
+    "implementation": "The IRS is implemented as a message-filtering layer on the input bus that carries signals to the SDN controller. It has three subcomponents: (A) a provenance-aware input receiver, (B) independent ground-truth collectors, and (C) a reconciliation and decision engine. The controller itself is unchanged; it simply sees an additional component in front of its input sources.\n\n(A) Provenance-aware input receiver. Every message destined for the controller must carry a header with: message_id, source_type (router telemetry, aggregation service, outside collector, operator intent, etc.), semantic_type (topology_link, link_liveness, demand_snapshot, capacity_change, etc.), observed_ts, received_ts, and a source_path tag that records which aggregation or transformation components touched it. The receiver validates the header, parses the payload into primitive facts, and passes each fact to the reconciliation engine. Example primitive facts are: edge_fact(u, v, alive, capacity, observed_ts, source) and demand_fact(src, dst, traffic_class, volume, start_ts, end_ts, source). Messages without provenance are refused; this is the first defense against inputs from unknown or mutated paths.\n\n(B) Independent ground-truth collectors. Three collectors feed the reconciliation engine, each using a channel separate from the primary telemetry path that produces controller inputs.\n\nB1. Router active-probe plane. Each router or switch runs a small, simple application, in the spirit of routers being able to run simple applications, that maintains a link-state table by sending active probes to each directly connected neighbor over all monitored interfaces. The probe reports endpoint addresses, interface, up/down state, round-trip time, a monotonically increasing sequence number, and an observed timestamp. These reports are sent to the IRS over a control channel that does not traverse the same aggregation services that build the controller's topology view. The collector stores for every link the latest independent probe observation: p_alive(u,v) and p_ts(u,v).\n\nB2. Operator network-model store. The IRS periodically ingests the detailed models that operators already maintain for their network, for example models produced by topology-management and lifecycle tools. This model is treated as the intended, slowly changing structural graph: nodes, expected adjacencies, interface capacities, and administrative domains. The collector stores a snapshot m_graph and a version number for the model, refreshed when operators commit a network change; it does not try to infer runtime liveness from the model.\n\nB3. End-host demand collector. Traffic demand is observed where it enters the network: at end hosts. The IRS connects to the BwE-style hierarchical bandwidth-allocation and measurement service used in the data center/WAN and obtains per-tenant, per-traffic-class, per-source-destination aggregate volumes with fixed measurement windows. This collector produces D_edc(src, dst, traffic_class, volume, start_ts, end_ts). It is independent of router counters and of any telemetry aggregation service that may delay or corrupt demand signals.\n\n(C) Reconciliation and decision engine. The engine stores one row per primitive network fact. Each row contains: last candidate value from controller input, its timestamp and source_path; the latest independent references relevant to that fact (for a link: p_alive from active probes and whether the edge exists in the operator model; for demand: D_edc volume in the same interval); and a verdict. The verdict is one of VERIFIED, CONFLICT, or UNVERIFIED.\n\nFor a link-liveness fact, the decision rule is: if the operator network model does not contain the edge and no active probe is ever observed for it, the candidate is UNVERIFIED and is not allowed to create or destroy topology state by itself. If the model contains the edge and a fresh active probe p_alive exists, then the candidate is VERIFIED only when candidate.alive equals p_alive and the probe is fresher than a staleness threshold (default 2 seconds). If candidate.alive disagrees with p_alive, the verdict is CONFLICT. Because an active probe is a direct data-plane observation, a probe-confirmed value is used as the operational ground truth after a confirmation step: when CONFLICT is detected, the IRS immediately requests a second active probe from the neighbor at the other endpoint. If the second probe agrees with the first, the IRS adopts the probe-derived value as the validated input; if candidate still disagrees, the candidate input is dropped, an alert is raised, and the IRS keeps the previous validated value in the controller's view for a bounded fallback period (default 10 seconds), after which it requests human or out-of-band investigation.\n\nFor a traffic-demand fact, the engine compares the candidate volume with the end-host-derived volume D_edc for the same source-destination pair, traffic class, and measurement window. It first checks staleness: if the candidate's observed interval ended more than a configurable window W_demand before arrival (default 30 seconds), the fact is treated as stale and CONFLICT. If D_edc for that interval is available and disjoint from the candidate's own measurement source, the candidate is accepted only when the relative difference is within a tolerance tau (default 10%) after aggregating over the full overlap interval; otherwise it is CONFLICT and the IRS substitutes the D_edc-derived value as the controller's demand input, clearly tagged as end-host-derived. If D_edc is not available for a particular traffic class, the fact is marked UNVERIFIED and is not permitted to drive capacity or routing changes that depend solely on that input; the system logs a coverage gap instead of silently trusting the candidate.\n\nThe engine also tracks per-source health. Every CONFLICT increments a counter keyed by the input's source_path. If one source_path has a conflict rate above a threshold on a rolling window, that source is declared degraded, its future inputs are quarantined, and the IRS automatically prefers active-probe-derived or end-host-derived references for the affected facts. This matches the observation that incorrect inputs often originate from aggregation services or input collectors rather than from the controller.\n\nIntegration is done through a thin publish-subscribe input gateway. All messages that previously went directly to the controller now go to the IRS gateway. The gateway passes only facts whose verdict is VERIFIED. Facts whose verdict is UNVERIFIED are passed only after being annotated as unverified, with a flag that prevents the controller from using them in automated decisions that change forwarding. Facts whose verdict is CONFLICT are not passed unless a safe fallback exists. For link liveness, the safe fallback is the active-probe-derived status. For demand, the safe fallback is the end-host-derived demand. The controller therefore always receives an input stream that is either the original signal corroborated by an independent reference or a clearly labeled independent-reference value. The IRS additionally emits a structured event for every verdict so operators can see, for each disputed topology edge or demand pair, the exact value supplied by the controller input path, the value supplied by each independent reference, and which source was ultimately trusted.\n\nTo make contracts explicit, the engine uses a small registry of semantic contract templates based on the flexible-contracts idea. A contract lists the assumptions that connect a high-level controller input to ground truth. For example, topology_liveness has assumptions: telemetry reflects the router forwarding state, aggregation does not mutate the event, and the event is received before staleness expires. The contract maps each assumption to one or more witnesses—here, the active-probe plane—and defines the action when a witness is unavailable. The registry makes it easy to extend the IRS to other input types: a new semantic type only needs a contract declaring its independent witnesses, freshness thresholds, and fallback policy. This keeps the solution grounded in the existing abstraction of assumption chains rather than relying on history-based heuristics.\n\nThe key parameters are: active-probe freshness threshold (default 2 s), model-refresh epoch, demand window W_demand (default 30 s), demand tolerance tau (default 10%), fallback validity interval (default 10 s), and source-health conflict-rate threshold (default 5% over 1000 facts). These parameters are operator-configurable and exposed as the main tuning surface for the trade-off between catching false inputs and delaying legitimate state changes. The IRS does not validate the controller's final output; it validates that the facts used to compute that output are true of the current network, which is the missing step identified by the observation."
+  },
+  "pdf_id": "52875bf8ef4b3f8c",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/Telemetry.md",
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:32:14",
+  "task": "human_re",
+  "related_works_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/human_data/52875bf8ef4b3f8c.json",
+  "solution_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/solution_human_re/52875bf8ef4b3f8c.json",
+  "style_exemplar_ids": [
+    "c252b8a901feea74",
+    "b93fea400aedf898"
+  ]
+}

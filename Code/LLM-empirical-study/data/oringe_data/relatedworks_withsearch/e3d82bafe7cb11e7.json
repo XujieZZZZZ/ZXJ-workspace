@@ -1,0 +1,80 @@
+{
+  "pdf_id": "e3d82bafe7cb11e7",
+  "mode": "withsearch",
+  "observation": "Bulk data replication across multiple cloud regions and providers is essential for data analytics, disaster recovery, and geo-distributed model serving, yet cloud multicast can be expensive due to per-GB network egress fees and slow due to cloud network constraints. Egress prices vary by up to 23× across region pairs, with intra-cloud egress costing $0.01–$0.19 per GB and inter-cloud egress costing $0.08–$0.23 per GB, and cross-region bandwidth varies by up to 202×. Cloud providers impose per-VM egress/ingress limits (for example, AWS throttles egress to 5 Gbps per VM), so a single source VM is often the bottleneck, while users must still meet target replication times. Existing throughput-oriented multicast optimizers do not handle monetary cost, and existing cost-aware multicast work either ignores throughput or assumes a capacity-based pricing model that is inconsistent with today's per-GB egress pricing.",
+  "related_works": [
+    {
+      "claims": [
+        "Application-layer multicast builds overlay trees or meshes to deliver data to many receivers and optimizes the overlay for aggregate throughput or end-to-end delay rather than monetary cost.",
+        "Throughput-centric overlay multicast does not model the egress fees that clouds charge when traffic leaves a region or a provider.",
+        "Peer-assisted file dissemination protocols deliberately engage the upload bandwidth of multiple helper nodes so that a single source VM is not the throughput bottleneck."
+      ],
+      "works": [
+        {
+          "title": "A Case for End System Multicast",
+          "authors": [
+            "Yang-hua Chu"
+          ]
+        },
+        {
+          "title": "SplitStream: High-Bandwidth Multicast in Cooperative Environments",
+          "authors": [
+            "Miguel Castro"
+          ]
+        },
+        {
+          "title": "Bullet: High Bandwidth Data Dissemination Using an Overlay Mesh",
+          "authors": [
+            "Dejan Kostic"
+          ]
+        },
+        {
+          "title": "Overcast: Reliable Multicasting with an Overlay Network",
+          "authors": [
+            "John Jannotti"
+          ]
+        },
+        {
+          "title": "FastReplica: Efficient Large File Distribution within Content Delivery Networks",
+          "authors": [
+            "Ludmila Cherkasova"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Minimum-cost multicast with network coding is formulated over capacitated links in which each link has a cost per unit of carried rate, and the task is to find a minimum-cost subgraph for a fixed multicast rate.",
+        "This capacity-based cost model is inconsistent with per-byte egress fees that vary by destination region and provider, and it does not decide throughput jointly with cost."
+      ],
+      "works": [
+        {
+          "title": "Minimum-Cost Multicast over Coded Packet Networks",
+          "authors": [
+            "Desmond S. Lun"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Geo-distributed analytics schedulers incorporate monetary cost into their data-placement and query-routing decisions.",
+        "Those schedulers are scoped to repeated analytical queries and do not address one-time bulk replication of large datasets to a user-specified set of cloud regions and providers under per-VM bandwidth caps and per-GB charges."
+      ],
+      "works": [
+        {
+          "title": "Iridium: Fast and Cheap Analytics for Wide-Area Data",
+          "authors": [
+            "Qifan Pu"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "5dd2d839c66d339a",
+    "d18c13d036b3708f"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 08:56:03"
+}

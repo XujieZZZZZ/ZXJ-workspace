@@ -1,0 +1,93 @@
+{
+  "pdf_id": "52875bf8ef4b3f8c",
+  "mode": "withoutsearch",
+  "observation": "Recent papers report that the frequency of major outages in large cloud provider WANs has remained roughly constant over the years, despite considerable effort and investment. Root-cause analysis of all major outages in a large cloud provider's SDN WAN over the last five years shows that over one third of these outages—the single largest contributing root cause—were caused by incorrect inputs to the SDN controller: the controller itself operates correctly but receives inputs that do not accurately reflect the current state of the network, for example an incomplete view of current traffic demand or an incorrect view of the topology. Incorrect inputs arise from complex control infrastructure with millions of lines of code and unavoidable bugs, router hardware/software bugs that corrupt telemetry or operator-intent signals, correct signals being mutated or delayed by aggregation services, and inputs collected outside the network; the inputs are often incorrect not because they are impossible or unlikely but because they do not reflect the currently occurring network state, and operators' current static sanity checks cannot catch this.",
+  "related_works": [
+    {
+      "claims": [
+        "Operational reports from large-scale software-defined WANs show that centralized controllers can improve utilization and agility, while production experience emphasizes that availability depends on handling hierarchy, partitioning, and diverse failure modes.",
+        "Centralized WAN traffic-engineering systems construct route computations from a snapshot assembled from collected topology and traffic measurements, making correctness dependent on the freshness and accuracy of the inputs supplied to the controller."
+      ],
+      "works": [
+        {
+          "title": "B4: Experience with a Globally-Deployed Software Defined WAN",
+          "authors": [
+            "Sushant Jain"
+          ]
+        },
+        {
+          "title": "Achieving high utilization with software-driven WAN",
+          "authors": [
+            "Chi-Yao Hong"
+          ]
+        },
+        {
+          "title": "B4 and after: Managing hierarchy, partitioning, and asymmetry for availability and scale in Google's software-defined WAN",
+          "authors": [
+            "Chi-Yao Hong"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Network verifiers such as Header Space Analysis and VeriFlow reason about the forwarding state of a network and check invariants such as reachability and loop freedom, either statically or as rules are updated.",
+        "These verifiers operate downstream of the controller and assume that the supplied forwarding state is trustworthy; they do not check whether the controller's internal view of topology, traffic, or operator intent accurately reflects the current physical network."
+      ],
+      "works": [
+        {
+          "title": "Header Space Analysis: Static Checking for Networks",
+          "authors": [
+            "Peyman Kazemian"
+          ]
+        },
+        {
+          "title": "VeriFlow: Verifying Network-Wide Invariants in Real Time",
+          "authors": [
+            "Ahmed Khurshid"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Static configuration checkers in the routing domain examine router configuration files and can expose persistent policy errors in protocols such as BGP before they cause visible faults.",
+        "Because configuration files are static artifacts rather than live inputs, such checks cannot detect cases where telemetry or other state-delivery signals are delayed, mutated, or otherwise inconsistent with the real-time state of the network."
+      ],
+      "works": [
+        {
+          "title": "Detecting BGP Configuration Faults with Static Analysis",
+          "authors": [
+            "Nick Feamster"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Distributed SDN control platforms use replicated network information bases and event dissemination to make controller replicas converge on a consistent view of the network.",
+        "These consistency mechanisms protect shared control state from controller crashes and partitions, but they do not validate whether the information that devices and telemetry services feed into that state is correct or current."
+      ],
+      "works": [
+        {
+          "title": "Onix: A Distributed Control Platform for Large-Scale Production Networks",
+          "authors": [
+            "Teemu Koponen"
+          ]
+        },
+        {
+          "title": "HyperFlow: A Distributed Control Plane for OpenFlow",
+          "authors": [
+            "Amin Tootoonchian"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "c252b8a901feea74",
+    "b93fea400aedf898"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 08:33:31"
+}

@@ -1,0 +1,89 @@
+{
+  "pdf_id": "d18c13d036b3708f",
+  "mode": "withsearch",
+  "observation": "Running large language model (LLM) inference over large relational datasets for batch data analytics is extremely slow and expensive: an NVIDIA L4 GPU serving Llama3-8B processes only about 6 KB of text per second, taking roughly a day to handle 15 GB of data, and processing a comparable amount of data on OpenAI's GPT-4o costs about $10K. Although LLM invocations are increasingly offered as operators on relational tables, naively sending rows in their default order to a serving backend with a prompt KV cache leads to low cache-hit rates. Real relational workloads contain repeated cell values, joined-feature repetition, popular-item reuse, and shared RAG contexts that could serve as cached prefixes; but tables also contain highly unique leading fields such as IDs or review text, and the fixed row/field order in which requests are sent critically limits how much prefix reuse is possible.",
+  "related_works": [
+    {
+      "claims": [
+        "Serving systems for large language models reuse the cached attention key/value states of prompt prefixes to avoid recomputing prompt processing for repeated requests.",
+        "PagedAttention and RadixAttention provide the memory-management and cache-lookup primitives that make prefix sharing practical in general-purpose LLM serving systems.",
+        "Because key/value reuse is triggered by exact token prefixes, whether two requests can share computation is determined by the textual order in which their prompts are assembled."
+      ],
+      "works": [
+        {
+          "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+          "authors": [
+            "Woosuk Kwon"
+          ]
+        },
+        {
+          "title": "SGLang: Efficient Execution of Structured Language Model Programs",
+          "authors": [
+            "Lianmin Zheng"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Prompt Cache generalizes prefix caches by allowing an arbitrary prompt to be decomposed into application-level modules whose attention states have already been cached.",
+        "Even modular caching assumes that reusable text appears exactly as a previously cached module, so it still depends on how a relational row's values are concatenated and on which values are placed together."
+      ],
+      "works": [
+        {
+          "title": "Prompt Cache: Modular Attention Reuse for Low-Latency Inference",
+          "authors": [
+            "In Gim"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "A recent line of systems embeds LLM calls into SQL/dataframe query processors, making them relational-style operators over whole tables.",
+        "LOTUS provides semantic operators such as filtering, joining, and aggregating by prompting an LLM for every relevant tuple or group, while TableGPT and DB-GPT couple LLM reasoning with tables and databases.",
+        "These systems focus on operator semantics and output quality and do not consider reordering the rows or columns of the issued prompts to maximize KV-cache reuse."
+      ],
+      "works": [
+        {
+          "title": "LOTUS: Enabling Semantic Queries with Large Language Models",
+          "authors": [
+            "Liana Patel"
+          ]
+        },
+        {
+          "title": "TableGPT: Towards Unifying Tables with Large Language Models",
+          "authors": [
+            "Liangyu Zha"
+          ]
+        },
+        {
+          "title": "DB-GPT: Large Language Model Meets Database",
+          "authors": [
+            "Xuanhe Zhou"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Approaches that feed relational data to LLMs generally serialize each record by concatenating feature names and cell values in the order the columns appear in the input schema or dataframe.",
+        "This serialization work optimizes the text representation for semantic accuracy of a few-shot classifier or a data-understanding agent, rather than for prefix reuse in an inference backend."
+      ],
+      "works": [
+        {
+          "title": "TabLLM: Few-Shot Classification of Tabular Data with Large Language Models",
+          "authors": [
+            "Stefan Hegselmann"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "52875bf8ef4b3f8c",
+    "c252b8a901feea74"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 08:27:13"
+}

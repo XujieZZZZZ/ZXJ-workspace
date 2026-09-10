@@ -1,0 +1,36 @@
+flowchart TB
+    subgraph DP["1. Data prep: paper extraction (yields the Human result)"]
+        direction LR
+        P1["Corpus: 8 papers (ADRS tasks)"] --> E1["DeepSeek info extraction"]
+        E1 --> OB1["Observation (Human)"]
+        E1 --> RW1["Related Works (Human)"]
+        E1 --> S1["Solution (Human)"]
+    end
+
+    subgraph RQ1["2. RQ2-1: LLM generates Related Works (two runs; same human Observation as input)"]
+        direction LR
+        PG1["Prompt: enable search"] --> RW2["S_L: Related Works (with-search)"]
+        PG2["Prompt: disable search"] --> RW3["S_L: Related Works (without-search)"]
+    end
+
+    subgraph RQ23["3. RQ2-2 / RQ2-3: LLM generates Solutions (three runs; prompts include human Solution style reference)"]
+        direction LR
+        RW1 --> SM1["LLM generates Solution"] --> SO1["Solution (LLM-1)<br/>input: Human RW"]
+        RW2 --> SM2["LLM generates Solution"] --> SO2["Solution (LLM-2)<br/>input: LLM RW (with-search)"]
+        RW3 --> SM3["LLM generates Solution"] --> SO3["Solution (LLM-3)<br/>input: LLM RW (without-search)"]
+    end
+
+    subgraph RES["4. Four result sets"]
+        direction LR
+        H1["Human result<br/>Observation / RW / Solution: all human"]
+        H2["LLM-1<br/>RW: human; Solution: LLM-generated"]
+        H3["LLM-2<br/>RW (with-search) & Solution: LLM-generated"]
+        H4["LLM-3<br/>RW (without-search) & Solution: LLM-generated"]
+    end
+
+    OB1 -. shared input .-> PG1
+    OB1 -. shared input .-> PG2
+    S1 --> H1
+    SO1 --> H2
+    SO2 --> H3
+    SO3 --> H4

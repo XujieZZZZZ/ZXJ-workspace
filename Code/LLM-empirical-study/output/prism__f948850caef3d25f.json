@@ -1,0 +1,20 @@
+{
+  "task": "prism",
+  "program": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/initial-code/prism__f948850caef3d25f.py",
+  "program_name": "prism__f948850caef3d25f.py",
+  "paper_id": "f948850caef3d25f",
+  "status": "success",
+  "combined_score": 20.825871738191218,
+  "metrics": {
+    "max_kvpr": 19.825871738191218,
+    "execution_time": 0.0006209611892700195,
+    "success_rate": 1.0,
+    "combined_score": 20.825871738191218
+  },
+  "artifacts": {},
+  "elapsed_seconds": 0.2,
+  "returncode": 0,
+  "timed_out": false,
+  "log_file": "prism__f948850caef3d25f.log",
+  "evaluated_at": "2026-09-10T01:25:21.452937+00:00"
+}

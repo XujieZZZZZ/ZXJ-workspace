@@ -1,0 +1,139 @@
+{
+  "observation": "Recent papers report that the frequency of major outages in large cloud provider WANs has remained roughly constant over the years, despite considerable effort and investment. Root-cause analysis of all major outages in a large cloud provider's SDN WAN over the last five years shows that over one third of these outages—the single largest contributing root cause—were caused by incorrect inputs to the SDN controller: the controller itself operates correctly but receives inputs that do not accurately reflect the current state of the network, for example an incomplete view of current traffic demand or an incorrect view of the topology. Incorrect inputs arise from complex control infrastructure with millions of lines of code and unavoidable bugs, router hardware/software bugs that corrupt telemetry or operator-intent signals, correct signals being mutated or delayed by aggregation services, and inputs collected outside the network; the inputs are often incorrect not because they are impossible or unlikely but because they do not reflect the currently occurring network state, and operators' current static sanity checks cannot catch this.",
+  "related_works": [
+    {
+      "claims": [
+        "Root-cause studies of production network and cloud infrastructure consistently find that configuration errors, management actions, and software bugs in control/management systems cause a large fraction of service-impacting outages.",
+        "Public-cloud outage studies similarly attribute many incidents to software and configuration issues rather than to physical data-plane failures, showing that maintaining correct control-plane state remains a significant operational challenge."
+      ],
+      "works": [
+        {
+          "title": "Understanding Network Failures in Data Centers: Measurement, Analysis, and Implications",
+          "authors": [
+            "Phillipa Gill"
+          ]
+        },
+        {
+          "title": "Why Does the Cloud Stop Computing?: Lessons from Hundreds of Service Outages",
+          "authors": [
+            "Haryadi S. Gunawi"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Centralized WAN controllers make forwarding and traffic-engineering decisions from a global model that includes live topology and traffic-demand measurements.",
+        "If an input such as topology or demand does not reflect the current network, the controller can compute an incorrect plan even though its optimization and control logic is functioning correctly."
+      ],
+      "works": [
+        {
+          "title": "B4: Experience with a Globally-Deployed Software Defined WAN",
+          "authors": [
+            "Sushant Jain"
+          ]
+        },
+        {
+          "title": "Achieving High Utilization with Software-Driven WAN",
+          "authors": [
+            "Chi-Yao Hong"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Network verification research checks a given snapshot of forwarding or configuration state for invariants such as reachability and loop freedom in real or near-real time.",
+        "Such verifiers use the controller's own state as the object of analysis; they validate policy conformance of that state but do not validate whether the state was derived from inputs that accurately reflect the live network."
+      ],
+      "works": [
+        {
+          "title": "Header Space Analysis: Static Checking for Networks",
+          "authors": [
+            "Peyman Kazemian"
+          ]
+        },
+        {
+          "title": "VeriFlow: Verifying Network-Wide Invariants in Real Time",
+          "authors": [
+            "Ahmed Khurshid"
+          ]
+        },
+        {
+          "title": "NetPlumber: A New Approach to Checking Network-Wide Invariants in Real Time",
+          "authors": [
+            "Peyman Kazemian"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Interdomain routing studies show that incorrect operator intent in the form of configuration mistakes is a longstanding cause of route failures and can be hard to distinguish from legitimate behavior until the erroneous state has already affected the control plane."
+      ],
+      "works": [
+        {
+          "title": "Understanding BGP Misconfiguration",
+          "authors": [
+            "Ratul Mahajan"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Verification and testing of SDN controller programs focuses on logical bugs in controller code under an abstract model of network events.",
+        "These techniques assume the controller receives accurate signals about topology and state, so they do not address upstream pipelines that mutate, delay, or lose those signals before the controller consumes them."
+      ],
+      "works": [
+        {
+          "title": "VeriCon: Towards Verifying Controller Programs in Software-Defined Networks",
+          "authors": [
+            "Thomas Ball"
+          ]
+        },
+        {
+          "title": "A Nice Way to Test OpenFlow Applications",
+          "authors": [
+            "Marco Canini"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Large-scale probing and network-telemetry systems give operators an independent view of live data-plane behavior such as losses, latency, and discarded packets.",
+        "These observability systems are operated as monitoring and debugging overlays rather than as continuous validators of the inputs on which SDN control decisions are based."
+      ],
+      "works": [
+        {
+          "title": "Pingmesh: A Large-Scale System for Data Center Network Latency Measurement and Analysis",
+          "authors": [
+            "Chuanxiong Guo"
+          ]
+        },
+        {
+          "title": "EverFlow: A High Performance and Programmable Network Telemetry System",
+          "authors": [
+            "Yuliang Li"
+          ]
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The root cause is that verification has historically targeted the wrong layer. Header Space Analysis, VeriFlow, and NetPlumber validate the controller's state only after that state has been assembled from inputs, so they can prove reachability or loop freedom of an incorrect model but cannot tell that the model is untrue. VeriCon and A Nice Way to Test OpenFlow Applications verify controller code against an event stream they assume is accurate; upstream corruption is outside their semantics. Pingmesh and EverFlow observe the physical data plane but are operated as parallel monitoring utilities, not as a continuous sanctioning source for control decisions. The observation shows that a third of major WAN outages originate in inputs—topology and demand—that no longer match the live network, so the only dependable ground truth is the data plane itself: a link is up only if packets actually traverse it, and a demand exists only if those bytes actually enter the network. Therefore the proposed solution introduces an independent ground-truth measurement plane, built from Pingmesh-style active probes and EverFlow-style programmable telemetry, that continuously estimates the live topology and traffic matrix. A validation engine sits directly in front of the SDN controller's input interface and treats every input update—link up/down, new traffic matrix—as a hypothesis. Before the controller is allowed to change its model, the engine compares the update against the ground-truth estimate, rejecting it if the update contradicts observed data-plane behavior. Rejected inputs are quarantined and trigger a resync request to the originating input service. If an incorrect input is admitted despite validation—because of measurement imperfection or a fast-moving failure—the same ground-truth plane runs a post-commit watch and invokes an immediate rollback to the last validated forwarding state. This moves control-plane verification one layer upstream, converting the telemetry overlays from passive diagnostics into an active, safety-critical validation loop. The main trade-off is between latency and confidence: topology validation can be made hard-coded from direct port and path measurements in milliseconds, while demand updates are inherently more volatile and require statistical tolerance to avoid false rejects. We deliberately favor a fail-freeze behavior during collector-master disagreements, because accepting an unvalidated input is more likely to cause the service-impacting outages described in the observation.",
+    "implementation": "The system has three functional planes. (1) Ground-truth measurement plane. Every site in the WAN runs a probe agent attached to an edge switch; agents send all-to-all probe packets at a low, configurable baseline rate (default one probe per source-destination pair every 10 seconds). The probe packet carries a sequence number and timestamp and is assigned a dedicated UDP destination port. Each switch is preprogrammed with an EverFlow-style match rule: for probe packets destined to this port, copy the packet header—plus switch ID, ingress port, egress port, and timestamp—to a local collector over a dedicated out-of-band telemetry port. The collector thereby reconstructs the actual sequence of switches traversed by each probe; if a probe times out and no alternate observation appears, the affected pair is marked as unreachable. For link-state validation, the system also polls each switch's port oper-status and byte counters directly every second, bypassing the controller's topology-discovery aggregation pipeline. For demand measurement, the edge switches apply a second EverFlow-style sampling rule: randomly sample 1/4096 of all packets entering from site-facing ports, and send copies to the collector. The collector maps source IP prefixes to sites and destination IP prefixes to sites, aggregates the samples over a 5-minute sliding window, normalizes by the sampling rate, and applies a short exponential moving average to produce the ground-truth traffic matrix D_obs. (2) Ground-truth model constructor. The collector maintains two data structures: a labeled link-state table (port status, counters, and a list of probe paths that used each adjacency in the last two seconds), and the smoothed demand matrix D_obs. From the probe paths it also derives the currently active forwarding graph. These data structures are refreshed continuously and timestamped. (3) Input validation engine and rollback controller. A state proxy is inserted between all input services and the SDN controller's global model update API. When a topology update arrives, the proxy queries the ground-truth link-state table for every affected link. If the update declares a link DOWN but the direct port-status reads operational UP and at least one probe path in the last 2 seconds successfully used that link, the update is rejected. If the update declares a link UP but the direct port-status reads DOWN and no recent probe path uses it, the update is also rejected. Only links whose status matches the ground-truth observation are passed through to the controller. When a demand update arrives, the proxy computes the L2 relative error err = ||D_update - D_obs||_2 / ||D_obs||_2 over the 5-minute smoothed matrix; if err exceeds a threshold theta=0.25, the update is rejected. Rejected inputs are logged and a one-way resync message is sent back to the input source, telling it to re-collect and re-submit the candidate from the ground-truth data. Accepted updates are stamped and forwarded to the controller. For rollback, before the controller installs the new forwarding state derived from an accepted update, the proxy records a snapshot of the previously validated controller model and the set P of source-destination pairs whose forwarding paths are affected by the new rules. Immediately after the rules are installed, the proxy raises the probe rate for pairs in P to one probe per second and starts a post-commit watch window of 30 seconds. During this window, if any probe in P is lost beyond a 2% threshold, or if the observed path for a probe differs from the set of paths derivable from the controller's current forwarding rule for that pair, or if a direct port-status check shows a link that the controller's model considers UP but the ground-truth table reports DOWN, the proxy commands the controller to revert instantaneously to the saved previous state, alerting the operator. If the state survives the watch window, it is marked as validated and becomes the new baseline snapshot. To prevent common-mode failures, the collectors and the telemetry network are deliberately independent of the software stack used by the topology and demand input services. The system is fail-freeze: if a ground-truth collector becomes unreachable or its data older than 10 seconds, the proxy refuses all subsequent input updates and uses the last validated state, allowing control-plane changes only after the ground-truth plane resumes and revalidates. Key parameters are baseline probe interval (10 s), post-commit probe interval (1 s), watch window (30 s), loss threshold (2%), demand sampling rate (1/4096), demand smoothing window (5 min), demand error threshold (0.25), and port poll interval (1 s); these can be tuned to the scale of the WAN without changing the described algorithms."
+  },
+  "pdf_id": "52875bf8ef4b3f8c",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/Telemetry.md",
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:29:15",
+  "task": "llm_re_withsearch",
+  "related_works_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/relatedworks_withsearch/52875bf8ef4b3f8c.json",
+  "solution_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/solution_llm_re/52875bf8ef4b3f8c_withsearch.json",
+  "style_exemplar_ids": [
+    "c252b8a901feea74",
+    "b93fea400aedf898"
+  ]
+}

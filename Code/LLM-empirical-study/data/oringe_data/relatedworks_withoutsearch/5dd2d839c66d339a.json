@@ -1,0 +1,139 @@
+{
+  "pdf_id": "5dd2d839c66d339a",
+  "mode": "withoutsearch",
+  "observation": "Existing LLM-based multi-agent systems can handle simple dialogue tasks, but complex tasks remain difficult because naively chaining LLMs induces cascading hallucinations and logic inconsistencies. Real-world LLM agent frameworks tend to oversimplify the complexities of collaborative problem solving and often rely on unstructured natural-language dialogue, which loses information across rounds and produces unproductive chatter. Existing code-generation methods also lack self-correction mechanisms that verify runtime executability, leaving complex software engineering tasks unmet.",
+  "related_works": [
+    {
+      "claims": [
+        "A prevalent strategy for using LLMs on complex goals is to orchestrate multiple agents with specialized roles and let them solve a problem through conversational turn-taking.",
+        "Role-specialized multi-agent LLM systems have been shown to carry out software-development pipelines that include analysis, implementation, and testing on small tasks.",
+        "MetaGPT motivates its design by observing that relying solely on natural-language dialogue among agents induces cascading hallucinations, logic inconsistencies, and information loss, and therefore encodes intermediate products as structured artifacts and imposes standardized operating procedures on the collaboration."
+      ],
+      "works": [
+        {
+          "title": "ChatDev: Communicative Agents for Software Development",
+          "authors": [
+            "Chen Qian"
+          ]
+        },
+        {
+          "title": "MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework",
+          "authors": [
+            "Sirui Hong"
+          ]
+        },
+        {
+          "title": "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation",
+          "authors": [
+            "Qingyun Wu"
+          ]
+        },
+        {
+          "title": "AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors",
+          "authors": [
+            "Weize Chen"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "LLM agents are often organized as closed-loop reason-act systems that use environment observations, tool outputs, or human input to ground subsequent decisions.",
+        "Reflexive mechanisms augment such agents with revision from an episodic buffer or with a model's own critique and retry.",
+        "Controlled studies of self-correction have found that LLMs do not reliably correct their own answers using purely internal verbal feedback; improvement requires external verification signals such as oracle feedback or execution results."
+      ],
+      "works": [
+        {
+          "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+          "authors": [
+            "Shunyu Yao"
+          ]
+        },
+        {
+          "title": "Reflexion: Language Agents with Verbal Reinforcement Learning",
+          "authors": [
+            "Noah Shinn"
+          ]
+        },
+        {
+          "title": "Self-Refine: Iterative Refinement with Self-Feedback",
+          "authors": [
+            "Aman Madaan"
+          ]
+        },
+        {
+          "title": "Large Language Models Cannot Self-Correct Reasoning Yet",
+          "authors": [
+            "Jie Huang"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Large pretrained code generation models often achieve high accuracy by sampling many completions and then filtering or reranking them with execution on test cases.",
+        "Execution signals can also be injected back into the generator: teaching an LLM to debug its output from runtime error messages substantially improves code generation and repair.",
+        "The code-generation line of work is therefore able to verify runtime behavior, but only at the granularity of a single standalone program with a predetermined executable test harness."
+      ],
+      "works": [
+        {
+          "title": "Evaluating Large Language Models Trained on Code",
+          "authors": [
+            "Mark Chen"
+          ]
+        },
+        {
+          "title": "Competition-level code generation with AlphaCode",
+          "authors": [
+            "Yujia Li"
+          ]
+        },
+        {
+          "title": "Teaching Large Language Models to Self-Debug",
+          "authors": [
+            "Xinyun Chen"
+          ]
+        },
+        {
+          "title": "CodeT: Code Generation with Generated Tests",
+          "authors": [
+            "Bei Chen"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Function-level coding benchmarks such as HumanEval and MBPP consist of self-contained short programs, so test-based sampling and reranking is an effective and dominant methodology.",
+        "Repository-scale benchmarks such as SWE-bench ask models to resolve real-world GitHub issues by editing full code bases, and initial LLM-based agents solve only a small fraction of the instances.",
+        "Complex software-engineering collaboration consequently remains unresolved by existing code-generation techniques, which lack a structured multi-agent workflow with executable verification at each step."
+      ],
+      "works": [
+        {
+          "title": "Evaluating Large Language Models Trained on Code",
+          "authors": [
+            "Mark Chen"
+          ]
+        },
+        {
+          "title": "Program Synthesis with Large Language Models",
+          "authors": [
+            "Jacob Austin"
+          ]
+        },
+        {
+          "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+          "authors": [
+            "Carlos E. Jimenez"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "d18c13d036b3708f",
+    "52875bf8ef4b3f8c"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:03:01"
+}

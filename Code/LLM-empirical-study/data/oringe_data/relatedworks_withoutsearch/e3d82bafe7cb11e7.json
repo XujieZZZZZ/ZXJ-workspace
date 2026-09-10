@@ -1,0 +1,106 @@
+{
+  "pdf_id": "e3d82bafe7cb11e7",
+  "mode": "withoutsearch",
+  "observation": "Bulk data replication across multiple cloud regions and providers is essential for data analytics, disaster recovery, and geo-distributed model serving, yet cloud multicast can be expensive due to per-GB network egress fees and slow due to cloud network constraints. Egress prices vary by up to 23× across region pairs, with intra-cloud egress costing $0.01–$0.19 per GB and inter-cloud egress costing $0.08–$0.23 per GB, and cross-region bandwidth varies by up to 202×. Cloud providers impose per-VM egress/ingress limits (for example, AWS throttles egress to 5 Gbps per VM), so a single source VM is often the bottleneck, while users must still meet target replication times. Existing throughput-oriented multicast optimizers do not handle monetary cost, and existing cost-aware multicast work either ignores throughput or assumes a capacity-based pricing model that is inconsistent with today's per-GB egress pricing.",
+  "related_works": [
+    {
+      "claims": [
+        "Centralized software-defined WAN controllers have shown that inter-datacenter transfer capacity can be scheduled dynamically to improve utilization and meet bandwidth demands.",
+        "These systems formulate traffic engineering in terms of bandwidth allocation and aggregate flow demands; they do not incorporate the per-GB egress charges that a cloud customer pays when data leaves a region or provider."
+      ],
+      "works": [
+        {
+          "title": "B4: Experience with a globally-deployed software defined WAN",
+          "authors": [
+            "Sushant Jain"
+          ]
+        },
+        {
+          "title": "Achieving high utilization with software-driven WAN",
+          "authors": [
+            "Chi-Yao Hong"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Overlay multicast systems organize end hosts into trees or meshes to provide multi-point distribution without relying on IP multicast.",
+        "High-bandwidth dissemination systems optimize the use of available upload and download bandwidth among participants to maximize throughput.",
+        "These systems do not model monetary transfer charges or per-VM egress caps imposed by cloud providers, treating bandwidth as the only scarce resource."
+      ],
+      "works": [
+        {
+          "title": "Overcast: Reliable multicasting with an overlay network",
+          "authors": [
+            "John Jannotti"
+          ]
+        },
+        {
+          "title": "A case for end system multicast",
+          "authors": [
+            "Yang-Hua Chu"
+          ]
+        },
+        {
+          "title": "Bullet: High bandwidth data dissemination using an overlay mesh",
+          "authors": [
+            "Dejan Kostic"
+          ]
+        },
+        {
+          "title": "SplitStream: High-Bandwidth Multicast in Cooperative Environments",
+          "authors": [
+            "Miguel Castro"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Classical multicast routing research formulates distribution-tree construction as a Steiner-tree problem where each link has a fixed cost or weight.",
+        "The fixed per-link cost abstraction does not represent usage-sensitive, per-GB egress pricing that commercial clouds charge for traffic leaving a region or provider."
+      ],
+      "works": [
+        {
+          "title": "Routing of multipoint connections",
+          "authors": [
+            "Bernard M. Waxman"
+          ]
+        },
+        {
+          "title": "Multicast routing for multimedia communication",
+          "authors": [
+            "V. P. Kompella"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Cloud-of-clouds storage systems replicate or erasure-code data across multiple providers to achieve durability and availability while accounting for provider pricing.",
+        "These systems target long-lived object and file replicas at storage services, so they do not address deadline-constrained replay or bulk fan-out from a single source VM to many receiving regions."
+      ],
+      "works": [
+        {
+          "title": "DepSky: Dependable and secure storage in a cloud-of-clouds",
+          "authors": [
+            "Alysson Bessani"
+          ]
+        },
+        {
+          "title": "SIRIUS: A distributed file system for web services and social applications in multi-cloud environments",
+          "authors": [
+            "Emmanuel Cecchet"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "5dd2d839c66d339a",
+    "d18c13d036b3708f"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 08:58:22"
+}

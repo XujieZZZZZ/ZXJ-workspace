@@ -1,0 +1,398 @@
+{
+  "observation": "Cloud providers offer spot instances at typically 3–10× cheaper prices than on-demand instances, but spot instances are preemptible and their availability is highly volatile, varying strongly across zones and over time; availability can change from 100% to 0% within hours. Many workloads accept this uncertainty by checkpointing or re-executing, yet deadline-sensitive applications—such as incorporating new user data into an AI recommendation model or making timely trading decisions—cannot tolerate spot preemptions and therefore rely on expensive on-demand instances, trading cost for predictability. Thus it was unclear how deadline-bound jobs could safely exploit cheap spot resources without missing their deadlines.",
+  "related_works": [
+    {
+      "claims": [
+        "Spot instance pricing has evolved from AWS's original bidding mechanism to more stable, diminishing-bid schemes across cloud providers.",
+        "While spot pricing is relatively stable, modeling spot instance availability is challenging because providers expose a black-box allocation system.",
+        "Prior work has attempted to model spot preemption patterns and to predict spot evictions or availability with machine-learning methods.",
+        "Bulk preemption of multiple spot instances has been observed in prior work."
+      ],
+      "works": [
+        {
+          "title": "Spotlake: Diverse spot instance dataset archive service",
+          "authors": [
+            "S. Lee",
+            "J. Hwang",
+            "K. Lee"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Modeling the temporally constrained preemptions of transient cloud vms",
+          "authors": [
+            "J. Kadupitige",
+            "V. Jadhao",
+            "P. Sharma"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Tributary: spot-dancing for elastic services with latency SLOs",
+          "authors": [
+            "A. Harlap",
+            "A. Chung",
+            "A. Tumanov",
+            "G. R. Ganger",
+            "P. B. Gibbons"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Spot virtual machine eviction prediction in microsoft cloud",
+          "authors": [
+            "F. Yang",
+            "B. Pang",
+            "J. Zhang",
+            "B. Qiao",
+            "L. Wang",
+            "C. Couturier",
+            "C. Bansal",
+            "S. Ram",
+            "S. Qin",
+            "Z. Ma",
+            "I. Goiri",
+            "E. Cortez",
+            "S. Baladhandayutham",
+            "V. Rühle",
+            "S. Rajmohan",
+            "Q. Lin",
+            "D. Zhang"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Snape: Reliable and low-cost computing with mixture of spot and on-demand vms",
+          "authors": [
+            "F. Yang",
+            "L. Wang",
+            "Z. Xu",
+            "J. Zhang",
+            "L. Li",
+            "B. Qiao",
+            "C. Couturier",
+            "C. Bansal",
+            "S. Ram",
+            "S. Qin",
+            "Z. Ma",
+            "I. Goiri",
+            "E. Cortez",
+            "T. Yang",
+            "V. Rühle",
+            "S. Rajmohan",
+            "Q. Lin",
+            "D. Zhang"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "A broad set of workloads—analytics, AI/ML training, HPC, and CI/CD—leverage spot instances to reduce costs.",
+        "To tolerate preemptions, these applications either checkpoint periodically and resume from the last checkpoint or re-execute the whole job.",
+        "Prior systems such as Bamboo, Spotnik, and Srifty were built for machine learning on spot instances, and CompuCache used spot instances for in-memory computable caching.",
+        "Narayanan et al. showed that using spot instances across multiple clouds can significantly reduce machine-learning training costs.",
+        "Preemptions can negatively affect application performance, and deadline-constrained applications may find it difficult to use spot instances effectively."
+      ],
+      "works": [
+        {
+          "title": "See spot run: using spot instances for mapreduce workflows",
+          "authors": [
+            "N. Chohan",
+            "C. Castillo",
+            "M. Spreitzer",
+            "M. Steinder",
+            "A. N. Tantawi",
+            "C. Krintz"
+          ],
+          "year": 2010
+        },
+        {
+          "title": "Srifty: Swift and thrifty distributed neural network training on the cloud",
+          "authors": [
+            "L. Luo",
+            "P. West",
+            "P. Patel",
+            "A. Krishnamurthy",
+            "L. Ceze"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Exploiting redundancy and application scalability for cost-effective, time-constrained execution of hpc applications on amazon ec2",
+          "authors": [
+            "A. Marathe",
+            "R. Harris",
+            "D. K. Lowenthal",
+            "B. R. de Supinski",
+            "B. Rountree",
+            "M. Schulz"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "Bamboo: Making preemptible instances resilient for affordable training of large DNNs",
+          "authors": [
+            "J. Thorpe",
+            "P. Zhao",
+            "J. Eyolfson",
+            "Y. Qiao",
+            "Z. Jia",
+            "M. Zhang",
+            "R. Netravali",
+            "G. H. Xu"
+          ],
+          "year": 2023
+        },
+        {
+          "title": "Spotnik: Designing distributed machine learning for transient cloud resources",
+          "authors": [
+            "M. Wagenländer",
+            "L. Mai",
+            "G. Li",
+            "P. Pietzuch"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Compucache: Remote computable caching using spot vms",
+          "authors": [
+            "Q. Zhang",
+            "P. Bernstein",
+            "D. S. Berger",
+            "B. Chandramouli",
+            "B. T. Loo",
+            "V. Liu"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Apache spark: A unified engine for big data processing",
+          "authors": [
+            "M. Zaharia",
+            "R. S. Xin",
+            "P. Wendell",
+            "T. Das",
+            "M. Armbrust",
+            "A. Dave",
+            "X. Meng",
+            "J. Rosen",
+            "S. Venkataraman",
+            "M. J. Franklin",
+            "A. Ghodsi",
+            "J. Gonzalez",
+            "S. Shenker",
+            "I. Stoica"
+          ],
+          "year": 2016
+        },
+        {
+          "title": "Analysis and exploitation of dynamic pricing in the public cloud for ml training",
+          "authors": [
+            "D. Narayanan",
+            "K. Santhanam",
+            "F. Kazhamiaka",
+            "A. Phanishayee",
+            "M. Zaharia"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Providing SLOs for Resource-Harvesting VMs in cloud platforms",
+          "authors": [
+            "P. Ambati",
+            "I. Goiri",
+            "F. Frujeri",
+            "A. Gun",
+            "K. Wang",
+            "B. Dolan",
+            "B. Corell",
+            "S. Pasupuleti",
+            "T. Moscibroda",
+            "S. Elnikety",
+            "M. Fontoura",
+            "R. Bianchini"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Snape: Reliable and low-cost computing with mixture of spot and on-demand vms",
+          "authors": [
+            "F. Yang",
+            "L. Wang",
+            "Z. Xu",
+            "J. Zhang",
+            "L. Li",
+            "B. Qiao",
+            "C. Couturier",
+            "C. Bansal",
+            "S. Ram",
+            "S. Qin",
+            "Z. Ma",
+            "I. Goiri",
+            "E. Cortez",
+            "T. Yang",
+            "V. Rühle",
+            "S. Rajmohan",
+            "Q. Lin",
+            "D. Zhang"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Preemptive execution has been studied in energy-harvesting intermittent systems, where many works schedule real-time IoT tasks under energy interruptions.",
+        "From the cloud provider's perspective, existing work has investigated maximizing revenue and enhancing runtime guarantees.",
+        "Earlier user-side studies explored bidding-based policies for deadline-constrained bag-of-task jobs on spot instances, but those policies are less applicable to today's spot markets because the pricing model changed.",
+        "Snape mixes spot and on-demand instances for long-running services and targets SLOs on the number of available instances, which differs from deadline-sensitive batch jobs that may remain idle as long as they finish by their deadline.",
+        "To the authors' knowledge, existing methods did not address switching between spot and on-demand instances in a cost-optimization and deadline-adherence setting for batch jobs."
+      ],
+      "works": [
+        {
+          "title": "Optimal scheduling for real-time jobs in energy harvesting computing systems",
+          "authors": [
+            "M. Chetto"
+          ],
+          "year": 2014
+        },
+        {
+          "title": "A real-time scheduling framework for embedded systems with environmental energy harvesting",
+          "authors": [
+            "H. E. Ghor",
+            "M. Chetto",
+            "R. H. Chehade"
+          ],
+          "year": 2011
+        },
+        {
+          "title": "Scheduling computational and energy harvesting tasks in deadline-aware intermittent systems",
+          "authors": [
+            "B. Islam",
+            "S. Nirjon"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Maximizing cloud revenue using dynamic pricing of multiple class virtual machines",
+          "authors": [
+            "F. Alzhouri",
+            "A. Agarwal",
+            "Y. Liu"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Cospot: A cooperative vm allocation framework for increased revenue from spot instances",
+          "authors": [
+            "S. M. Iqbal",
+            "H. Li",
+            "S. Bergsma",
+            "I. Beschastnikh",
+            "A. J. Hu"
+          ],
+          "year": 2022
+        },
+        {
+          "title": "Near-optimal scheduling mechanisms for deadline-sensitive jobs in large computing clusters",
+          "authors": [
+            "N. Jain",
+            "I. Menache",
+            "J. Naor",
+            "J. Yaniv"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "On-demand, spot, or both: Dynamic resource allocation for executing batch jobs in the cloud",
+          "authors": [
+            "I. Menache",
+            "O. Shamir",
+            "N. Jain"
+          ],
+          "year": 2014
+        },
+        {
+          "title": "Fault-tolerant workflow scheduling using spot instances on clouds",
+          "authors": [
+            "D. Poola",
+            "K. Ramamohanarao",
+            "R. Buyya"
+          ],
+          "year": 2014
+        },
+        {
+          "title": "Autobot: Resilient and cost-effective scheduling of a bag of tasks on spot vms",
+          "authors": [
+            "P. Varshney",
+            "Y. Simmhan"
+          ],
+          "year": 2019
+        },
+        {
+          "title": "Optimal bids for spot vms in a cloud for deadline constrained jobs",
+          "authors": [
+            "M. Zafer",
+            "Y. Song",
+            "K.-W. Lee"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "Snape: Reliable and low-cost computing with mixture of spot and on-demand vms",
+          "authors": [
+            "F. Yang",
+            "L. Wang",
+            "Z. Xu",
+            "J. Zhang",
+            "L. Li",
+            "B. Qiao",
+            "C. Couturier",
+            "C. Bansal",
+            "S. Ram",
+            "S. Qin",
+            "Z. Ma",
+            "I. Goiri",
+            "E. Cortez",
+            "T. Yang",
+            "V. Rühle",
+            "S. Rajmohan",
+            "Q. Lin",
+            "D. Zhang"
+          ],
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Some cloud applications are delay-sensitive and require a job to finish by a given deadline, for example machine-learning model development."
+      ],
+      "works": [
+        {
+          "title": "Hypersched: Dynamic resource reallocation for model development on a deadline",
+          "authors": [
+            "R. Liaw",
+            "R. Bhardwaj",
+            "L. Dunlap",
+            "Y. Zou",
+            "J. E. Gonzalez",
+            "I. Stoica",
+            "A. Tumanov"
+          ],
+          "year": 2019
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "Cost-optimal scheduling for deadline-bound jobs must decide when to pay for always-available on-demand instances and when to gamble on cheaper spot instances. The core insight is that progress should be spread uniformly across the whole period before the deadline, rather than greedily deferring on-demand work until the end. By requiring current progress cp(t) to be at least the linearly interpolated expected progress ep(t) = t * C(0) / R(0), the policy preserves slack near the deadline; this slack lets a job tolerate changeover delays and continue exploiting spot instances that become available late, whereas a greedy policy must abandon spot once the remaining time-to-deadline is within remaining compute time plus changeover cost. Adding hysteresis prevents churning after a short spot lifetime by only leaving an on-demand instance when enough extra progress has been banked to absorb two changeover delays. The approach is parameter-free and makes no assumptions about the stochastic process driving spot availability. A theoretical model of randomized sliced greedy policies and a fractional-spot stochastic model provide the justification: distributing progress across slices reduces worst-case competitive ratio and expected cost.",
+    "implementation": "Inputs are C0 (total computation), R0 (time to deadline), on-demand/spot price ratio k, mean changeover delay d, optional maximum delay d_hat, and spot availability observations. At any time t, track R(t)=R0-t, remaining computation C(t), and progress cp(t)=C0-C(t). Uniform Progress is the parameter-free limit of Time Sliced: Time Sliced divides the horizon R0 into n slices, assigns each slice C0/n progress and R0/n deadline, and applies greedy within each slice; Uniform Progress lets n go to infinity so the progress constraint applies at every t. The policy switches among idle, spot, and on-demand using the following rules: (1) Thrifty Rule: once cp(t)=C0, terminate all instances and remain idle. (2) Safety Net Rule: if the job is idle and R(t)<C(t)+2d, switch to on-demand and stay on it until completion. (3) Exploitation Rule: once on a spot instance, stay on it until it is preempted. (4) Uniform Progress: when idle and cp(t)<ep(t)=t*C0/R0, switch to on-demand and stay on it to catch up. (5) Taking Risks: whenever a spot instance is available, start or resume spot use even if cp(t)<ep(t), subject to the next rule. (6) Hysteresis: while on on-demand, remain on on-demand until cp(t) >= ep(t+2d); only then may an available spot instance be taken. If a Next Spot Lifetime Oracle o(t) is available, replace the hysteresis and spot-entry conditions with cost comparisons: from idle, enter spot only if o(t)/(o(t)-d) < k, equivalent to o(t) > k*d/(k-1); from on-demand, switch to spot only if (o(t)+k*d)/(o(t)-d) < k, equivalent to o(t) > 2*k*d/(k-1). For gang-scheduled multi-instance jobs requiring N instances, use the Polarization Rule and homogeneous clusters: at any time the cluster is 0 instances, N all-spot instances, or N all-on-demand instances; treat spot as unavailable when fewer than N spot instances can be acquired, map N-spot to the single-instance spot state, and on preemption reconfigure the cluster to 0 or N instances according to the same single-instance policy. To handle uncertain runtime, let C_bar(0) be the user-provided estimate and delta=C(0)-C_bar(0); if the job is not finished when C_bar(t)<=0 but actual work remains, keep the current instance and switch to on-demand, giving a best-effort deadline guarantee of R0+delta. To handle variable changeover delay, if only average d is known and the maximum possible delay is d_hat, the guaranteed finish becomes R0+2*(d_hat-d), so a user can specify a deadline shortened by that amount to preserve the original guarantee. End-to-end, the implementation runs in a controller on SkyPilot: periodically it reads the current instance state and a spot-capacity boolean from cloud capacity-reservation APIs, passes them to the policy, and if the decided state differs from the current state, it invokes the provisioner to launch or terminate instances; the measured provisioning, setup, and recovery overheads constitute the changeover delay d."
+  },
+  "pdf_id": "b93fea400aedf898",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/Can’t-Be-Late.md",
+  "model": "deepseek-v4-flash",
+  "extracted_at": "2026-09-03 07:00:03"
+}

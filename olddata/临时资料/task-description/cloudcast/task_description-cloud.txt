@@ -1,0 +1,135 @@
+# Multi-Cloud Data Multicasting Cost Optimization Task
+
+## Task Goal
+
+Improve the baseline search_algorithm (initial_program.py) by developing a more sophisticated multicast topology construction strategy. The new algorithm (to be implemented in new_program.py) must minimize total multi-cloud data transfer (egress) cost while maintaining feasibility and correctness across diverse network topologies, outperforming the baseline multicast routing algorithm.
+
+## Problem Context
+
+Modern distributed applications frequently operate across multiple cloud providers such as AWS, Azure, and GCP. In these environments, data generated in one cloud region often needs to be distributed to many destination regions spanning different providers and geographic locations.
+
+Unlike traditional multicast problems, multi-cloud data transfer introduces heterogeneous monetary costs. Each network link may incur a different egress charge depending on the source region, destination region, and cloud provider. Inter-cloud transfers are often significantly more expensive than intra-cloud transfers. As a result, the choice of transfer topology can have a substantial impact on the total operational cost of the system.
+
+A naïve solution sends data independently from the source to every destination. While simple, this approach repeatedly pays for expensive links and fails to exploit opportunities for transfer reuse. In contrast, a carefully designed multicast topology can forward data through intermediate regions, allowing multiple destinations to share upstream transfers and reducing redundant egress charges.
+
+Each problem instance consists of:
+
+- A source region containing the original data.
+- A set of destination regions that must receive the data.
+- A directed multi-cloud network topology.
+- Link-specific egress costs and throughput capacities.
+- A fixed number of data partitions (stripes) that can be transferred independently.
+
+The challenge is to construct a multicast topology that delivers data from the source to all destinations while minimizing the overall transfer cost.
+
+The key insight is that cost-efficient multicast strategies should exploit shared transfer paths and carefully selected intermediate relay nodes. Sending traffic through a slightly longer path may reduce overall cost if it allows multiple destinations to reuse expensive inter-cloud transfers. Therefore, effective algorithms must balance local path costs against the global structure of the multicast topology.
+
+Different network configurations may favor different routing strategies. Some topologies may benefit from direct delivery, while others may achieve significantly lower costs through relay-based multicast trees. Consequently, the objective is to design a robust algorithm that adapts to diverse cloud network structures and minimizes total egress cost.
+
+## Baseline Algorithm
+
+The baseline is the **initial search_algorithm** (initial_program.py) that uses an independent shortest-path routing strategy.
+
+For each destination node, the algorithm computes the minimum-cost path from the source using Dijkstra's shortest path algorithm and assigns the same path to every partition.
+
+Key characteristics of the baseline:
+
+- Function: `search_algorithm(src, dsts, G, num_partitions)` in initial_program.py
+- Inputs:
+  - `src`: source node containing the data
+  - `dsts`: list of destination nodes
+  - `G`: directed network graph with cost and throughput attributes
+  - `num_partitions`: number of independent data partitions
+- Returns:
+  - A BroadCastTopology object describing the multicast routes
+- Removes incoming edges to the source and self-loops
+- Computes an independent minimum-cost path for each destination
+- Uses Dijkstra shortest-path search with edge cost as the optimization objective
+- Replicates the same route for all partitions
+- Does not explicitly optimize path sharing among destinations
+- Does not construct a global multicast tree
+
+## New Algorithm
+
+You MUST implement the following function inside `new_program.py`:
+
+### Method: `search_algorithm(src, dsts, G, num_partitions)`
+
+```python
+def search_algorithm(
+    src,
+    dsts,
+    G,
+    num_partitions,
+):
+    """
+    Compute a multicast topology that minimizes data transfer cost.
+
+    Args:
+        src: Source node
+        dsts: List of destination nodes
+        G: Directed network graph
+        num_partitions: Number of data partitions
+
+    Returns:
+        bc_topology
+        - BroadCastTopology describing multicast routes
+    """
+````
+
+The returned topology must successfully deliver data from the source to all destination nodes and should minimize the total egress cost across the multi-cloud network.
+
+The graph provides the following information:
+
+* Edge cost (`cost`)
+* Edge throughput (`throughput`)
+* Directed connectivity between cloud regions
+
+The output must be a valid `BroadCastTopology` object:
+
+```python
+BroadCastTopology(
+    src,
+    dsts,
+    num_partitions
+)
+```
+
+where every destination receives all partitions through valid network paths originating from the source.
+
+The algorithm may utilize:
+
+* Shared multicast trees
+* Intermediate relay regions
+* Cost-aware routing heuristics
+* Steiner-tree-inspired constructions
+* Topology-aware optimization strategies
+
+as long as the resulting topology remains valid and minimizes transfer cost.
+
+## Evaluation Metrics
+
+The algorithm is evaluated by comparing **new_program.py vs initial_program.py (baseline)** across multiple multi-cloud network configurations.
+
+1. **total_cost**: aggregate egress cost across all benchmark configurations. Lower is better.
+2. **success_rate**: fraction of configurations successfully processed without errors. Higher is better.
+3. **max_transfer_time**: aggregate transfer completion time reported by the simulator. Lower is better.
+
+The evaluator converts cost into a score:
+
+* `cost_score = 1 / (1 + total_cost)`
+* `time_score = 1 / (1 + total_transfer_time)`
+
+Current evaluator scoring:
+```
+combined_score = cost_score
+```
+where:
+
+* Higher `combined_score` indicates lower total egress cost.
+* Any failure to process a configuration results in a score of zero.
+* Algorithms must generate valid multicast topologies for all benchmark configurations.
+
+The primary optimization objective is therefore:
+Minimize Total Egress Cost while maintaining successful execution across all evaluation scenarios.
+

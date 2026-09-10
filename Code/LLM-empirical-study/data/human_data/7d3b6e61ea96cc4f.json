@@ -1,0 +1,575 @@
+{
+  "observation": "Datacenter networks must serve cloud applications that require extremely low latency and high bandwidth, yet traffic is commonly bursty and emerging reconfigurable datacenters introduce rapid bandwidth changes, making congestion control a key enabler or limiter of system performance. The reaction time and accuracy of existing datacenter congestion control schemes are inherently limited because they react either only to the absolute network state (queue length, delay, ECN, or loss, called voltage) or only to state variations (e.g., RTT gradient, called current). A voltage-based reaction is oblivious to the rate at which the queue builds up and over-reacts when the queue drains, losing throughput; a current-based reaction is oblivious to the absolute queue length and, having no unique equilibrium, cannot stabilize queue lengths. Consequently, neither class of algorithms alone can deliver both fast, accurate reaction to perturbations and the strict near-zero-queue, high-throughput equilibrium that datacenter workloads demand.",
+  "related_works": [
+    {
+      "claims": [
+        "Existing datacenter congestion control algorithms are fundamentally limited to one of two dimensions when updating their congestion window or rate: they react either to the absolute network state (voltage) such as bottleneck queue length, delay, ECN, or loss, or to variations of the state (current) such as the RTT gradient.",
+        "CUBIC, DCTCP, and Vegas are examples of voltage-based CC algorithms that react to absolute properties, while TIMELY is an example of a current-based CC algorithm that reacts to the RTT gradient.",
+        "Because they are limited to a single dimension, existing schemes cannot distinguish scenarios that differ in the other dimension, which leads to reactions that are either too slow or an overreaction."
+      ],
+      "works": [
+        {
+          "title": "Cubic: a new tcp-friendly high-speed tcp variant",
+          "authors": [
+            "Sangtae Ha",
+            "Injong Rhee",
+            "Lisong Xu"
+          ],
+          "year": 2008
+        },
+        {
+          "title": "Data center tcp (dctcp)",
+          "authors": [
+            "Mohammad Alizadeh",
+            "Albert Greenberg",
+            "David A Maltz",
+            "Jitendra Padhye",
+            "Parveen Patel",
+            "Balaji Prabhakar",
+            "Sudipta Sengupta",
+            "Murari Sridharan"
+          ],
+          "year": 2010
+        },
+        {
+          "title": "Tcp vegas: New techniques for congestion detection and avoidance",
+          "authors": [
+            "Lawrence S Brakmo",
+            "Sean W O'Malley",
+            "Larry L Peterson"
+          ],
+          "year": 1994
+        },
+        {
+          "title": "Timely: Rtt-based congestion control for the datacenter",
+          "authors": [
+            "Radhika Mittal",
+            "Vinh The Lam",
+            "Nandita Dukkipati",
+            "Emily Blem",
+            "Hassan Wassel",
+            "Monia Ghobadi",
+            "Amin Vahdat",
+            "Yaogong Wang",
+            "David Wetherall",
+            "David Zats"
+          ],
+          "year": 2015
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Voltage-based CC algorithms are more likely to be stable but are fundamentally limited in reaction time; current-based CC algorithms detect congestion faster but face greater stability challenges.",
+        "Voltage-based CC is oblivious to the queue buildup rate while current-based CC is oblivious to absolute queue lengths, so each class may either under-react or overreact.",
+        "TIMELY, a current-based CC deployed at Google datacenters, turned out to be unstable and was succeeded by SWIFT, a voltage-based CC."
+      ],
+      "works": [
+        {
+          "title": "Timely: Rtt-based congestion control for the datacenter",
+          "authors": [
+            "Radhika Mittal",
+            "Vinh The Lam",
+            "Nandita Dukkipati",
+            "Emily Blem",
+            "Hassan Wassel",
+            "Monia Ghobadi",
+            "Amin Vahdat",
+            "Yaogong Wang",
+            "David Wetherall",
+            "David Zats"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "Ecn or delay: Lessons learnt from analysis of dcqcn and timely",
+          "authors": [
+            "Yibo Zhu",
+            "Monia Ghobadi",
+            "Vishal Misra",
+            "Jitendra Padhye"
+          ],
+          "year": 2016
+        },
+        {
+          "title": "Swift: Delay is simple and effective for congestion control in the datacenter",
+          "authors": [
+            "Gautam Kumar",
+            "Nandita Dukkipati",
+            "Keon Jang",
+            "Hassan MG Wassel",
+            "Xian Wu",
+            "Behnam Montazeri",
+            "Yaogong Wang",
+            "Kevin Springborn",
+            "Christopher Alfeld",
+            "Michael Ryan"
+          ],
+          "year": 2020
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Receiver-driven transport protocols such as NDP, HOMA, and Aeolus have been proposed and show significant performance improvements.",
+        "Receiver-driven transport relies on the assumption that datacenter networks are well-provisioned and claims congestion control is unnecessary; NDP, for example, performs no congestion control whatsoever in a Clos topology.",
+        "Receiver-driven approaches take feedback from the ToR downlink at the receiver, whereas sender-based approaches can identify congestion anywhere along the round-trip path.",
+        "Receiver-driven transport approaches make assumptions about uniformity in datacenter topologies and oversubscription."
+      ],
+      "works": [
+        {
+          "title": "Re-architecting datacenter networks and stacks for low latency and high performance",
+          "authors": [
+            "Mark Handley",
+            "Costin Raiciu",
+            "Alexandru Agache",
+            "Andrei Voinescu",
+            "Andrew W. Moore",
+            "Gianni Antichi",
+            "Marcin Wójcik"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Homa: A receiver-driven low-latency transport protocol using network priorities",
+          "authors": [
+            "Behnam Montazeri",
+            "Yilong Li",
+            "Mohammad Alizadeh",
+            "John Ousterhout"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Aeolus: A building block for proactive transport in datacenters",
+          "authors": [
+            "Shuihai Hu",
+            "Wei Bai",
+            "Gaoxiong Zeng",
+            "Zilong Wang",
+            "Baochen Qiao",
+            "Kai Chen",
+            "Kun Tan",
+            "Yi Wang"
+          ],
+          "year": 2020
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Loss/ECN-based schemes operate by maintaining a standing queue, which does not satisfy the strict equilibrium state requirements of near-zero queue length with high throughput.",
+        "TCP NewReno flows fill the queue and then react by halving windows, causing queue oscillations; DCTCP flows oscillate around an ECN marking threshold K > b*tau/7 that depends on BDP.",
+        "Queue-length-based and delay-based (voltage-based) control laws have a unique equilibrium point.",
+        "RTT-gradient-based (current-based) control laws do not have a unique equilibrium point, so they cannot control absolute queue lengths; TIMELY in particular has been shown to lack a unique equilibrium."
+      ],
+      "works": [
+        {
+          "title": "Data center tcp (dctcp)",
+          "authors": [
+            "Mohammad Alizadeh",
+            "Albert Greenberg",
+            "David A Maltz",
+            "Jitendra Padhye",
+            "Parveen Patel",
+            "Balaji Prabhakar",
+            "Sudipta Sengupta",
+            "Murari Sridharan"
+          ],
+          "year": 2010
+        },
+        {
+          "title": "Analysis of dctcp: Stability, convergence, and fairness",
+          "authors": [
+            "Mohammad Alizadeh",
+            "Adel Javanmard",
+            "Balaji Prabhakar"
+          ],
+          "year": 2011
+        },
+        {
+          "title": "A control theoretic analysis of red",
+          "authors": [
+            "Christopher V Hollot",
+            "Vishal Misra",
+            "Don Towsley",
+            "Wei-Bo Gong"
+          ],
+          "year": 2001
+        },
+        {
+          "title": "Congestion avoidance and control",
+          "authors": [
+            "V. Jacobson"
+          ],
+          "year": 1988
+        },
+        {
+          "title": "Ecn or delay: Lessons learnt from analysis of dcqcn and timely",
+          "authors": [
+            "Yibo Zhu",
+            "Monia Ghobadi",
+            "Vishal Misra",
+            "Jitendra Padhye"
+          ],
+          "year": 2016
+        }
+      ]
+    },
+    {
+      "claims": [
+        "ECN-based congestion control algorithms such as DCTCP, D2TCP, and DCQCN react proportionally to the ECN signal and require the bottleneck queue to grow to a threshold, which causes queuing delay.",
+        "ECN-based schemes are oblivious to congestion onset and congestion intensity."
+      ],
+      "works": [
+        {
+          "title": "Data center tcp (dctcp)",
+          "authors": [
+            "Mohammad Alizadeh",
+            "Albert Greenberg",
+            "David A Maltz",
+            "Jitendra Padhye",
+            "Parveen Patel",
+            "Balaji Prabhakar",
+            "Sudipta Sengupta",
+            "Murari Sridharan"
+          ],
+          "year": 2010
+        },
+        {
+          "title": "Deadline-aware datacenter tcp (d2tcp)",
+          "authors": [
+            "Balajee Vamanan",
+            "Jahangir Hasan",
+            "TN Vijaykumar"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "Congestion control for large-scale rdma deployments",
+          "authors": [
+            "Yibo Zhu",
+            "Haggai Eran",
+            "Daniel Firestone",
+            "Chuanxiong Guo",
+            "Marina Lipshteyn",
+            "Yehonatan Liron",
+            "Jitendra Padhye",
+            "Shachar Raindel",
+            "Mohamad Haj Yahia",
+            "Ming Zhang"
+          ],
+          "year": 2015
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Protocols such as TIMELY, SWIFT, CDG, and DX rely on RTT measurements for window update calculations; TIMELY and CDG partly react to delay gradients and are therefore oblivious to absolute queue lengths.",
+        "TIMELY uses a threshold to fall back to a proportional reaction to delay rather than continuing to use the delay gradient.",
+        "SWIFT, a successor of TIMELY, reacts only proportionally to delay, so it cannot detect congestion onset or intensity until the distance from the target delay grows significantly."
+      ],
+      "works": [
+        {
+          "title": "Timely: Rtt-based congestion control for the datacenter",
+          "authors": [
+            "Radhika Mittal",
+            "Vinh The Lam",
+            "Nandita Dukkipati",
+            "Emily Blem",
+            "Hassan Wassel",
+            "Monia Ghobadi",
+            "Amin Vahdat",
+            "Yaogong Wang",
+            "David Wetherall",
+            "David Zats"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "Swift: Delay is simple and effective for congestion control in the datacenter",
+          "authors": [
+            "Gautam Kumar",
+            "Nandita Dukkipati",
+            "Keon Jang",
+            "Hassan MG Wassel",
+            "Xian Wu",
+            "Behnam Montazeri",
+            "Yaogong Wang",
+            "Kevin Springborn",
+            "Christopher Alfeld",
+            "Michael Ryan"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Revisiting tcp congestion control using delay gradients",
+          "authors": [
+            "David A Hayes",
+            "Grenville Armitage"
+          ],
+          "year": 2011
+        },
+        {
+          "title": "Accurate latency-based congestion feedback for datacenters",
+          "authors": [
+            "Changhyun Lee",
+            "Chunjong Park",
+            "Keon Jang",
+            "Sue Moon",
+            "Dongsu Han"
+          ],
+          "year": 2015
+        }
+      ]
+    },
+    {
+      "claims": [
+        "XCP, D3, and RCP rely on explicit network feedback based on rate calculations performed inside the network.",
+        "The in-network rate calculations used by XCP, D3, and RCP are heuristic and require parameter tuning to adjust for goals such as fairness and utilization.",
+        "HPCC introduces in-band network telemetry and significantly improves the fidelity of feedback.",
+        "HPCC's control law adjusts rate and window size solely based on observed queue lengths and lacks the control accuracy that would also account for queue dynamics."
+      ],
+      "works": [
+        {
+          "title": "Congestion control for high bandwidth-delay product networks",
+          "authors": [
+            "Dina Katabi",
+            "Mark Handley",
+            "Charlie Rohrs"
+          ],
+          "year": 2002
+        },
+        {
+          "title": "Better never than late: Meeting deadlines in datacenter networks",
+          "authors": [
+            "Christo Wilson",
+            "Hitesh Ballani",
+            "Thomas Karagiannis",
+            "Ant Rowtron"
+          ],
+          "year": 2011
+        },
+        {
+          "title": "Why flow-completion time is the right metric for congestion control",
+          "authors": [
+            "Nandita Dukkipati",
+            "Nick McKeown"
+          ],
+          "year": 2006
+        },
+        {
+          "title": "Hpcc: High precision congestion control",
+          "authors": [
+            "Yuliang Li",
+            "Rui Miao",
+            "Hongqiang Harry Liu",
+            "Yan Zhuang",
+            "Fei Feng",
+            "Lingbo Tang",
+            "Zheng Cao",
+            "Ming Zhang",
+            "Frank Kelly",
+            "Mohammad Alizadeh"
+          ],
+          "year": 2019
+        }
+      ]
+    },
+    {
+      "claims": [
+        "In incast experiments, TIMELY does not control bottleneck queue lengths and loses throughput immediately after reacting to the incast.",
+        "HPCC reacts quickly and restores near-zero queue lengths after an incast, but it does not react enough during congestion onset (reaching roughly twice the buffer occupancy of a power-based scheme) and loses throughput after mitigating the incast.",
+        "HOMA sustains throughput during incasts but does not accurately control bottleneck queue lengths and retains substantially higher buffering in large-scale incasts.",
+        "Under web-search workloads, TIMELY, being current-based, does not explicitly control queuing latency, while HPCC, being voltage-based, does not react fast enough; in the evaluated setup HOMA performs worst, with short-flow flow completion times about an order of magnitude higher at high load."
+      ],
+      "works": [
+        {
+          "title": "Timely: Rtt-based congestion control for the datacenter",
+          "authors": [
+            "Radhika Mittal",
+            "Vinh The Lam",
+            "Nandita Dukkipati",
+            "Emily Blem",
+            "Hassan Wassel",
+            "Monia Ghobadi",
+            "Amin Vahdat",
+            "Yaogong Wang",
+            "David Wetherall",
+            "David Zats"
+          ],
+          "year": 2015
+        },
+        {
+          "title": "Hpcc: High precision congestion control",
+          "authors": [
+            "Yuliang Li",
+            "Rui Miao",
+            "Hongqiang Harry Liu",
+            "Yan Zhuang",
+            "Fei Feng",
+            "Lingbo Tang",
+            "Zheng Cao",
+            "Ming Zhang",
+            "Frank Kelly",
+            "Mohammad Alizadeh"
+          ],
+          "year": 2019
+        },
+        {
+          "title": "Homa: A receiver-driven low-latency transport protocol using network priorities",
+          "authors": [
+            "Behnam Montazeri",
+            "Yilong Li",
+            "Mohammad Alizadeh",
+            "John Ousterhout"
+          ],
+          "year": 2018
+        }
+      ]
+    },
+    {
+      "claims": [
+        "HOMA's performance in this evaluation is not in line with the results reported in its original paper; recent work reports similar performance issues with HOMA.",
+        "HOMA's congestion control accuracy is limited in an oversubscribed Fat-Tree topology because congestion at the ToR uplinks cannot be controlled by a receiver-driven approach.",
+        "HOMA's original evaluation considered practically infinite switch buffers, whereas the setup here uses switches with finite buffers managed using Dynamic Thresholds."
+      ],
+      "works": [
+        {
+          "title": "Homa: A receiver-driven low-latency transport protocol using network priorities",
+          "authors": [
+            "Behnam Montazeri",
+            "Yilong Li",
+            "Mohammad Alizadeh",
+            "John Ousterhout"
+          ],
+          "year": 2018
+        },
+        {
+          "title": "Aeolus: A building block for proactive transport in datacenters",
+          "authors": [
+            "Shuihai Hu",
+            "Wei Bai",
+            "Gaoxiong Zeng",
+            "Zilong Wang",
+            "Baochen Qiao",
+            "Kai Chen",
+            "Kun Tan",
+            "Yi Wang"
+          ],
+          "year": 2020
+        }
+      ]
+    },
+    {
+      "claims": [
+        "In reconfigurable datacenter networks, reTCP instantly fills a newly available high-bandwidth circuit but incurs high latency because it pre-buffers traffic before the circuit becomes available.",
+        "In the same reconfigurable-datacenter setting, HPCC maintains low queue lengths but does not fill the available circuit bandwidth."
+      ],
+      "works": [
+        {
+          "title": "Adapting TCP for reconfigurable datacenter networks",
+          "authors": [
+            "Matthew K Mukerjee",
+            "Christopher Canel",
+            "Weiyang Wang",
+            "Daehyeok Kim",
+            "Srinivasan Seshan",
+            "Alex C Snoeren"
+          ],
+          "year": 2020
+        },
+        {
+          "title": "Hpcc: High precision congestion control",
+          "authors": [
+            "Yuliang Li",
+            "Rui Miao",
+            "Hongqiang Harry Liu",
+            "Yan Zhuang",
+            "Fei Feng",
+            "Lingbo Tang",
+            "Zheng Cao",
+            "Ming Zhang",
+            "Frank Kelly",
+            "Mohammad Alizadeh"
+          ],
+          "year": 2019
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Research on congestion in datacenter networks includes a wide spectrum of mechanisms, such as buffer management and packet scheduling, in addition to end-host congestion control."
+      ],
+      "works": [
+        {
+          "title": "Fab: Toward flow-aware buffer sharing on programmable switches",
+          "authors": [
+            "Maria Apostolaki",
+            "Laurent Vanbever",
+            "Manya Ghobadi"
+          ],
+          "year": 2019
+        },
+        {
+          "title": "Dynamic queue length thresholds for shared-memory packet switches",
+          "authors": [
+            "Abhijit K Choudhury",
+            "Ellen L Hahne"
+          ],
+          "year": 1998
+        },
+        {
+          "title": "pfabric: Minimal near-optimal datacenter transport",
+          "authors": [
+            "Mohammad Alizadeh",
+            "Shuang Yang",
+            "Milad Sharif",
+            "Sachin Katti",
+            "Nick McKeown",
+            "Balaji Prabhakar",
+            "Scott Shenker"
+          ],
+          "year": 2013
+        },
+        {
+          "title": "Finishing flows quickly with preemptive scheduling",
+          "authors": [
+            "Chi-Yao Hong",
+            "Matthew Caesar",
+            "P Brighten Godfrey"
+          ],
+          "year": 2012
+        },
+        {
+          "title": "Flowtune: Flowlet control for datacenter networks",
+          "authors": [
+            "Jonathan Perry",
+            "Hari Balakrishnan",
+            "Devavrat Shah"
+          ],
+          "year": 2017
+        },
+        {
+          "title": "Fastpass: A centralized \"zero-queue\" datacenter network",
+          "authors": [
+            "Jonathan Perry",
+            "Amy Ousterhout",
+            "Hari Balakrishnan",
+            "Devavrat Shah",
+            "Hans Fugal"
+          ],
+          "year": 2014
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The authors observe that existing schemes use only voltage (absolute network state) or only current (rate of state change). Their idea is to make every window update a function of both by using network power, defined as the product of voltage and current: Gamma = (q + b*tau) * lambda, where q is bottleneck queue length, b*tau is the bandwidth-delay product, and lambda is the aggregate arrival rate. Power is tightly related to the congestion window: property 1 shows Gamma = b * w(t - t^f), i.e., power equals the bandwidth-window product. Therefore, measuring power at the bottleneck gives the sender precise knowledge of the aggregate in-flight window, enabling each window update to react simultaneously to the bottleneck queue length (voltage) and to the queue's trend or gradient (current). This preserves voltage-based equilibrium guarantees (a unique, stable equilibrium at near-zero queue) while adding current-based fast reaction to perturbations and to available-bandwidth changes. The key trade-off is that precise power measurement requires per-hop in-band network telemetry (INT) support; a delay-only variant, theta-POWERTCP, is derived for non-programmable switches, trading exact transmission-rate knowledge and multi-bottleneck precision for deployability.",
+    "implementation": "POWERTCP is a window-based, sender-driven congestion control algorithm. Its control law is w_i(t) = gamma * (w_i(t - theta(t)) * e / f(t) + beta) + (1 - gamma) * w_i(t), with e = b^2 * tau and f(t) = Gamma measured for the acknowledged segment. Feedback uses INT: the sender inserts an INT header into data packets, each switch on the path pushes per-hop egress metadata {qlen, ts, txBytes, b} when the packet is scheduled, and the receiver copies this metadata into the ACK. On each ACK, POWERTCP (Algorithm 1) performs the following steps: (1) retrieves cwnd_old, the congestion window that was in effect when the acknowledged segment was transmitted, by remembering the current window once per RTT indexed by ACK sequence number; (2) computes normalized power from the per-hop INT metadata by iterating over egress ports: dt = current_ts - previous_ts, queue gradient qdot = delta_qlen/dt, egress transmission rate mu = delta_txBytes/dt, current lambda = qdot + mu, voltage v = qlen + b*tau, instantaneous power Gamma' = lambda * v, reference e = b^2 * tau, normalized power Gamma_norm = Gamma'/e; the paper states that the maximum normalized power along the path is selected and smoothed with an EWMA Gamma_smooth = (Gamma_smooth * (tau - Delta_t) + Gamma_norm * Delta_t) / tau over one RTT (the exact selection condition in the reproduced pseudocode is internally inconsistent in the converted source; Unavailable in source: corrupted or lost during Markdown conversion); (3) updates cwnd = gamma * (cwnd_old / Gamma_smooth + beta) + (1 - gamma) * cwnd; (4) sets the pacing rate to cwnd / tau; and (5) records the current INT metadata as previous and updates the stored old cwnd once per RTT based on the ACK sequence number. Parameters: gamma is the EWMA weight, recommended 0.9; beta = HostBw * tau / N, where HostBw is the host NIC bandwidth and N is the expected number of flows sharing the NIC, avoiding making the host NIC a bottleneck; the initial cwnd is HostBw * tau and a new flow transmits at line rate during the first RTT to discover the bottleneck. The control law is proven Lyapunov and asymptotically stable with unique equilibrium (w_e, q_e) = (b*tau + beta_hat, beta_hat), converges exponentially with time constant delta_t/gamma, and is beta_i-weighted proportionally fair. For legacy switches without INT, theta-POWERTCP uses accurate end-host RTT timestamps: since q/b + tau = theta and qdot/b = thetadot, the term e/f reduces to tau / ((thetadot + 1) * theta), so on each ACK it computes thetadot = delta_RTT/dt and normalized power ((thetadot + 1) * RTT) / tau, smooths it, applies the same cwnd update at most once per RTT, and sets pacing rate cwnd/tau. theta-POWERTCP assumes the bottleneck transmits at line rate and therefore relies on additive increase to fill newly available bandwidth, and it reacts to the sum of queuing delays in multi-bottleneck paths rather than to the most bottlenecked link; under single-bottleneck congestion it has the same equilibrium properties as POWERTCP. Deployment requires the same switch support and header format as HPCC plus NIC pacing; the P4 proof of concept on Intel Tofino appends 64-bit per-hop headers to a 32-bit base header in a custom TCP option and uses less than one of twelve stages in both the ingress and egress pipelines."
+  },
+  "pdf_id": "7d3b6e61ea96cc4f",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/NS3.md",
+  "model": "deepseek-v4-flash",
+  "extracted_at": "2026-09-03 06:59:34"
+}

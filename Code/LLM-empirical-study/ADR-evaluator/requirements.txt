@@ -1,0 +1,15 @@
+# ADR-evaluator runtime requirements.
+#
+# The evaluators are plain Python and need only these; the venv in this directory
+# is created with --system-site-packages over the `zxj` conda interpreter, so the
+# heavier inherited packages (torch, scipy, pulp, ...) come from there.
+#
+#   python -m venv --system-site-packages .venv
+#   .venv/bin/pip install -r requirements.txt
+#
+# pandas is pinned below 3 on purpose: pandas 3 raises
+#   TypeError: Invalid value [...] for dtype 'int64'
+# on the llm_sql reorder path.
+pandas>=2.0,<3
+numpy<2
+networkx>=3.2,<3.4

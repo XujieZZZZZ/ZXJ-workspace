@@ -1,0 +1,146 @@
+{
+  "observation": "Existing LLM-based multi-agent systems can handle simple dialogue tasks, but complex tasks remain difficult because naively chaining LLMs induces cascading hallucinations and logic inconsistencies. Real-world LLM agent frameworks tend to oversimplify the complexities of collaborative problem solving and often rely on unstructured natural-language dialogue, which loses information across rounds and produces unproductive chatter. Existing code-generation methods also lack self-correction mechanisms that verify runtime executability, leaving complex software engineering tasks unmet.",
+  "related_works": [
+    {
+      "claims": [
+        "A prevalent strategy for using LLMs on complex goals is to orchestrate multiple agents with specialized roles and let them solve a problem through conversational turn-taking.",
+        "Role-specialized multi-agent LLM systems have been shown to carry out software-development pipelines that include analysis, implementation, and testing on small tasks.",
+        "MetaGPT motivates its design by observing that relying solely on natural-language dialogue among agents induces cascading hallucinations, logic inconsistencies, and information loss, and therefore encodes intermediate products as structured artifacts and imposes standardized operating procedures on the collaboration."
+      ],
+      "works": [
+        {
+          "title": "ChatDev: Communicative Agents for Software Development",
+          "authors": [
+            "Chen Qian"
+          ]
+        },
+        {
+          "title": "MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework",
+          "authors": [
+            "Sirui Hong"
+          ]
+        },
+        {
+          "title": "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation",
+          "authors": [
+            "Qingyun Wu"
+          ]
+        },
+        {
+          "title": "AgentVerse: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors",
+          "authors": [
+            "Weize Chen"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "LLM agents are often organized as closed-loop reason-act systems that use environment observations, tool outputs, or human input to ground subsequent decisions.",
+        "Reflexive mechanisms augment such agents with revision from an episodic buffer or with a model's own critique and retry.",
+        "Controlled studies of self-correction have found that LLMs do not reliably correct their own answers using purely internal verbal feedback; improvement requires external verification signals such as oracle feedback or execution results."
+      ],
+      "works": [
+        {
+          "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+          "authors": [
+            "Shunyu Yao"
+          ]
+        },
+        {
+          "title": "Reflexion: Language Agents with Verbal Reinforcement Learning",
+          "authors": [
+            "Noah Shinn"
+          ]
+        },
+        {
+          "title": "Self-Refine: Iterative Refinement with Self-Feedback",
+          "authors": [
+            "Aman Madaan"
+          ]
+        },
+        {
+          "title": "Large Language Models Cannot Self-Correct Reasoning Yet",
+          "authors": [
+            "Jie Huang"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Large pretrained code generation models often achieve high accuracy by sampling many completions and then filtering or reranking them with execution on test cases.",
+        "Execution signals can also be injected back into the generator: teaching an LLM to debug its output from runtime error messages substantially improves code generation and repair.",
+        "The code-generation line of work is therefore able to verify runtime behavior, but only at the granularity of a single standalone program with a predetermined executable test harness."
+      ],
+      "works": [
+        {
+          "title": "Evaluating Large Language Models Trained on Code",
+          "authors": [
+            "Mark Chen"
+          ]
+        },
+        {
+          "title": "Competition-level code generation with AlphaCode",
+          "authors": [
+            "Yujia Li"
+          ]
+        },
+        {
+          "title": "Teaching Large Language Models to Self-Debug",
+          "authors": [
+            "Xinyun Chen"
+          ]
+        },
+        {
+          "title": "CodeT: Code Generation with Generated Tests",
+          "authors": [
+            "Bei Chen"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Function-level coding benchmarks such as HumanEval and MBPP consist of self-contained short programs, so test-based sampling and reranking is an effective and dominant methodology.",
+        "Repository-scale benchmarks such as SWE-bench ask models to resolve real-world GitHub issues by editing full code bases, and initial LLM-based agents solve only a small fraction of the instances.",
+        "Complex software-engineering collaboration consequently remains unresolved by existing code-generation techniques, which lack a structured multi-agent workflow with executable verification at each step."
+      ],
+      "works": [
+        {
+          "title": "Evaluating Large Language Models Trained on Code",
+          "authors": [
+            "Mark Chen"
+          ]
+        },
+        {
+          "title": "Program Synthesis with Large Language Models",
+          "authors": [
+            "Jacob Austin"
+          ]
+        },
+        {
+          "title": "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?",
+          "authors": [
+            "Carlos E. Jimenez"
+          ]
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The right diagnosis is that prior work has two complementary strengths that have not been unified. Role-specialized multi-agent systems (ChatDev, AutoGen, AgentVerse, MetaGPT) show that collaboration can be decomposed among agents, but their default medium is natural language; MetaGPT correctly diagnoses that unstructured dialogue produces cascading hallucinations and information loss, and it responds by introducing structured artifacts and standardized operating procedures. Yet in MetaGPT every intermediate product is a document that an LLM must interpret, so the final court of appeal is still another model's textual judgment. In parallel, code-generation research (the HumanEval paper, AlphaCode, CodeT, and Self-Debug) has found a much stronger signal: run the output and let a deterministic interpreter or test harness decide. Those methods are limited to isolated functions with prefabricated test harnesses, so they cannot cope with open-ended repository issues such as SWE-bench. The insight of this solution is to push the executable test signal into every stage of a role-structured collaboration, and to synthesize executable specifications when no harness exists.\n\nThe proposed framework therefore makes execution the only trust boundary between agents. Every collaboration artifact is either machine-readable structured text or an executable patch; no agent consumes free-form dialogue as its main input. The organizing principle is MetaGPT's standardized procedure, but instead of passing documents from role to role, agents pass versioned artifacts of a small number of types: a task plan, a validated executable test suite, a patch candidate, and an execution report. A deterministic Runner, not an LLM critic, decides whether an artifact advances. This resolves the cascade problem because a false artifact is stopped before it becomes the premise of the next artifact: a plan is checked for internal schema and repository-reference validity, an executable acceptance test suite must be runnable and must fail on the unmodified baseline, a patch must make those generated tests pass, and the final integration must pass the repository's pre-existing tests. Thus, at every step, the next agent builds on externally verified state rather than on the previous agent's assertion.\n\nThe second component of the idea is to treat generated tests as an executable contract that converts a GitHub issue into a verification problem. SWE-bench and similar repository-scale tasks do not provide a pre-existing test that captures the issue, which is why the dominant sampling-and-reranking methodology of the HumanEval/MBPP line does not transfer. In this framework a TestAuthor agent writes tests from the acceptance criteria in the plan. The Runner then validates those tests on the plain baseline: a valid generated test must fail before the fix. This baseline-failure check is an external signal that guards against tautological or vacuous tests. Once locked, the generated tests serve the same role that HumanEval tests serve in function-level code generation, but now for an arbitrary repository change. Multiple independently generated test suites and multiple patch candidates are used cross-validation style, inspired by CodeT, to reduce the risk that a patch merely overfits one weak test set.\n\nI deliberately chose deterministic execution over LLM-based judging or reflection because the provided literature on self-correction shows that LLMs do not reliably correct themselves from purely internal verbal feedback; improvement appears when execution results or oracle feedback are injected. This framework injects such signals at every round. I also rejected the free-form multi-agent conversational design despite its flexibility, because it lacks a reproducible point of verification and permits information loss across turns, exactly the failure documented by MetaGPT. A single-agent self-refinement loop was rejected because it cannot combine issue decomposition, role specialization, test synthesis, and repository-level regression in one traceable process. A pure one-shot sampling-and-reranking pipeline was rejected because, without a dynamic test-generation step, it cannot be applied to an ambiguous issue that arrives without a test harness. The main accepted trade-off is that the generated tests are an approximate oracle rather than the hidden gold tests. This risk is managed, not eliminated, by requiring multiple generated suites to agree, by validating that they fail on baseline, and by making the final full-repository regression suite an unconditional gate before commit.",
+    "implementation": "The implementation is a state machine running on top of an append-only, Git-backed ArtifactStore and an isolated execution sandbox. An artifact has a type, an id, a version, a proposer role, a status, and parent ids. The allowed types are Issue, Plan, Contract, TestSuite, PatchCandidate, PatchCandidateSet, and ExecutionReport. There is no free-text chat channel. An agent can write an artifact and the protocol decides what consumes it next; only the deterministic Runner can set an artifact status to passing.\n\nRoles. Planner is an LLM agent with repository tool access (read files, grep, list directory). TestAuthor is an LLM that writes test code. Implementer is an LLM that edits source code. Integrator is an LLM that merges multiple sub-patches into one composite patch. Runner is a deterministic, non-LLM execution service that applies patches, runs tests, captures stdout/stderr, stack traces, exit codes, and durations, and writes ExecutionReport artifacts.\n\nArtifacts. Plan has fields: goal, acceptance_criteria (a list of observable behaviors), affected_paths, dependencies, contracts, and implementation_steps. Contract describes the interface between decomposed sub-tasks, including function/module signatures, data formats, and invariants. TestSuite contains one or more executable test files and a manifest naming the new test cases and the selected regression tests to run. PatchCandidate contains a unified diff against the base commit. ExecutionReport contains a JSON array with one entry per executed test, including status, command, stdout, stderr, exception/assertion trace, expected value, actual value, and duration.\n\nProtocol steps.\n\nStep 1 - Issue intake: a repository is cloned at the issue base commit, dependencies are installed once, and the Issue artifact is stored. The config provides the repository's test command, e.g. pytest, and the execution timeout.\n\nStep 2 - Planning: the Planner runs a ReAct-style loop using repository tools. It writes a Plan artifact that must pass a schema validator: all non-empty fields are present, affected paths refer to existing files or explicitly new paths, and every Contract names actual repository modules/symbols that appear in the affected paths. Invalid plans are rejected with a structured validation report and sent back to the Planner. The Planner may also split large issues into sub-plans connected by Contract artifacts; the decision is recorded in the Plan. For a single-issue patch, the plan contains no sub-plans.\n\nStep 3 - Executable specification generation: for each sub-plan (or the whole plan), the TestAuthor produces several independent TestSuites, e.g. num_test_suites=3. Each suite contains new tests that encode the acceptance criteria. The Runner executes each suite on an unmodified clean baseline. A suite is locked only if (a) all new tests are runnable, meaning they do not crash on collection, and (b) at least one new test fails or errors on the baseline. If every new test passes on the baseline, the tests do not capture the change and the Report is returned to TestAuthor for regeneration. Locking prevents the Implementer from later weakening or deleting the tests.\n\nStep 4 - Branching candidates: the Implementer receives the locked tests, the Plan, and the baseline repository. It may not modify tests or the Plan. It produces num_patch_candidates=5 distinct PatchCandidate artifacts by sampling with different temperatures; each candidate is a complete diff addressing the acceptance criteria.\n\nStep 5 - Gating run: the Runner applies each PatchCandidate to a fresh clone of the base commit and executes all locked test suites plus a selected regression subset. The regression subset is chosen from the repository's existing tests by a dependency heuristic: files that import or are imported by the affected paths. If no heuristic is available, the Runner executes the entire existing test suite. The Runner writes an ExecutionReport for each candidate. A candidate passes the gate iff all newly generated tests pass and all selected regression tests pass.\n\nStep 6 - Execution-repair loop: a candidate that fails the gate does not proceed. Its ExecutionReport, including raw stack traces and assertion diffs, is attached to the candidate. The state machine sends the candidate, its Report, the latest Report from any other candidate, and the episodic history of previous revisions back to the Implementer. The Implementer must generate a revised PatchCandidate that fixes the failures revealed by the Runner; it is explicitly instructed not to use generic reasoning or self-critique as evidence, but to use only the code and the execution artifacts. This loop repeats for at most repair_rounds=4. At each round the Runner re-runs the revised candidate against all locked test suites and the same regression subset. If after four rounds no candidate passes, the best-scoring candidate and its full Report are stored as a needs-human artifact, and the workflow pauses rather than silently committing a bad patch.\n\nStep 7 - Integration and full regression gate: for non-decomposed plans, the first PatchCandidate that passes the gating run becomes the final candidate. For decomposed plans, the Integrator receives the passing patch candidates from the sub-plans and produces one merged PatchCandidate. If merge conflicts arise, the Integrator edits the code to resolve them, but it cannot delete or modify the locked tests. The Runner then applies the merged candidate to a completely fresh clone of the base and executes all generated test suites from every sub-plan plus the full existing repository test suite. This full regression run is the last gate; a candidate is accepted only if it passes every test. On acceptance, the artifact store marks the candidate as accepted and creates a commit in a result branch.\n\nKey parameters. num_test_suites=3 controls how many independent executable oracles are synthesized. num_patch_candidates=5 controls the breadth of first-round candidate exploration. repair_rounds=4 bounds the execution-repair loop. execution_timeout sets a per-test time limit, e.g. 120 seconds. The regression-subset heuristic is configurable; when the user selects strict mode, every round uses the complete test suite, at higher cost but with no possibility of missing a regression outside the subset.\n\nThe protocol satisfies the observation by replacing the unconstrained conversation loop with a closed state machine of Executable Gates. Each agent's output is submitted as a versioned artifact, so there is no informational entropy loss across turns. Every transition that matters, from test validation through repair to final merge, is mediated by a Runner that executes code and returns raw runtime evidence, not by an LLM judge. This unifies the role specialization of the multi-agent systems literature with the execution-grounded verification that the code-generation literature has shown to be necessary for reliable self-correction."
+  },
+  "pdf_id": "5dd2d839c66d339a",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/MAS.md",
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:48:57",
+  "task": "llm_re_withoutsearch",
+  "related_works_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/relatedworks_withoutsearch/5dd2d839c66d339a.json",
+  "solution_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/solution_llm_re/5dd2d839c66d339a_withoutsearch.json",
+  "style_exemplar_ids": [
+    "d18c13d036b3708f",
+    "52875bf8ef4b3f8c"
+  ]
+}

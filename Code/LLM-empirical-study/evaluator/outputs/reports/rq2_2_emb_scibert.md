@@ -1,0 +1,66 @@
+# RQ2-2 评估报告:基于人类 Related Work 的 Solution 生成能力
+
+- 样本数: 8(Observation + S_H -> Sol_L;GT=Sol_H)
+- 语义编码器: allenai/scibert_scivocab_uncased(--emb scibert);向量缓存与输出按编码器隔离,不覆盖其他编码器的结果
+- 加权总分:均权 w=0.25(见 config.SOL_WEIGHTS);四维 1-5 分
+
+
+## 2.1-2.2 四维 Rubric / 语义相似度 / 技术要素覆盖率
+
+| 样本 | s_tgt | s_feas | s_nov | s_grd | 加权总分 | 语义相似(cos) | 覆盖 K | AspectRecall |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 52875bf8ef4b3f8c | 5 | 4 | 4 | 5 | 4.50 | 0.949 | 6/10 | 60.0% |
+| 5dd2d839c66d339a | 5 | 4 | 4 | 3 | 4.00 | 0.939 | 7/10 | 70.0% |
+| 7d3b6e61ea96cc4f | 5 | 4 | 4 | 4 | 4.25 | 0.934 | 5/12 | 41.7% |
+| b93fea400aedf898 | 5 | 4 | 5 | 3 | 4.25 | 0.960 | 3/12 | 25.0% |
+| c252b8a901feea74 | 5 | 4 | 4 | 5 | 4.50 | 0.951 | 5/10 | 50.0% |
+| d18c13d036b3708f | 5 | 4 | 4 | 5 | 4.50 | 0.943 | 9/11 | 81.8% |
+| e3d82bafe7cb11e7 | 5 | 4 | 5 | 5 | 4.75 | 0.945 | 9/12 | 75.0% |
+| f948850caef3d25f | 5 | 4 | 4 | 5 | 4.50 | 0.948 | 0/10 | 0.0% |
+
+## 2.1b 人类 Solution 基线(同上下文 rubric;对照用)
+
+| 样本 | s_tgt | s_feas | s_nov | s_grd | 加权总分 |
+| --- | --- | --- | --- | --- | --- |
+| 52875bf8ef4b3f8c | 5 | 4 | 4 | 4 | 4.25 |
+| 5dd2d839c66d339a | 5 | 4 | 4 | 3 | 4.00 |
+| 7d3b6e61ea96cc4f | 5 | 3 | 4 | 4 | 4.00 |
+| b93fea400aedf898 | 5 | 4 | 4 | 2 | 3.75 |
+| c252b8a901feea74 | 5 | 4 | 4 | 5 | 4.50 |
+| d18c13d036b3708f | 5 | 4 | 4 | 5 | 4.50 |
+| e3d82bafe7cb11e7 | 5 | 4 | 4 | 4 | 4.25 |
+| f948850caef3d25f | 5 | 4 | 4 | 4 | 4.25 |
+
+注:该基线用于衡量 LLM 方案相对人类方案的绝对水平;与上表 Sol_L 分数差值见 2.1c。
+
+## 2.1c LLM-Sol vs 人类 Sol(Rubric 逐维对比与加权总分差)
+
+| 样本 | tgt(LLM/H) | feas(LLM/H) | nov(LLM/H) | grd(LLM/H) | Δ total |
+| --- | --- | --- | --- | --- | --- |
+| 52875bf8ef4b3f8c | 5(LLM) / 5(Human) | 4(LLM) / 4(Human) | 4(LLM) / 4(Human) | 5(LLM) / 4(Human) | 0.25 |
+| 5dd2d839c66d339a | 5(LLM) / 5(Human) | 4(LLM) / 4(Human) | 4(LLM) / 4(Human) | 3(LLM) / 3(Human) | 0.00 |
+| 7d3b6e61ea96cc4f | 5(LLM) / 5(Human) | 4(LLM) / 3(Human) | 4(LLM) / 4(Human) | 4(LLM) / 4(Human) | 0.25 |
+| b93fea400aedf898 | 5(LLM) / 5(Human) | 4(LLM) / 4(Human) | 5(LLM) / 4(Human) | 3(LLM) / 2(Human) | 0.50 |
+| c252b8a901feea74 | 5(LLM) / 5(Human) | 4(LLM) / 4(Human) | 4(LLM) / 4(Human) | 5(LLM) / 5(Human) | 0.00 |
+| d18c13d036b3708f | 5(LLM) / 5(Human) | 4(LLM) / 4(Human) | 4(LLM) / 4(Human) | 5(LLM) / 5(Human) | 0.00 |
+| e3d82bafe7cb11e7 | 5(LLM) / 5(Human) | 4(LLM) / 4(Human) | 5(LLM) / 4(Human) | 5(LLM) / 4(Human) | 0.50 |
+| f948850caef3d25f | 5(LLM) / 5(Human) | 4(LLM) / 4(Human) | 4(LLM) / 4(Human) | 5(LLM) / 4(Human) | 0.25 |
+
+## 平均(mean)
+
+| s_tgt | s_feas | s_nov | s_grd | 加权总分 | 语义相似 | AspectRecall |
+| --- | --- | --- | --- | --- | --- | --- |
+| 5.0000 | 4.0000 | 4.2500 | 4.3750 | 4.41 | 0.946 | 50.6% |
+
+**人类基线均值**: tgt=5.0000 feas=3.8750 nov=4.0000 grd=3.8750 total=4.19
+
+## Rubric 备注(每样本裁判理由节选)
+
+- 52875bf8ef4b3f8c: Targetedness: 'The IRS turns input correctness into an online, operational property' directly resolves the core contradiction that inputs are incorrect because they don’t reflect current network state
+- 5dd2d839c66d339a: Targetedness: 'The proposed direction therefore separates the medium of collaboration from the medium of verification... addresses cascading hallucinations... and unproductive chatter' directly resolv
+- 7d3b6e61ea96cc4f: Targetedness: 'The state that matters for a datacenter bottleneck is therefore not a scalar but a pair: queue occupancy and queue-occupancy derivative' directly resolves the core contradiction that vo
+- b93fea400aedf898: Targetedness: 'The key missed property of deadline-bound batch jobs is that progress may be discontinuous... spot is used only inside a window in which every preemption is provably repairable' — direc
+- c252b8a901feea74: Targetedness: 'The core problem is that current systems let the execution order be an emergent by-product of arrival order... The solution is to make the transaction order itself a first-class, finite
+- d18c13d036b3708f: Targetedness: 'The core idea is therefore to introduce an explicit prompt-layout and request-scheduling layer... Repeated and long shared values... should be moved to the left of unique values because
+- e3d82bafe7cb11e7: Targetedness: 'The key diagnosis is that previous work models multicast as a bandwidth-allocation problem, whereas modern clouds charge per GB of egress... A rate-based MILP therefore mixes bandwidth,
+- f948850caef3d25f: Targetedness: 'The central issue is that previous designs reduce multi-LLM serving to an all-or-nothing resource decision at a single time scale... none recognize that GPU memory and compute can be ma

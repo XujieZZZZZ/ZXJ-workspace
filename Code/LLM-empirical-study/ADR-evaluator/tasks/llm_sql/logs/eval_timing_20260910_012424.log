@@ -1,0 +1,43 @@
+[2026-09-10 01:24:24.135] Eval timing log: ./logs/eval_timing_20260910_012424.log
+[2026-09-10 01:24:24.135] ======================================================================
+[2026-09-10 01:24:24.135] BEGIN EVALUATE  program=llm_sql__d18c13d036b3708f.py
+[2026-09-10 01:24:24.135]   full_path=/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/initial-code/llm_sql__d18c13d036b3708f.py
+[2026-09-10 01:24:24.135] ======================================================================
+[2026-09-10 01:24:24.135]   -- movies.csv --
+[2026-09-10 01:24:24.228]     read_csv:         0.093s  (shape 15000r x 8c)
+[2026-09-10 01:24:24.259]     chars_before:     0.031s  (total_chars=9,233,197)
+[2026-09-10 01:24:24.477]     reorder():        0.218s
+[2026-09-10 01:24:24.507]     chars_after:      0.030s  (total_chars=9,233,197, diff=+0)
+[2026-09-10 01:24:30.311]     prefix_hit_cnt(): 5.804s  (hit_count=7,203,743, hit_rate=78.0283%)
+[2026-09-10 01:24:30.311]     overhead (non-algo): 5.958s  |  dataset_total: 6.176s
+[2026-09-10 01:24:30.312]   -- beer.csv --
+[2026-09-10 01:24:30.354]     read_csv:         0.042s  (shape 28479r x 9c)
+[2026-09-10 01:24:30.418]     chars_before:     0.064s  (total_chars=2,271,333)
+[2026-09-10 01:24:30.918]     reorder():        0.500s
+[2026-09-10 01:24:30.982]     chars_after:      0.064s  (total_chars=2,271,333, diff=+0)
+[2026-09-10 01:24:32.605]     prefix_hit_cnt(): 1.623s  (hit_count=1,529,167, hit_rate=67.3247%)
+[2026-09-10 01:24:32.605]     overhead (non-algo): 1.792s  |  dataset_total: 2.293s
+[2026-09-10 01:24:32.605]   -- BIRD.csv --
+[2026-09-10 01:24:33.326]     read_csv:         0.720s  (shape 14920r x 4c)
+[2026-09-10 01:24:33.346]     chars_before:     0.020s  (total_chars=33,684,276)
+[2026-09-10 01:24:33.617]     reorder():        0.271s
+[2026-09-10 01:24:33.635]     chars_after:      0.018s  (total_chars=33,684,276, diff=+0)
+[2026-09-10 01:24:52.879]     prefix_hit_cnt(): 19.243s  (hit_count=27,514,483, hit_rate=81.6835%)
+[2026-09-10 01:24:52.879]     overhead (non-algo): 20.001s  |  dataset_total: 20.272s
+[2026-09-10 01:24:52.880]   -- PDMX.csv --
+[2026-09-10 01:24:53.015]     read_csv:         0.136s  (shape 10000r x 57c)
+[2026-09-10 01:24:53.255]     chars_before:     0.240s  (total_chars=7,023,934)
+[2026-09-10 01:25:03.745]     reorder():        10.489s
+[2026-09-10 01:25:04.025]     chars_after:      0.280s  (total_chars=7,023,934, diff=+0)
+[2026-09-10 01:25:13.196]     prefix_hit_cnt(): 9.171s  (hit_count=2,213,149, hit_rate=32.2207%)
+[2026-09-10 01:25:13.197]     overhead (non-algo): 9.826s  |  dataset_total: 20.315s
+[2026-09-10 01:25:13.197]   -- products.csv --
+[2026-09-10 01:25:13.338]     read_csv:         0.141s  (shape 14890r x 8c)
+[2026-09-10 01:25:13.377]     chars_before:     0.039s  (total_chars=15,875,208)
+[2026-09-10 01:25:13.739]     reorder():        0.362s
+[2026-09-10 01:25:13.777]     chars_after:      0.037s  (total_chars=15,875,208, diff=+0)
+[2026-09-10 01:25:21.080]     prefix_hit_cnt(): 7.302s  (hit_count=13,376,576, hit_rate=84.2608%)
+[2026-09-10 01:25:21.080]     overhead (non-algo): 7.520s  |  dataset_total: 7.882s
+[2026-09-10 01:25:21.080]   SUMMARY: avg_hit_rate=0.6870  total_runtime=11.840s  combined_score=0.6928
+[2026-09-10 01:25:21.080] ======================================================================
+[2026-09-10 01:25:21.080] 

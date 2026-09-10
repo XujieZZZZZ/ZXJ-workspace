@@ -1,0 +1,96 @@
+{
+  "observation": "Running large language model (LLM) inference over large relational datasets for batch data analytics is extremely slow and expensive: an NVIDIA L4 GPU serving Llama3-8B processes only about 6 KB of text per second, taking roughly a day to handle 15 GB of data, and processing a comparable amount of data on OpenAI's GPT-4o costs about $10K. Although LLM invocations are increasingly offered as operators on relational tables, naively sending rows in their default order to a serving backend with a prompt KV cache leads to low cache-hit rates. Real relational workloads contain repeated cell values, joined-feature repetition, popular-item reuse, and shared RAG contexts that could serve as cached prefixes; but tables also contain highly unique leading fields such as IDs or review text, and the fixed row/field order in which requests are sent critically limits how much prefix reuse is possible.",
+  "related_works": [
+    {
+      "claims": [
+        "Serving systems for large language models reuse the cached attention key/value states of prompt prefixes to avoid recomputing prompt processing for repeated requests.",
+        "PagedAttention and RadixAttention provide the memory-management and cache-lookup primitives that make prefix sharing practical in general-purpose LLM serving systems.",
+        "Because key/value reuse is triggered by exact token prefixes, whether two requests can share computation is determined by the textual order in which their prompts are assembled."
+      ],
+      "works": [
+        {
+          "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+          "authors": [
+            "Woosuk Kwon"
+          ]
+        },
+        {
+          "title": "SGLang: Efficient Execution of Structured Language Model Programs",
+          "authors": [
+            "Lianmin Zheng"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Prompt Cache generalizes prefix caches by allowing an arbitrary prompt to be decomposed into application-level modules whose attention states have already been cached.",
+        "Even modular caching assumes that reusable text appears exactly as a previously cached module, so it still depends on how a relational row's values are concatenated and on which values are placed together."
+      ],
+      "works": [
+        {
+          "title": "Prompt Cache: Modular Attention Reuse for Low-Latency Inference",
+          "authors": [
+            "In Gim"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "A recent line of systems embeds LLM calls into SQL/dataframe query processors, making them relational-style operators over whole tables.",
+        "LOTUS provides semantic operators such as filtering, joining, and aggregating by prompting an LLM for every relevant tuple or group, while TableGPT and DB-GPT couple LLM reasoning with tables and databases.",
+        "These systems focus on operator semantics and output quality and do not consider reordering the rows or columns of the issued prompts to maximize KV-cache reuse."
+      ],
+      "works": [
+        {
+          "title": "LOTUS: Enabling Semantic Queries with Large Language Models",
+          "authors": [
+            "Liana Patel"
+          ]
+        },
+        {
+          "title": "TableGPT: Towards Unifying Tables with Large Language Models",
+          "authors": [
+            "Liangyu Zha"
+          ]
+        },
+        {
+          "title": "DB-GPT: Large Language Model Meets Database",
+          "authors": [
+            "Xuanhe Zhou"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Approaches that feed relational data to LLMs generally serialize each record by concatenating feature names and cell values in the order the columns appear in the input schema or dataframe.",
+        "This serialization work optimizes the text representation for semantic accuracy of a few-shot classifier or a data-understanding agent, rather than for prefix reuse in an inference backend."
+      ],
+      "works": [
+        {
+          "title": "TabLLM: Few-Shot Classification of Tabular Data with Large Language Models",
+          "authors": [
+            "Stefan Hegselmann"
+          ]
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The prior systems supply the two pieces the observation needs but fail to connect them. Prefix-caching systems such as PagedAttention and RadixAttention make exact token-prefix reuse possible, and LLM-in-SQL systems such as LOTUS and DB-GPT make LLM calls relational operators, but neither community treats the physical order of the rows and columns being sent to the cache as a planning decision. The fixed row order from a table scan and the fixed schema field order from serialization means that unique leading fields such as IDs and review text appear before any reusable context. Because KV-cache reuse only happens when the textual prompt prefix is exactly identical, these unique early tokens isolate every prompt from its neighbors. The core insight of the proposed solution is that a batch of relational LLM invocations should be physically planned like a tree of shared prefixes. A request is a token path; if we place repeated, low-cardinality, or workload-reusable modules before unique high-cardinality modules, and if we group rows so that requests sharing a prefix are issued contiguously, the existing cache will be able to reuse the attention states of those prefixes. The problem is therefore one of prompt serialization physical design: choose a permutation of self-describing field modules and an ordering of rows that maximizes the number of prompt tokens shared as prefixes across consecutively issued requests. The direction I chose is a prefix-aware prompt planner inserted between a relational operator and the LLM serving backend: it takes the operator's result relation, estimates how often each column value is reused, selects an order of columns/modules with high expected prefix reuse first, and then sorts or recursively groups rows by those selected fields before rendering prompts. This directly addresses the observation because it turns repeated cell values, joined-feature repetition, popular items, and shared RAG contexts into cached leading tokens, while pushing unique fields such as row IDs and free text to the end of the prompt where they cannot hurt reuse. The main alternatives I considered and rejected were: optimizing only the row order while leaving the schema column order unchanged, which cannot help because unique leading fields still differentiate every prompt from the start; and trying to make the cache reuse semantically equivalent modules regardless of textual order, which would require modifying the serving backend and would duplicate existing cache semantics rather than leveraging RadixAttention. I also considered exhaustive search over all column permutations and row orders, but that is combinatorially prohibitive; the chosen design uses a greedy, reuse-aware module ordering based on frequency and token length, followed by a grouped DFS-style request schedule. To preserve operator semantics while reordering fields, every module is textually self-describing as label-colon-value, and semantically coupled columns can be packaged into a single composite module whose internal order is never changed. This design reuses the supplied related work as opposed to inventing a new cache mechanism: exact-prefix reuse from PagedAttention/RadixAttention is the substrate, Prompt Cache-style modular module definitions give a clean unit for column reordering, and LOTUS-style systems gain a physical prompt optimizer without changing their operator semantics.",
+    "implementation": "The implementation is a physical prompt planner with six components.\n\n1. Relation and module abstraction. Input is a table R produced by an LLM-equipped SQL/dataframe operator together with a prompt template. The planner treats each prompt module as a small text fragment that is independently meaningful; a module can be one column value or a fixed group of columns that must remain adjacent. Every module is rendered as a self-describing string such as column-name: value followed by a separator. The fixed system/instruction component is a module that is placed first and is identical for all rows. The planner chooses a permutation of the remaining modules, but any user-defined composite modules are atomic and never split. This gives the column-reordering freedom needed for prefix reuse while providing a semantic safety knob.\n\n2. Workload statistics. Before planning, the system obtains a value-frequency distribution for each candidate module. For large relations it uses standard database-style distinct-value histograms or a random sample; for operators that already materialize a small relation, it scans once. For each distinct value v of module m, the planner records count_R(m,v) and the tokenized length len(m,v), where len includes the module label, the rendered value, and the separator, computed with the same tokenizer used by the LLM serving backend. The statistics are maintained as hash maps from module id plus value to length, and from module id to a value-frequency map.\n\n3. Greedy prefix module ordering. The planner greedily selects an ordered list prefix_order of modules that will be placed before all remaining modules. It maintains a partition of rows into active groups; initially the active partition is the single group containing all rows. Each active group represents rows that already share identical text for all previously chosen prefix modules, so only values after that text still need to be made cache-friendly. For every module m not yet chosen and for every active group G, the system counts how many rows in G have each distinct value v of m. The one-level reuse gain of putting m in the next prefix position is gain(m) = sum over active groups G and over values v in G of max(0, count_G(m,v) - 1) times len(m,v). Intuitively, if v appears n times in a group, the first row of that value subgroup must compute the full module suffix, but the remaining n-1 rows can reuse its cached prefix. The planner picks the module with the largest positive gain, appends it to prefix_order, and then splits every active group by the distinct values of that chosen module, retaining only resulting subgroups with more than one row. Splitting by this module makes rows that share the new prefix contiguous in the later request order. Singletons cannot contribute further reuse, so they are removed from the active partition and handled later with the tail modules. The process repeats until no module has positive gain or no active group remains. Modules not chosen are appended to the prompt in an application-defined tail order. This heuristic naturally places constant context first, low-cardinality repeated values and popular RAG contexts before medium-cardinality fields, and unique IDs, free text, or other values that repeat within no active group at the end, where they cannot inhibit prefix sharing.\n\n4. Row ordering and request scheduling. The actual LLM requests are issued in a depth-first traversal of the prefix groups defined by prefix_order. Let prefix_order be m_1, m_2, ..., m_k. The planner sorts row ids lexicographically by their values for (m_1, m_2, ..., m_k); this guarantees that all rows sharing a prefix are consecutive. Equivalently, when executing, the scheduler partitions rows by m_1, then within each partition partitions by m_2, and so on, recursively emitting all rows at the leaves. Sibling partitions are processed in descending order of their number of descendant rows so that large reusable prefix groups are executed while their states are hottest in the radix cache; this order is only an optimization and does not affect correctness. When a leaf contains several rows that differ only in tail modules, all of those rows are issued consecutively, and every request after the first in the leaf reuses the full prefix up to the end of prefix_order. The full prompt for a row is fixed_preamble followed by prefix_order modules followed by tail modules; because the prefix_order portion is identical within a leaf, only the tail suffix is newly tokenized.\n\n5. Backend cache interaction. The planner does not modify the KV-cache implementation. It relies on the RadixAttention/PagedAttention-style serving layer to retain and retrieve the exact prefixes it creates. After each generate call, the attention states for all prompt tokens are available in the cache; when the next request begins with the same tokens, only the unseen suffix is processed as new prompt tokens. The optimizer optionally asks the backend whether a prefix is still cached and, if a memory-managed LRU evicts a long prefix, it avoids breaking that prefix across unrelated rows by keeping the depth-first grouped schedule; after a group is finished its prefix is no longer needed and eviction is harmless. If Prompt Cache-style modular caching is enabled, each chosen module is registered as a module so that the same value appearing in a future operator invocation can be recognized as an already-cached module even when the surrounding tail is different.\n\n6. Integration into relational plans. The planner is exposed to query processors as a physical refinement around an LLM operator. In LOTUS-style execution, semantic join/filter/aggregate operators produce a table; before this table is passed to an LLM call for every tuple or group, the optimizer applies the ordering and serialization above. DB-GPT/TableGPT style systems can do the same inside their table-serving path. For group-wise operators, the group key is known to be constant within one group, so the planner forces the group-key module into the first variable prefix position and then optimizes the remaining modules inside that group. No output tuple is duplicated or dropped; the set of LLM invocations is unchanged. The only changes are which self-describing fields are textual prefixes and the order in which row prompts are sent to the backend, so the cache-hit rate is maximized without altering the semantics of the relational operators."
+  },
+  "pdf_id": "d18c13d036b3708f",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/LLM-SQL.md",
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:30:31",
+  "task": "llm_re_withsearch",
+  "related_works_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/relatedworks_withsearch/d18c13d036b3708f.json",
+  "solution_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/solution_llm_re/d18c13d036b3708f_withsearch.json",
+  "style_exemplar_ids": [
+    "52875bf8ef4b3f8c",
+    "c252b8a901feea74"
+  ]
+}

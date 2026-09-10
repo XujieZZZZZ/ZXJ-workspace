@@ -1,0 +1,16 @@
+{
+  "time": "2026-09-03 07:03:28",
+  "jsonl": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/pdf_mapping.jsonl",
+  "out_dir": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data",
+  "model": "deepseek-v4-flash",
+  "base_url": "https://api.deepseek.com",
+  "success": 6,
+  "failed": 0,
+  "skipped": 2,
+  "errors": {},
+  "tokens": {
+    "in": 143004,
+    "out": 196304,
+    "reasoning": 163314
+  }
+}

@@ -1,0 +1,52 @@
+[13:34:59] RQ2-3 开始:主裁判=qwen 交叉裁判=deepseek
+[13:34:59] === 变体 withsearch ===
+[13:34:59] [pair:withsearch:qwen] 全部 16 条已完成,无需运行
+[13:34:59] [pair:withsearch:deepseek] 全部 16 条已完成,无需运行
+[13:34:59] [sanity:withsearch:qwen] 全部 8 条已完成,无需运行
+[13:34:59] [sanity:withsearch:deepseek] 全部 8 条已完成,无需运行
+[13:34:59] [rubric:withsearch:qwen] 全部 8 条已完成,无需运行
+
+==============================================================================
+RQ2-3 摘要 [变体: withsearch](完整报告: outputs/reports/rq2_3_withsearch.md)
+==============================================================================
+  52875bf8ef4b3f8c | Win_LLM   | 交叉判定=Tie | Δ(tgt 0.5000, feas 1.5000, nov 0.5000, grd 1.0000)
+  5dd2d839c66d339a | Win_LLM   | 交叉判定=Tie | Δ(tgt 0.5000, feas 1.0000, nov 1.0000, grd 0.5000)
+  7d3b6e61ea96cc4f | Win_LLM   | 交叉判定=Win_LLM | Δ(tgt 0.5000, feas 1.5000, nov 1.0000, grd 1.0000)
+  b93fea400aedf898 | Win_LLM   | 交叉判定=Tie | Δ(tgt 0.5000, feas 0.5000, nov 0.5000, grd 0.5000)
+  c252b8a901feea74 | Win_LLM   | 交叉判定=Tie | Δ(tgt 1.0000, feas 1.0000, nov 0.5000, grd 1.5000)
+  d18c13d036b3708f | Win_LLM   | 交叉判定=Tie | Δ(tgt 0.0000, feas 1.0000, nov 0.5000, grd 1.0000)
+  e3d82bafe7cb11e7 | Win_LLM   | 交叉判定=Tie | Δ(tgt 1.0000, feas 1.5000, nov 1.0000, grd 1.0000)
+  f948850caef3d25f | Win_LLM   | 交叉判定=Tie | Δ(tgt 1.0000, feas 1.0000, nov 1.0000, grd 1.0000)
+-- [qwen] WinRate_LLM_RW=100.0% WinRate_Human_RW=0.0% Tie=0.0% (N=8)
+-- [deepseek] WinRate_LLM_RW=12.5% WinRate_Human_RW=0.0% Tie=87.5% (N=8)
+-- [identical-pair/deepseek] Tie 率=100.0% (N=8)
+-- [identical-pair/qwen] Tie 率=100.0% (N=8)
+-- 检索召回假说: ρ=-0.0138 (p=0.974, n=8)
+-- 贴合度传导假说: ρ=-0.4173 (p=0.304, n=8)
+-- 幻觉/噪音干扰假说: ρ=-0.1518 (p=0.720, n=8)
+[13:35:00] === 变体 withoutsearch ===
+[13:35:00] [pair:withoutsearch:qwen] 全部 16 条已完成,无需运行
+[13:35:00] [pair:withoutsearch:deepseek] 全部 16 条已完成,无需运行
+[13:35:00] [sanity:withoutsearch:qwen] 全部 8 条已完成,无需运行
+[13:35:00] [sanity:withoutsearch:deepseek] 全部 8 条已完成,无需运行
+[13:35:00] [rubric:withoutsearch:qwen] 全部 8 条已完成,无需运行
+
+==============================================================================
+RQ2-3 摘要 [变体: withoutsearch](完整报告: outputs/reports/rq2_3_withoutsearch.md)
+==============================================================================
+  52875bf8ef4b3f8c | Win_LLM   | 交叉判定=Win_LLM | Δ(tgt 0.5000, feas 1.0000, nov 1.0000, grd 1.0000)
+  5dd2d839c66d339a | Win_LLM   | 交叉判定=Tie | Δ(tgt 1.0000, feas 1.0000, nov 1.0000, grd 1.0000)
+  7d3b6e61ea96cc4f | Win_LLM   | 交叉判定=Tie | Δ(tgt 1.0000, feas 1.0000, nov 1.0000, grd 1.0000)
+  b93fea400aedf898 | Win_LLM   | 交叉判定=Win_LLM | Δ(tgt 1.0000, feas 1.0000, nov 0.5000, grd 1.0000)
+  c252b8a901feea74 | Win_LLM   | 交叉判定=Win_LLM | Δ(tgt 1.0000, feas 1.0000, nov 0.5000, grd 1.0000)
+  d18c13d036b3708f | Win_LLM   | 交叉判定=Tie | Δ(tgt 0.5000, feas 1.0000, nov 0.5000, grd 1.0000)
+  e3d82bafe7cb11e7 | Win_LLM   | 交叉判定=Tie | Δ(tgt 1.0000, feas 2.0000, nov 1.0000, grd 1.0000)
+  f948850caef3d25f | Win_LLM   | 交叉判定=Tie | Δ(tgt 1.0000, feas 1.0000, nov 1.0000, grd 1.0000)
+-- [qwen] WinRate_LLM_RW=100.0% WinRate_Human_RW=0.0% Tie=0.0% (N=8)
+-- [deepseek] WinRate_LLM_RW=37.5% WinRate_Human_RW=0.0% Tie=62.5% (N=8)
+-- [identical-pair/deepseek] Tie 率=100.0% (N=8)
+-- [identical-pair/qwen] Tie 率=100.0% (N=8)
+-- 检索召回假说: ρ=- (p=-, n=-)
+-- 贴合度传导假说: ρ=0.1260 (p=0.766, n=8)
+-- 幻觉/噪音干扰假说: ρ=0.2489 (p=0.552, n=8)
+[13:35:00] RQ2-3 完成,耗时 0s,LLM usage: 主(qwen)={'prompt': 0, 'completion': 0} 交叉(deepseek)={'prompt': 0, 'completion': 0}

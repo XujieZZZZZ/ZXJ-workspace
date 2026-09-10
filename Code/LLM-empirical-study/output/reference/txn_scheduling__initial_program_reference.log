@@ -1,0 +1,22 @@
+# task: txn_scheduling
+# program: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/ADR-evaluator/tasks/txn_scheduling/initial_program_reference.py
+# started: 2026-09-10T01:28:09.996815+00:00
+# elapsed_seconds: 1.7
+# returncode: 0
+# timed_out: False
+======================================================================
+# STDOUT
+======================================================================
+{"status": "success", "combined_score": 2840.909090909091, "metrics": {"makespan": 351.0, "schedule": 3.0, "validity": 1.0, "combined_score": 2840.909090909091}}
+
+======================================================================
+# STDERR
+======================================================================
+Subprocess stdout: Running in subprocess, Python version: 3.11.15 (main, Jun 11 2026, 15:20:16) [GCC 14.3.0]
+Program path: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/ADR-evaluator/tasks/txn_scheduling/initial_program_reference.py
+Calling scheduling()...
+238 56 57
+scheduling() returned successfully: makespan = 351
+Results saved to /tmp/tmp0gdf5o4e.py.results
+
+Evaluation: valid=True, makespan=351, time=1.54s

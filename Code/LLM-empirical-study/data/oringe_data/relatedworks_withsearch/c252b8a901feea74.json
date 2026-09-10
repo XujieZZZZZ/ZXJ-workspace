@@ -1,0 +1,93 @@
+{
+  "pdf_id": "c252b8a901feea74",
+  "mode": "withsearch",
+  "observation": "Transaction throughput is critically affected by the order in which conflicting transactions execute, yet practical systems generally process transactions in FIFO order and resolve conflicts reactively, and recent scheduling techniques explore only a small subset of possible schedules. The resulting performance gap is large and systematic: for a batch of four conflicting transactions one schedule can reduce makespan by 25% over another, the gap grows arbitrarily for larger workloads, and on real workload traces FIFO can increase makespan over optimized schedules by 43.2% for Epinions, 8.0% for SmallBank, 96.2% for TAOBench, 101.6% for TPC-C, and 99.3% for YCSB. Finding an optimal schedule is NP-complete, and existing heuristics sacrifice schedule quality for efficiency.",
+  "related_works": [
+    {
+      "claims": [
+        "Classic concurrency-control protocols are conflict-reactive: two-phase locking and its commercial descendants block a transaction only when it requests a lock held by another transaction, whereas optimistic concurrency control aborts or restarts a transaction when validation fails.",
+        "In these protocols the order in which conflicting transactions run is determined by lock acquisition, waits, and conflict resolution rather than by any attempt to reduce the total completion time of an already admitted batch.",
+        "Practical database engines inherited this model, so the schedule of conflicting transactions emerges from lock-manager behavior and is not treated as a schedulable input."
+      ],
+      "works": [
+        {
+          "title": "System Level Concurrency Control for Distributed Database Systems",
+          "authors": [
+            "D. J. Rosenkrantz"
+          ]
+        },
+        {
+          "title": "On Optimistic Methods for Concurrency Control",
+          "authors": [
+            "H. T. Kung"
+          ]
+        },
+        {
+          "title": "Granularity of Locks and Degrees of Consistency in a Shared Data Base",
+          "authors": [
+            "Jim Gray"
+          ]
+        },
+        {
+          "title": "ARIES: A Transaction Recovery Method Supporting Fine-Granularity Locking and Partial Rollbacks Using Write-Ahead Logging",
+          "authors": [
+            "C. Mohan"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Deterministic database systems decide an execution order for transactions before running them and replay that order across replicas to eliminate distributed deadlock detection and reduce coordination overhead.",
+        "These systems assign positions in the order through arrival timestamps or a central sequencer, and their ordering logic is constrained by deterministic replication rather than by an optimization objective for the makespan of conflicting transactions.",
+        "Protocol evaluations for main-memory databases focus on which concurrency-control mechanism to use under a given contention level, not on choosing among alternative execution orders for a set of conflicting transactions."
+      ],
+      "works": [
+        {
+          "title": "Calvin: Fast Distributed Transactions for Partitioned Database Systems",
+          "authors": [
+            "Alexander Thomson"
+          ]
+        },
+        {
+          "title": "Staring into the Abyss: An Evaluation of Concurrency Control with One Thousand Cores",
+          "authors": [
+            "Xiangyao Yu"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Makespan-minimization scheduling problems become NP-hard once precedence or resource constraints are introduced, and coloring an arbitrary conflict graph, the core decision underlying conflict-free scheduling, is NP-complete.",
+        "Because exact optimization is intractable for large instances, scheduling practice relies on greedy list-scheduling heuristics that run in polynomial time but can sacrifice schedule quality."
+      ],
+      "works": [
+        {
+          "title": "Reducibility Among Combinatorial Problems",
+          "authors": [
+            "R. M. Karp"
+          ]
+        },
+        {
+          "title": "Complexity of Machine Scheduling Problems",
+          "authors": [
+            "J. K. Lenstra"
+          ]
+        },
+        {
+          "title": "Optimization and Approximation in Deterministic Sequencing and Scheduling: A Survey",
+          "authors": [
+            "R. L. Graham"
+          ]
+        }
+      ]
+    }
+  ],
+  "style_exemplar_ids": [
+    "b93fea400aedf898",
+    "7d3b6e61ea96cc4f"
+  ],
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 08:35:45"
+}

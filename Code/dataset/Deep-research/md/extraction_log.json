@@ -1,0 +1,9 @@
+{
+  "total": 11,
+  "success": 0,
+  "failed": 0,
+  "skipped": 11,
+  "failed_files": [],
+  "pdf_dir": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/Deep-research/pdf",
+  "output_dir": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/Deep-research/md"
+}

@@ -1,0 +1,20 @@
+{
+  "task": "prism",
+  "program": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/ADR-evaluator/tasks/prism/initial_program_reference.py",
+  "program_name": "initial_program_reference.py",
+  "paper_id": "f948850caef3d25f",
+  "status": "success",
+  "combined_score": 21.891622105209393,
+  "metrics": {
+    "max_kvpr": 20.891622105209393,
+    "execution_time": 0.0007236671447753907,
+    "success_rate": 1.0,
+    "combined_score": 21.891622105209393
+  },
+  "artifacts": {},
+  "elapsed_seconds": 0.3,
+  "returncode": 0,
+  "timed_out": false,
+  "log_file": "prism__initial_program_reference.log",
+  "evaluated_at": "2026-09-10T01:28:04.551161+00:00"
+}

@@ -1,0 +1,375 @@
+{
+  "observation": "Bulk data replication across multiple cloud regions and providers is essential for data analytics, disaster recovery, and geo-distributed model serving, yet cloud multicast can be expensive due to per-GB network egress fees and slow due to cloud network constraints. Egress prices vary by up to 23× across region pairs, with intra-cloud egress costing $0.01–$0.19 per GB and inter-cloud egress costing $0.08–$0.23 per GB, and cross-region bandwidth varies by up to 202×. Cloud providers impose per-VM egress/ingress limits (for example, AWS throttles egress to 5 Gbps per VM), so a single source VM is often the bottleneck, while users must still meet target replication times. Existing throughput-oriented multicast optimizers do not handle monetary cost, and existing cost-aware multicast work either ignores throughput or assumes a capacity-based pricing model that is inconsistent with today's per-GB egress pricing.",
+  "related_works": [
+    {
+      "claims": [
+        "Data replication and multicast have been extensively studied to optimize throughput and scalability in IP networks, peer-to-peer overlays, and inter-DC networks.",
+        "Existing throughput-optimizing techniques for multicast poorly handle the monetary cost of transfers between cloud regions and providers.",
+        "Some previous work that considers monetary cost for multicast either ignores throughput or assumes a capacity-based pricing model, whereas modern clouds charge per-GB network egress fees."
+      ],
+      "works": [
+        {
+          "title": "Splitstream: High-bandwidth multicast in cooperative environments",
+          "authors": [
+            "Miguel Castro"
+          ]
+        },
+        {
+          "title": "Enabling conferencing applications on the internet using an overlay multicast architecture",
+          "authors": [
+            "Yang Chu"
+          ]
+        },
+        {
+          "title": "Owl: Scale and flexibility in distribution of hot content",
+          "authors": [
+            "Jason Flinn"
+          ]
+        },
+        {
+          "title": "Bullet: High bandwidth data dissemination using an overlay mesh",
+          "authors": [
+            "Dejan Kostic"
+          ]
+        },
+        {
+          "title": "A cost-effective and multi-source-aware replica migration approach for geo-distributed data centers",
+          "authors": [
+            "Bita Fatemipour"
+          ]
+        },
+        {
+          "title": "Deadline-aware fast one-to-many bulk transfers over inter-datacenter networks",
+          "authors": [
+            "Long Luo"
+          ]
+        },
+        {
+          "title": "Codedbulk: Interdatacenter bulk transfers using network coding",
+          "authors": [
+            "Shih-Hao Tseng"
+          ]
+        },
+        {
+          "title": "BDS: A centralized near-optimal overlay network for inter-datacenter data replication",
+          "authors": [
+            "Yuchao Zhang"
+          ]
+        },
+        {
+          "title": "Cost-aware multi data-center bulk transfers in the cloud from a customer-side perspective",
+          "authors": [
+            "José Luis García-Dorado"
+          ]
+        },
+        {
+          "title": "Cost-efficient scheduling of multicast transfers with deadline guarantees across edge datacenters",
+          "authors": [
+            "Long Luo"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Other multicast overlay designs have used MILP formulations for optimizing throughput.",
+        "These bandwidth-based MILP formulations cannot be extended directly to per-GB costs because the cost is proportional to the product of allocated bandwidth and replication time, which would make the problem non-linear."
+      ],
+      "works": [
+        {
+          "title": "Fast replication in content distribution overlays",
+          "authors": [
+            "Samrat Ganguly"
+          ]
+        },
+        {
+          "title": "BDS: A centralized near-optimal overlay network for inter-datacenter data replication",
+          "authors": [
+            "Yuchao Zhang"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "A significant body of prior work uses overlay networks to improve the performance and resilience of one-to-one data transfers in the Internet and peer-to-peer networks.",
+        "In clouds, previous work has also leveraged cloud elasticity to further improve transfer performance.",
+        "These prior systems do not consider the multi-destination cloud multicast problem, and except for Skyplane, none consider the monetary cost of replication in the cloud.",
+        "Skyplane's flow-based throughput model results in ambiguous multicast distribution tree solutions because it ignores the identity of data sent along multiple paths, and its optimizer cannot use multiple distribution trees to alleviate source bottlenecks."
+      ],
+      "works": [
+        {
+          "title": "Resilient overlay networks",
+          "authors": [
+            "David Andersen"
+          ]
+        },
+        {
+          "title": "Splitstream: High-bandwidth multicast in cooperative environments",
+          "authors": [
+            "Miguel Castro"
+          ]
+        },
+        {
+          "title": "Bullet: High bandwidth data dissemination using an overlay mesh",
+          "authors": [
+            "Dejan Kostic"
+          ]
+        },
+        {
+          "title": "Skyplane: Optimizing transfer cost and throughput using cloud-aware overlays",
+          "authors": [
+            "Paras Jain"
+          ]
+        },
+        {
+          "title": "Clon: Overlay network for clouds",
+          "authors": [
+            "Miguel Matos"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "End-system multicast and overlay multicast have been proposed to efficiently disseminate data from a single source to multiple destinations.",
+        "Application-level multicast algorithms such as SPIDER, SplitStream, Bullet, and Overcast are designed for high-bandwidth, cross-internet file distribution.",
+        "These overlay multicast algorithms ignore monetary costs and focus on techniques to maximize bandwidth."
+      ],
+      "works": [
+        {
+          "title": "A case for end system multicast",
+          "authors": [
+            "Yang-hua Chu"
+          ]
+        },
+        {
+          "title": "Fast replication in content distribution overlays",
+          "authors": [
+            "Samrat Ganguly"
+          ]
+        },
+        {
+          "title": "Splitstream: High-bandwidth multicast in cooperative environments",
+          "authors": [
+            "Miguel Castro"
+          ]
+        },
+        {
+          "title": "Bullet: High bandwidth data dissemination using an overlay mesh",
+          "authors": [
+            "Dejan Kostic"
+          ]
+        },
+        {
+          "title": "Overcast: Reliable multicasting with an overlay network",
+          "authors": [
+            "John Jannotti"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Extensive prior work addresses inter-DC replication, including bulk multicast.",
+        "Recent research in inter-DC replication includes deadline awareness and cost awareness.",
+        "A deadline-aware inter-DC multicast scheduling and routing technique exists.",
+        "The cost model in the inter-DC setting cannot be easily adapted to cloud users because cloud network pricing is based on total data volume rather than bandwidth.",
+        "Existing inter-DC formulations are not designed for multicast or do not consider more than a few geo-distributed regions."
+      ],
+      "works": [
+        {
+          "title": "Jetway: Minimizing costs on inter-datacenter video traffic",
+          "authors": [
+            "Yuan Feng"
+          ]
+        },
+        {
+          "title": "Owl: Scale and flexibility in distribution of hot content",
+          "authors": [
+            "Jason Flinn"
+          ]
+        },
+        {
+          "title": "Inter-datacenter bulk transfers with netstitcher",
+          "authors": [
+            "Nikolaos Laoutaris"
+          ]
+        },
+        {
+          "title": "Ekko: A Large-Scale deep learning recommender system with Low-Latency model update",
+          "authors": [
+            "Chijun Sima"
+          ]
+        },
+        {
+          "title": "Deadline-aware scheduling and routing for inter-datacenter multicast transfers",
+          "authors": [
+            "Siqi Ji"
+          ]
+        },
+        {
+          "title": "Deadline-aware fast one-to-many bulk transfers over inter-datacenter networks",
+          "authors": [
+            "Long Luo"
+          ]
+        },
+        {
+          "title": "A cost-effective and multi-source-aware replica migration approach for geo-distributed data centers",
+          "authors": [
+            "Bita Fatemipour"
+          ]
+        },
+        {
+          "title": "BDS: A centralized near-optimal overlay network for inter-datacenter data replication",
+          "authors": [
+            "Yuchao Zhang"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Traffic engineering has formulated optimization problems for minimizing cost under performance constraints, and these techniques have recently been applied to cloud providers and their monetary costs.",
+        "Entact studied how to optimize costs for online service providers while still minimizing user latency.",
+        "Cascara leveraged latency-equivalent paths to identify cost-minimizing paths for cloud providers.",
+        "These traffic-engineering approaches are developed from the perspective of the cloud or service provider and thus present a materially different optimization problem."
+      ],
+      "works": [
+        {
+          "title": "Optimizing cost and performance in online service provider networks",
+          "authors": [
+            "Zheng Zhang"
+          ]
+        },
+        {
+          "title": "Cost-effective cloud edge traffic engineering with cascara",
+          "authors": [
+            "Rachee Singh"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Without replication time constraints, a Steiner Tree minimizes egress cost, but the Steiner Tree problem is NP-hard and many approximations exist.",
+        "A Steiner Tree only optimizes total edge cost and cannot account for replication throughput or instance costs.",
+        "The Steiner Tree algorithm has been applied in the multicast setting to minimize costs in terms of delay and cloud egress costs.",
+        "CloudMPCast minimizes egress costs in cloud bulk data multicast by constructing a Steiner Tree overlay network that avoids low-throughput cross-region paths.",
+        "CloudMPCast overlooks VM capacity and per-VM egress/ingress limits in its MILP formulation.",
+        "CloudMPCast aims to achieve comparable performance to direct transfers while minimizing cost, unlike jointly optimizing throughput and cost."
+      ],
+      "works": [
+        {
+          "title": "Steiner tree problems",
+          "authors": [
+            "Frank K Hwang"
+          ]
+        },
+        {
+          "title": "Implications, conflicts, and reductions for steiner trees",
+          "authors": [
+            "Daniel Rehfeldt"
+          ]
+        },
+        {
+          "title": "Constructing multiple steiner trees for software-defined networking multicast",
+          "authors": [
+            "Jehn-Ruey Jiang"
+          ]
+        },
+        {
+          "title": "Cost-aware multi data-center bulk transfers in the cloud from a customer-side perspective",
+          "authors": [
+            "José Luis García-Dorado"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Cloud services support geo-distributed storage by replicating written data from a bucket in one region to one or more buckets in other regions.",
+        "These cloud replication services have limited support for cross-cloud data movement and do not minimize egress costs even for intra-cloud movement.",
+        "SPANStore designs a system for geo-distributed storage across multiple cloud providers and optimizes egress costs of relaying data on PUT requests.",
+        "SPANStore's relay strategy is optimized for latency, not bandwidth."
+      ],
+      "works": [
+        {
+          "title": "Spanstore: Cost-effective geo-replicated storage spanning multiple cloud services",
+          "authors": [
+            "Zhe Wu"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "The BitTorrent protocol reduces the network load on the source by allowing clients to upload and download data from each other.",
+        "P2P systems have significant overhead because they are designed for adversarial settings where peers may be unreliable or fail.",
+        "P2P systems must scale to millions of destinations and therefore lack centralized control, which prevents custom routing topologies.",
+        "P2P systems may redundantly send data over expensive links due to a lack of cost awareness."
+      ],
+      "works": [
+        {
+          "title": "Incentives build robustness in bittorrent",
+          "authors": [
+            "Bram Cohen"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Profiled cross-region network throughputs in clouds are relatively stable over time; prior work found throughputs stable over periods of at least 24 hours, with variations primarily across different source and destination regions."
+      ],
+      "works": [
+        {
+          "title": "Skyplane: Optimizing transfer cost and throughput using cloud-aware overlays",
+          "authors": [
+            "Paras Jain"
+          ]
+        }
+      ]
+    },
+    {
+      "claims": [
+        "Previous research has shown that limited numbers of overlay hops are often sufficient."
+      ],
+      "works": [
+        {
+          "title": "Resilient overlay networks",
+          "authors": [
+            "David Andersen"
+          ]
+        },
+        {
+          "title": "One tunnel is (often) enough",
+          "authors": [
+            "Simon Peter"
+          ]
+        },
+        {
+          "title": "Internet indirection infrastructure",
+          "authors": [
+            "Ion Stoica"
+          ]
+        }
+      ]
+    }
+  ],
+  "solution": {
+    "idea": "The key diagnosis is that previous work models multicast as a bandwidth-allocation problem, whereas modern clouds charge per GB of egress, and a deadline merely converts a bandwidth budget into a volume budget over that deadline. A rate-based MILP therefore mixes bandwidth, time, and price in nonlinear products, and a per-destination flow model does not know whether one upstream edge is carrying the same byte range to several downstream destinations or distinct ranges. Cost-only Steiner-tree approaches produce one minimal tree but ignore the per-VM egress/ingress caps and the need to finish by a target time. The chosen direction is to make the multicast plan explicit at the granularity of byte ranges and distribution trees: split the source object into stripes, and deliver each stripe to all destinations through one directed multicast arborescence rooted at a source VM. Every edge in that tree carries exactly the stripe volume, while a branching VM duplicates the stripe onto each outgoing edge, matching how egress is actually billed. This makes the cost objective linear in transmitted volume: total egress cost for a stripe is stripe size times the sum of per-GB prices of the tree edges. Throughput constraints become deadline-derived linear volume budgets: a directed edge can carry at most profiled bandwidth times the deadline, and a VM can egress/ingress at most its per-VM cap times the deadline. Multiple distribution trees can carry disjoint stripes concurrently, so different source VMs and different relay hierarchies can operate in parallel, directly addressing the single-source-VM bottleneck that previous multicast optimizers failed to model. This also removes Skyplane's ambiguity by explicitly associating each stripe with a single tree, so an edge is never a merged mixture whose destination coverage is unclear. I considered extending a single Steiner tree with capacities and rejected it because it cannot use several bottleneck-free trees; I considered P2P-style swarming and rejected it because its decentralized overhead and lack of centralized cost awareness are unnecessary in trusted cloud overlays and make per-GB cost control harder.",
+    "implementation": "The system is a centralized overlay replication scheduler with the following components and procedure.\n\nGraph construction. Provision VMs at the source cloud region, at every destination region/provider, and at optional relay regions/providers. Source VMs are instances that can read disjoint byte ranges from the source object store; destination VMs are instances that can write into the destination buckets; relay VMs are ordinary forwarding instances. Represent every VM as a node; add the destination storage endpoints as terminal nodes, but in practice a terminal is a destination VM that ingests a stripe and then uploads it locally with no additional cloud egress. Build a complete directed graph among all nodes. For each directed edge u->v, maintain: per-GB egress price price(u,v), profiled achievable throughput bw(u,v), and per-VM caps egress_cap(u), ingress_cap(v). Throughput profiles are measured before a job; prior work shows these are stable over many hours.\n\nDeadline-derived capacities. For an operation deadline T seconds, convert every rate capacity into a volume capacity: edge_volume(u,v)=bw(u,v)*T GB; egress_volume(v)=egress_cap(v)*T GB; ingress_volume(v)=ingress_cap(v)*T GB. This is why the method avoids nonlinear rate-time products: the transfer duration is fixed to T and the remaining unknowns are data volumes.\n\nTree-column LP. Let S be the source object size in GB. A distribution tree t is a directed arborescence rooted at one source VM and spanning all destination terminal nodes; each edge in t appears at most once. Let f_t be a nonnegative variable representing the number of GB of one stripe that t delivers to every destination. The total egress cost of that stripe is f_t * sum_{e in t} price_e. Let outdeg_t(v) be the number of outgoing edges of v in t and indeg_t(v) be 1 if v has a parent in t and is not the root. The optimizer solves:\n\nminimize sum_t f_t * sum_{e in t} price_e\nsubject to\nsum_t f_t = S,\nfor every directed edge e: sum_{t contains e} f_t <= edge_volume(e),\nfor every VM v: sum_t f_t * outdeg_t(v) <= egress_volume(v),\nfor every VM v: sum_t f_t * indeg_t(v) <= ingress_volume(v),\nf_t >= 0.\n\nThe demand equality ensures that, because every tree reaches every destination, each destination receives exactly S GB when the disjoint stripes are put together. The edge and VM constraints ensure that the planned aggregate volumes can be delivered within the deadline given profiled pairwise throughputs and per-VM throttling limits. The node egress term captures duplication: if a relay with one parent has two children, it sends f_t GB on each child edge, so its egress volume contribution is 2*f_t.\n\nCandidate tree generation. The LP is solved by linear programming over an incrementally generated pool of trees. Seed trees include: the direct multicast tree from each source VM to all destinations; a star through every relay region, root->relay->all destinations; and two-hop relay variants with different fan-out partitions. Then a randomized greedy directed-Steiner construction is run repeatedly for each source VM: start with the root, repeatedly pick the unconnected destination whose cheapest directed path from the current tree has the smallest current adjusted cost, and add that path; small random perturbations to edge costs are applied to create diverse trees. Because related work has shown that only a small number of overlay hops are often useful, the generated trees are additionally capped at a small depth bound such as two or three overlay hops unless no feasible tree can be found. After each LP solve, dual prices from the capacity constraints are used to adjust edge weights; the greedy construction is rerun and any tree with a negative reduced cost is added to the pool. The process repeats until no beneficial tree is found or a maximum pool size is reached. Edge weights in the subproblem combine price_e with current dual penalties from saturated edge/VM capacity, so new trees naturally avoid bottleneck links and bottleneck nodes.\n\nStripe-to-tree mapping. After solving the LP, retain trees with positive f_t. Assign the source object's byte string a contiguous range of size roughly f_t to each selected tree, trimming and unioning to ensure ranges are disjoint and exactly cover the object (for example, align ranges to 1 MB boundaries and put the final remainder on one selected tree). Each source root reads its assigned range from the source object store and multicasts that range along its tree. Because every selected tree reaches every destination, each destination receives all assigned ranges once and reconstructs the whole object by concatenating them in range order.\n\nExecution. The controller installs a per-VM forwarding job list: for every selected tree, and for each edge parent->child in that tree, create a job that transfers the tree's byte range. Each VM maintains one queue per outgoing edge/child. Weights are set so that traffic on each outgoing edge is proportional to the aggregate volume already planned on that edge. This realizes whatever bandwidth sharing is needed to respect the profiled per-edge throughput and per-VM aggregate caps. Store-and-forward is pipelined: relays begin forwarding the first received bytes after a short buffer delay while the parent continues streaming the remaining range, keeping all edges busy across the deadline window. To account for pipeline startup and control overhead, edge_volume and VM_volume budgets are multiplied by a safety factor eta slightly below 1. If the LP is infeasible with the current VM set, the controller provisions additional VMs at the bottlenecking source/relay regions and reruns the tree-column LP; if it remains infeasible, it reports the least deadline T for which a feasible plan exists. Because all prices and bandwidths are directional and measured per edge, the same machinery handles intra-cloud and inter-cloud replication, and because the optimizer has explicit tree variables, multiple root source VMs and multiple distribution trees are natural, not ambiguous."
+  },
+  "pdf_id": "e3d82bafe7cb11e7",
+  "md_path": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/dataset/ADRS-and-let/md/Cloudcast.md",
+  "model": "deepseek-v4-flash",
+  "generated_at": "2026-09-03 09:48:36",
+  "task": "human_re",
+  "related_works_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/human_data/e3d82bafe7cb11e7.json",
+  "solution_source": "/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/data/LLM_data/solution_human_re/e3d82bafe7cb11e7.json",
+  "style_exemplar_ids": [
+    "5dd2d839c66d339a",
+    "d18c13d036b3708f"
+  ]
+}
