@@ -1,0 +1,17 @@
+Subprocess stdout: Running in subprocess, Python version: 3.10.20 | packaged by conda-forge | (main, Jun 11 2026, 03:31:56) [GCC 14.3.0]
+Program path: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/ADRS/txn_scheduling/initial_program.py
+Seeded RNG with 2026
+Calling scheduling()...
+252 57 48
+scheduling() returned successfully: makespan = 357, time_taken = 1.6007866859436035
+Results saved to /tmp/tmp4v0xmw9u.py.results
+
+Evaluation: valid=True, makespan=357, time=1.74s
+{
+  "makespan": 357.0,
+  "schedule": 3.0,
+  "time_taken": 1.6007866859436035,
+  "validity": 1.0,
+  "eval_time": 1.7399632930755615,
+  "combined_score": 2793.2960893854747
+}

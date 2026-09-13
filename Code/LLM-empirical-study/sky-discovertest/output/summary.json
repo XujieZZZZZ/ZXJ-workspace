@@ -1,0 +1,102 @@
+{
+  "generated_at": "2026-09-13",
+  "mapping": [
+    {
+      "pdf_id": "52875bf8ef4b3f8c",
+      "paper": "Telemetry (The Case for Validating Inputs in Software-Defined WANs)",
+      "adrs_task": null,
+      "initial_program": null,
+      "generated_program": null,
+      "status": "skipped",
+      "reason": "ADRS checkout contains no matching task folder (no SDN telemetry/validation task; keyword searches for Pingmesh/VeriFlow/traffic matrix/validation engine all empty)"
+    },
+    {
+      "pdf_id": "5dd2d839c66d339a",
+      "paper": "MAS (MetaGPT)",
+      "adrs_task": "multiagent_system",
+      "initial_program": "multi_agent_evolution{,_v2,_v2_gpt5,_v3_gpt5}/initial_program.py",
+      "generated_program": null,
+      "status": "skipped",
+      "reason": "test harness cannot run: evaluator.py fails at import on missing ADRS/taxonomy_definitions_examples/{definitions.txt,examples.txt}; the judge and the agents additionally need an external OpenAI API key (OPENAI_API_KEY not set). Top-level README.md of the task is empty and does not say which of the 4 variants is the task."
+    },
+    {
+      "pdf_id": "7d3b6e61ea96cc4f",
+      "paper": "NS3 (PowerTCP)",
+      "adrs_task": null,
+      "initial_program": null,
+      "generated_program": null,
+      "status": "skipped",
+      "reason": "ADRS checkout contains no matching task folder (no congestion-control / ns-3 task; hp_quantization and sparse_attention are unrelated tasks)"
+    },
+    {
+      "pdf_id": "b93fea400aedf898",
+      "paper": "Can't-Be-Late",
+      "adrs_task": "cant-be-late",
+      "initial_program": "initial_greedy.py",
+      "generated_program": "generation_program/cant_be_late.py",
+      "status": "tested",
+      "test_command": "cd ADRS/cant-be-late && PYTHONPATH=shims simulator/.venv/bin/python evaluator.py <program>",
+      "generated": {"runs_successfully": 1.0, "avg_cost": 140.8155847222222, "cost_std": 50.86506905424361, "min_cost": 47.914433333333335, "max_cost": 232.73776666666666, "score": -140.8155847222222, "combined_score": -153.5318519857831},
+      "baseline": {"runs_successfully": 1.0, "avg_cost": 96.51543611111111, "cost_std": 40.921052290898466, "min_cost": 46.870983333333335, "max_cost": 148.89655, "score": -96.51543611111111, "combined_score": -106.74569918383573},
+      "verdict": "worse_than_seed",
+      "note": "solution's thresholds cross when the control period exceeds the launch delay (tau = 600 s gap vs delta = 72 s restart overhead), so the controller oscillates on-demand/spot: 219 of 313 ticks on ON_DEMAND on trace 0",
+      "sensitivity_variant": {
+        "program": "generation_program/cant_be_late_tau_negligible.py",
+        "difference": "rule 2 drops the R*tau term, i.e. tau is taken per the solution's own guidance that R*tau is negligible against R*delta",
+        "metrics": {"runs_successfully": 1.0, "avg_cost": 106.542, "cost_std": 41.792, "min_cost": 47.914, "max_cost": 203.977, "score": -106.542, "combined_score": -116.99}
+      }
+    },
+    {
+      "pdf_id": "c252b8a901feea74",
+      "paper": "TXN (Towards Optimal Transaction Scheduling)",
+      "adrs_task": "txn_scheduling",
+      "initial_program": "initial_program.py",
+      "generated_program": "generation_program/txn_scheduling.py",
+      "status": "tested",
+      "test_command": "cd ADRS/txn_scheduling && python evaluator.py <program>",
+      "generated": {"makespan": 581.0, "validity": 1.0, "combined_score": 1718.213058419244},
+      "baseline": {"makespan": 357.0, "validity": 1.0, "combined_score": 2793.2960893854747},
+      "verdict": "worse_than_seed",
+      "note": "solution's surrogate objective (sum of colour-class maxima) is uncorrelated with the simulator's lock-based makespan (e.g. workload 1: surrogate 1600 vs true 452), and the prescribed beam search prunes itself empty (cost bound + cheapest-first frontier)"
+    },
+    {
+      "pdf_id": "d18c13d036b3708f",
+      "paper": "LLM-SQL",
+      "adrs_task": "llm_sql",
+      "initial_program": "initial_program.py",
+      "generated_program": "generation_program/llm_sql.py",
+      "status": "tested",
+      "test_command": "cd ADRS/llm_sql && python -c 'import evaluator; evaluator.evaluate(<program>)'",
+      "generated": {"combined_score": 0.6878251631199369, "runs_successfully": 1.0, "hit_rates": [0.7940080691352975, 0.6965162709282146, 0.7958884733042801, 0.3221936449821612, 0.8421128088526462], "total_runtime": 21.373797178268433},
+      "baseline": {"combined_score": 0.6717413835118066, "runs_successfully": 1.0, "hit_rates": [0.7940941310156155, 0.707332214166747, 0.794851847194222, 0.3967985668655787, 0.8424042066094504], "total_runtime": 351.5789704322815},
+      "verdict": "better_than_seed",
+      "note": "mean hit rate slightly lower (0.6901 vs 0.7071) but ~16x faster, which triggers the evaluator's runtime term"
+    },
+    {
+      "pdf_id": "e3d82bafe7cb11e7",
+      "paper": "Cloudcast",
+      "adrs_task": "cloudcast",
+      "initial_program": "initial_program.py",
+      "generated_program": "generation_program/cloudcast.py",
+      "status": "tested",
+      "test_command": "cd ADRS/cloudcast && python -c 'import evaluator; evaluator.evaluate(<program>)'",
+      "generated": {"combined_score": 0.0012409508267985665, "runs_successfully": 1.0, "total_cost": 804.8337029999997, "avg_cost": 160.96674059999992, "max_transfer_time": 4206.642857142857, "successful_configs": 5, "failed_configs": 0},
+      "baseline": {"combined_score": 0.0009552371980292827, "runs_successfully": 1.0, "total_cost": 1045.860405, "avg_cost": 209.172081, "max_transfer_time": 4461.428571428572},
+      "verdict": "better_than_seed",
+      "note": "multicast sharing of edge occurrences between destinations (-23% egress cost)"
+    },
+    {
+      "pdf_id": "f948850caef3d25f",
+      "paper": "Prism",
+      "adrs_task": "prism",
+      "initial_program": "initial_program.py",
+      "generated_program": "generation_program/prism.py",
+      "status": "tested",
+      "test_command": "cd ADRS/prism && python -c 'import evaluator; evaluator.evaluate(<program>)'",
+      "generated": {"combined_score": 20.627427577103326, "max_kvpr": 19.627427577103326, "success_rate": 1.0},
+      "baseline": {"combined_score": 21.891622105209393, "max_kvpr": 20.891622105209393, "success_rate": 1.0},
+      "verdict": "worse_than_seed",
+      "note": "solution orders candidates by (req_rate/slo)/model_size; the division by footprint hurts min-max bin packing (ablation: seed ordering with the same placement rule scores 22.34)"
+    }
+  ]
+}

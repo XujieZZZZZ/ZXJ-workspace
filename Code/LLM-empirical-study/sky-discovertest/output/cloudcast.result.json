@@ -1,0 +1,12 @@
+{
+  "combined_score": 0.0012409508267985665,
+  "runs_successfully": 1.0,
+  "total_cost": 804.8337029999997,
+  "avg_cost": 160.96674059999992,
+  "max_transfer_time": 4206.642857142857,
+  "successful_configs": 5,
+  "failed_configs": 0,
+  "time_score": 0.00023766275654845775,
+  "cost_score": 0.0012409508267985665,
+  "success_rate": 1.0
+}

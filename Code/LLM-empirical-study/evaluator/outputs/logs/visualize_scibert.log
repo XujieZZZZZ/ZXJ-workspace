@@ -1,0 +1,80 @@
+[08:50:28] 编码器: scibert(SciBERT) -> 输出目录 visualization_scibert
+[08:50:28] 装载数据与 S2 解析缓存…
+[08:50:28] 实例统计 —— works: Human 288 / LLM 65; claims: Human 200 / LLM 80
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1789116632.008297  149270 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1789116632.096201  149270 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1789116633.770583  149270 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+[08:50:36] 编码模型已加载: scibert <- /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/model/scibert_scivocab_uncased (device=cuda:0)
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:37] [work:Telemetry] 缓存命中 1,新增编码 28 条
+[08:50:37] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_2d_Telemetry.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:37] [claim:Telemetry] 缓存命中 1,新增编码 25 条
+[08:50:38] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/claims_2d_Telemetry.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:39] [work:MAS] 缓存命中 2,新增编码 67 条
+[08:50:39] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_2d_MAS.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:40] [claim:MAS] 缓存命中 1,新增编码 43 条
+[08:50:40] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/claims_2d_MAS.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:40] [work:NS3] 缓存命中 4,新增编码 31 条
+[08:50:41] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_2d_NS3.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:42] [claim:NS3] 缓存命中 1,新增编码 49 条
+[08:50:42] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/claims_2d_NS3.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:42] [work:Cant-Be-Late] 缓存命中 0,新增编码 30 条
+[08:50:43] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_2d_Cant-Be-Late.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:43] [claim:Cant-Be-Late] 缓存命中 1,新增编码 22 条
+[08:50:43] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/claims_2d_Cant-Be-Late.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:45] [work:TXN] 缓存命中 2,新增编码 88 条
+[08:50:45] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_2d_TXN.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:46] [claim:TXN] 缓存命中 1,新增编码 36 条
+[08:50:46] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/claims_2d_TXN.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:46] [work:LLM-SQL] 缓存命中 3,新增编码 23 条
+[08:50:47] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_2d_LLM-SQL.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:47] [claim:LLM-SQL] 缓存命中 1,新增编码 22 条
+[08:50:48] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/claims_2d_LLM-SQL.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:48] [work:Cloudcast] 缓存命中 3,新增编码 34 条
+[08:50:48] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_2d_Cloudcast.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:49] [claim:Cloudcast] 缓存命中 1,新增编码 44 条
+[08:50:50] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/claims_2d_Cloudcast.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:50] [work:Prism] 缓存命中 5,新增编码 40 条
+[08:50:50] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_2d_Prism.png
+/home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/embedder.py:131: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  dim = int(model.get_sentence_embedding_dimension())
+[08:50:51] [claim:Prism] 缓存命中 1,新增编码 39 条
+[08:50:51] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/claims_2d_Prism.png
+[08:50:51] [work:overview] 全部 361 条命中既有缓存(零新增计算)
+[08:50:54] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_2d_overview.png
+[08:50:55] [claim:overview] 全部 288 条命中既有缓存(零新增计算)
+[08:50:57] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/claims_2d_overview.png
+[08:50:58] 图已输出: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert/works_time_distribution.png
+[08:50:58] 全部完成,输出目录: /home/zhangxujie/ai4research/ZXJ-workspace/Code/LLM-empirical-study/evaluator/outputs/visualization_scibert

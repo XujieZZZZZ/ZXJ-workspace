@@ -1,0 +1,32 @@
+Processing dataset: datasets/movies.csv
+Total string length: 9232216
+Cached tokens pricing = 1.83, Non-cached tokens pricing = 0.95, total pricing = 2.78
+Results: (7330454, 79.40080691352975), Runtime: 0.41432785987854004
+Processing dataset: datasets/beer.csv
+Total string length: 2269723
+Cached tokens pricing = 0.4, Non-cached tokens pricing = 0.34, total pricing = 0.74
+Results: (1580899, 69.65162709282146), Runtime: 3.1459996700286865
+Processing dataset: datasets/BIRD.csv
+Total string length: 33684276
+Cached tokens pricing = 6.7, Non-cached tokens pricing = 3.44, total pricing = 10.14
+Results: (26808927, 79.58884733042801), Runtime: 0.8577289581298828
+Processing dataset: datasets/PDMX.csv
+Total string length: 6868714
+Cached tokens pricing = 0.55, Non-cached tokens pricing = 2.33, total pricing = 2.88
+Results: (2213056, 32.219364498216116), Runtime: 16.01543354988098
+Processing dataset: datasets/products.csv
+Total string length: 15875208
+Cached tokens pricing = 3.34, Non-cached tokens pricing = 1.25, total pricing = 4.6
+Results: (13368716, 84.21128088526461), Runtime: 0.9403071403503418
+{
+  "combined_score": 0.6878251631199369,
+  "runs_successfully": 1.0,
+  "hit_rates": [
+    0.7940080691352975,
+    0.6965162709282146,
+    0.7958884733042801,
+    0.3221936449821612,
+    0.8421128088526462
+  ],
+  "total_runtime": 21.373797178268433
+}
