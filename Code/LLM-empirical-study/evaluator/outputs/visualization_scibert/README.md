@@ -16,17 +16,21 @@ pooling + L2 归一化,与评测报告 `rq2_1_*_emb_scibert.*` 同一口径)**;
 
 ## 2. 数据口径与图集
 
-与 `../visualization/README.md` 完全一致(数据源、去重/年份口径、统计表均相同),仅编码器不同:
+与 `../visualization/README.md` 完全一致(数据源、去重/年份口径、统计表、"两边都有"的
+标注口径均相同),仅编码器不同:
 
 | 文件 | 内容 |
 | :-- | :-- |
-| `works_2d_<论文>.png` ×8 | 每篇论文 works 语义空间:蓝点=Human、橙点=LLM(with search)、金★=Observation |
-| `works_2d_overview.png` | 8 篇论文 works 总图(岛屿布局):每篇论文一个独立区域,**颜色=论文(8 色相,见图例),实心圆=Human,空心圆=LLM(with search)**,黑★=Observation |
-| `claims_2d_<论文>.png` ×8 | 每篇论文 claims 表示分布 |
+| `works_2d_<论文>.png` ×8 | 每篇论文 works 语义空间:蓝点=Human、橙点=LLM(with search)、金★=Observation;**绿方块=两边都引用的同一篇论文**(一个方块一篇) |
+| `works_2d_overview.png` | 8 篇论文 works 总图(岛屿布局):每篇论文一个独立区域,**颜色=论文(8 色相,见图例),实心圆=Human,空心圆=LLM(with search),绿方块=两边都有**,黑★=Observation |
+| `claims_2d_<论文>.png` ×8 | 每篇论文 claims 表示分布(claims 无实体匹配,绿方块只在逐字相同时出现,实测为 0) |
 | `claims_2d_overview.png` | 8 篇论文 claims 总图(岛屿布局同上) |
-| `works_time_distribution.png` | works 年份分布(归一化;时间口径与编码器无关,与 SPECTER2 批次一致) |
-| `data_points.jsonl` | 全部数据点(含 `emb: SciBERT` 字段)与坐标,可复绘 |
+| `works_time_distribution.png` | works 年份分布(归一化;含"两边都有"的 16 篇;**与编码器无关,与 SPECTER2 批次同为同一文件内容**) |
+| `data_points.jsonl` | 全部数据点(含 `emb: SciBERT` 字段、`share`/`share_with` 共有标注)与坐标,可复绘 |
 | `README.md` | 本说明 |
+
+> "两边都有"= 两侧 S2 解析到同一 DOI/S2ID(与编码器无关,两批次都是 16 篇);
+> 评测 S_M 的语义近似匹配(L2/L3)**不算共有、图上不标**,原因见 `../visualization/README.md` 第 3 节。
 
 绘制方法:每论文图为 **SciBERT 768 维向量 → t-SNE**;总图为**双层合成布局(岛屿图)**:
 每篇论文一个独立的"岛",岛心按 8 篇论文 Observation 向量的 PCA 排布(主题相近则相邻,

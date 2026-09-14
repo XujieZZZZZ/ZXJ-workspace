@@ -15,14 +15,62 @@
 
 ## 2. Semantic Distribution of LLM-Generated Related Work vs Human Distribution
 
-### 2.1 Figures and Setup
+### 2.1 Figures and Reading Convention (Per Paper, 8 Figures)
 
-Encoding: SPECTER2 (specter2_base) 768-dim → t-SNE (a SciBERT batch is also included, with consistent conclusions). The overview figure uses an "island layout": one independent region per paper, color = paper, filled = Human, hollow = LLM (with search), ★ = Observation.
+Encoding: SPECTER2 (specter2_base) 768-dim → t-SNE (a SciBERT batch is also included, with consistent conclusions).
 
-![works semantic-space overview](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_overview.png)
-![claims semantic-space overview](../Code/LLM-empirical-study/evaluator/outputs/visualization/claims_2d_overview.png)
+This section **does not use an "all 8 papers on one overview" figure**: squeezing 8 papers onto a single canvas only shows that "the broad directions agree" and hides "which paper's sampling is sparser and which paper's two sides actually overlap". **The per-paper figures are what discriminates**, so they are grouped below **by the execution verdict from Part 3** — exactly the information a combined figure cannot carry.
 
-**Conclusion: inside each "island", the orange points (LLM) and the blue points (Human) are interleaved in the same region, and both surround the ★ (Observation) — i.e. the distributions are aligned and co-located, and there is no phenomenon of "the LLM drifting to another topic".** The per-paper figures (`works_2d_<paper>.png` ×8) show the same thing at higher zoom: LLM points fall near the density center of the human point cloud, while human points in the long-tail directions have no counterpart.
+Reading convention (identical across all 8 figures): **blue circle = cited by humans only; orange circle = cited by the LLM (with search) only; green square = cited by both sides as the same paper (matched by DOI/S2ID, one square per paper); gold ★ = that paper's Observation anchor (where "the problem itself" sits in semantic space)**. Coordinates have no absolute meaning, only relative proximity; the n in each legend is that figure's point count.
+
+#### ① The two wins / ties
+
+![works semantic space - Cloudcast](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_Cloudcast.png)
+
+![works semantic space - LLM-SQL](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_LLM-SQL.png)
+
+- **Cloudcast** (human 26 / LLM 4 / same paper both sides 3): all 4 orange points sit in the **middle** of the human cloud, with the 3 green squares in the same patch; ★ floats alone at the far left of the canvas — there is an empty gap between the problem itself (bulk replication) and the main body of cited work. The two clouds are co-located; the LLM simply picked 4 works out of it.
+- **LLM-SQL** (16 / 5 / 2): the human points form an upper and a lower band; of the 5 orange points, 1 is at the top-left of the upper band, 2 are at the bottom-right of the lower band, and the rest scatter mid-right. **Of the 8 figures, this is the one where the orange points least cluster toward the density center**; its 2 green squares fall mid-canvas.
+
+#### ② The three losses
+
+![works semantic space - Prism](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_Prism.png)
+
+![works semantic space - TXN](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_TXN.png)
+
+![works semantic space - Can't-Be-Late](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_Cant-Be-Late.png)
+
+- **Prism** (34 / 4 / 3): the human points form two very tight clumps, plus 1 blue point isolated at the top-right and 1 at the bottom-left; all 4 orange points are **embedded inside the two clumps**, the 3 green squares gather in the upper clump, and ★ hugs the lower clump's edge — **the closest alignment between the problem and the cited works across all 8 figures**, and it still loses to seed.
+- **TXN** (79 / 8 / 1): the largest human set, spread over three blocks; only 8 orange points, 5 of them crowded into the upper-left block right next to ★ and the single green square, with the other 3 scattered in the middle/lower blocks. **The human-only mass sits mainly in the middle and lower blocks — precisely where orange points are scarcest.**
+- **Can't-Be-Late** (25 / 4 / 0): **the only figure with zero overlap**, so it has no green square; 29 points are crammed into one small cluster (this paper's related work is highly homogeneous), ★ sits at the cluster's lower edge, and 1 blue point at the top-right plus 1 at the bottom-left float alone outside it.
+
+#### ③ The three with no ADRS task, not executed
+
+![works semantic space - Telemetry](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_Telemetry.png)
+
+![works semantic space - NS3](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_NS3.png)
+
+![works semantic space - MAS](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_MAS.png)
+
+- **Telemetry** (15 / 11 / 1): **the most balanced figure by volume** (11 vs 15); the orange points are not scattered at the fringe but run as a vertical column through the middle of the human cloud.
+- **NS3** (23 / 3 / 4): **the highest same-paper overlap** (4 green squares); but the points split into a left and a right island, and 3 of the 4 green squares are on the right island (the one containing ★) while the left island has only 1; the 3 orange points are split too (2 left, 1 right).
+- **MAS** (54 / 10 / 2): **the most spread-out human cloud** (54 points across the whole canvas, clearly in an upper and a lower sheet); the 10 orange points appear in both sheets at roughly 1/5 the human density.
+
+#### Per-Paper Counts
+
+| Paper | Verdict | Human works | LLM works | LLM/Human | Same paper both sides |
+|---|---|---:|---:|---:|---:|
+| Cloudcast | ✅ Win | 29 | 7 | 0.24× | 3 |
+| LLM-SQL | ✅ Win (metric) | 18 | 7 | 0.39× | 2 |
+| Prism | ❌ Loss | 37 | 7 | 0.19× | 3 |
+| TXN | ❌ Loss | 80 | 9 | 0.11× | 1 |
+| Can't-Be-Late | ❌ Loss | 25 | 4 | 0.16× | 0 |
+| Telemetry | — no task | 16 | 12 | 0.75× | 1 |
+| NS3 | — no task | 27 | 7 | 0.26× | 4 |
+| MAS | — incomplete env | 56 | 12 | 0.21× | 2 |
+| **Total** | | **288** | **65** | **0.23×** | **16** |
+
+**Conclusion (consistent across all 8 figures): in every figure the orange points (LLM) are interleaved with the blue points (human) in the same region and both surround the ★ (Observation) — the distributions are aligned and co-located, and there is no case of "the LLM drifting to another topic".** What differs between papers is not direction but **density and selection**: orange points fall near the density center of the human cloud, while the points humans extend toward the long tail (Prism's top-right/bottom-left, Can't-Be-Late's top-right/bottom-left, TXN's middle/lower blocks, LLM-SQL's upper band) have no counterpart. The volume ratio swings widely, from 0.11× to 0.75×, and the measured verdicts do not track that ratio (LLM-SQL at 0.39× won; Prism at 0.19× and TXN at 0.11× lost) — which shows that **winning depends not on how many works were cited but on whether the borrowed mechanisms match the real cost function (see Part 3).**
 
 ### 2.2 Three Levels of Relationship
 
@@ -40,8 +88,6 @@ Encoding: SPECTER2 (specter2_base) 768-dim → t-SNE (a SciBERT batch is also in
 | **Impact** | Median citation count | 144 | **902 (6.3×)** | Strong preference for classics |
 | | Share with ≥1000 citations | 16% | 44% | |
 | | Share with <50 citations | 26% | 2% | Almost never cites obscure work |
-
-Publication-year distribution figure: ![works year distribution](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_time_distribution.png)
 
 ### 2.3 Corroboration from the Data (`merged_llm_re_withsearch` vs `human_data`, all 8 papers checked item by item)
 

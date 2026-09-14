@@ -15,14 +15,49 @@
 
 ## 二、LLM 生成相关工作的语义分布 vs 人类分布
 
-### 2.1 图与口径
+### 2.1 图与口径（8 篇逐篇）
 
-编码：SPECTER2(specter2_base) 768 维 → t-SNE（另附 SciBERT 批次，结论一致）。总图用"岛屿布局"：每篇论文一个独立区域，颜色 = 论文，实心 = Human，空心 = LLM(with search)，★ = Observation。
+编码：SPECTER2(specter2_base) 768 维 → t-SNE（另附 SciBERT 批次）。
 
-![works 语义空间总图](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_overview.png)
-![claims 语义空间总图](../Code/LLM-empirical-study/evaluator/outputs/visualization/claims_2d_overview.png)
 
-**结论：每座"岛"内部，橙点（LLM）与蓝点（Human）交错分布在同一片区域，且都围着 ★（Observation）——即分布同向、共位，不存在"LLM 漂到别的主题上"的现象。** 逐论文图（`works_2d_<论文>.png` ×8）放大后同样如此：LLM 的点落在人类点云的密度中心附近，人类在长尾方向上的点没有对应物。
+#### ① 实测胜出 / 持平的两篇
+
+![works 语义空间 - Cloudcast](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_Cloudcast.png)
+
+![works 语义空间 - LLM-SQL](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_LLM-SQL.png)
+
+#### ② 实测落败的三篇
+
+![works 语义空间 - Prism](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_Prism.png)
+
+![works 语义空间 - TXN](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_TXN.png)
+
+![works 语义空间 - Can't-Be-Late](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_Cant-Be-Late.png)
+
+
+#### ③ ADRS 无对应任务、未实测的三篇
+
+![works 语义空间 - Telemetry](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_Telemetry.png)
+
+![works 语义空间 - NS3](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_NS3.png)
+
+![works 语义空间 - MAS](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_2d_MAS.png)
+
+
+#### 逐篇计数汇总
+
+| 论文 | 实测判定 | 人类 works | LLM works | LLM/Human | 两侧同篇 |
+|---|---|---:|---:|---:|---:|
+| Cloudcast | ✅ 胜 | 29 | 7 | 0.24× | 3 |
+| LLM-SQL | ✅ 胜（指标） | 18 | 7 | 0.39× | 2 |
+| Prism | ❌ 负 | 37 | 7 | 0.19× | 3 |
+| TXN | ❌ 负 | 80 | 9 | 0.11× | 1 |
+| Can't-Be-Late | ❌ 负 | 25 | 4 | 0.16× | 0 |
+| Telemetry | — 无任务 | 16 | 12 | 0.75× | 1 |
+| NS3 | — 无任务 | 27 | 7 | 0.26× | 4 |
+| MAS | — 环境不完整 | 56 | 12 | 0.21× | 2 |
+| **合计** | | **288** | **65** | **0.23×** | **16** |
+
 
 ### 2.2 三层相关关系
 
@@ -40,8 +75,6 @@
 | **影响力度** | 中位被引数 | 144 | **902（6.3×）** | 强烈偏爱经典 |
 | | ≥1000 次引用占比 | 16% | 44% | |
 | | <50 次引用占比 | 26% | 2% | 几乎不引冷门工作 |
-
-时间分布图：![works 年份分布](../Code/LLM-empirical-study/evaluator/outputs/visualization/works_time_distribution.png)
 
 ### 2.3 数据侧印证（`merged_llm_re_withsearch` vs `human_data`，8 篇逐条核对）
 

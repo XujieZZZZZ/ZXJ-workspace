@@ -5,6 +5,16 @@
 - 人类 GT   : data/human_data/<pdf_id>.json(related_works 含 claims 与 works)
 - LLM(带检索): data/LLM_data/merged_llm_re_withsearch/<pdf_id>.json
 
+两侧共有的论文(本次新增,图上标出;口径与 RQ2-1 完全一致,零新增计算):
+- **只标"两边都有"的论文**:两侧 S2 解析到同一篇论文(同一 DOI 或 S2ID,L1 精确实体匹配)
+  的才计入;语义近似(S_M 的 L2/L3)一律不算共有,不做任何标注;
+- 匹配直接调用 rq2_1.match_levels 的 L1 判定(与 run_rq2_1.py 同一条代码路径),
+  向量取本脚本已加载的同一份 SPECTER2 缓存,不新增任何编码/检索;
+- 表现方式:两边都有的论文**直接画成绿色方块**(■,不区分来源侧);其余点仍是
+  圆点且颜色语义不变(蓝=Human、橙=LLM,总图=论文色相);全 8 篇合计 16 篇;
+- 每篇论文图与总图均标注;claims 无实体匹配口径,"共有"仅指两侧逐字相同的
+  claim(实测 0 条,图中以文字给出)。
+
 编码复用核对结论(不重复计算):
 - works 的"现存编码"即评测管线 SPECTER2 向量:输入 = embedder.paper_doc_text(
   标题 + S2 解析摘要,无摘要仅标题),按文本哈希缓存于 outputs/cache/embeddings/
@@ -39,6 +49,7 @@ from sklearn.manifold import TSNE
 import config
 import dataio
 import metrics_calc as mc
+import rq2_1                     # 复用其 L1 同篇判定(与 run_rq2_1.py 同一条口径)
 from embedder import Specter2Embedder, paper_doc_text
 from utils import log
 
@@ -62,6 +73,10 @@ COL_L = "#D55E00"            # LLM(with search)
 COL_OBS = "#F2B134"          # Observation 锚点 ★
 COL_OBS_EDGE = "#5B4A00"
 COL_TXT = "#333333"
+COL_SHARE = "#009E73"        # "两边都有"的论文:绿色方块(Okabe-Ito 色盲友好绿,与蓝/橙及论文色相均可区分)
+
+SHARED = 1                   # 两侧解析到同一篇论文(DOI/S2ID 精确匹配)= 图上绿方块
+MARK_SHARED = "s"            # 共有论文的标记形状:方形(普通点仍为圆形)
 
 VIZ_DIR = config.OUTPUTS_DIR / "visualization"
 EMB_LABEL = "SPECTER2"            # 图上标注的编码器名(命令行 --emb 切换)
@@ -74,17 +89,22 @@ TSNE_SEED = 42
 # --------------------------------------------------------------------------- #
 class Instance:
     """一个可视化实例(work/claim/observation),携带编码文本与展示元数据。"""
-    __slots__ = ("kind", "side", "pdf_id", "text", "title", "year", "vec")
+    __slots__ = ("kind", "side", "pdf_id", "text", "title", "year", "vec",
+                 "norm", "entity", "share", "share_with")
 
     def __init__(self, kind: str, side: str, pdf_id: str, text: str,
-                 title: str = None, year: int = None):
+                 title: str = None, year: int = None, norm: str = None):
         self.kind = kind          # 'work' | 'claim' | 'obs'
         self.side = side          # 'H' 人类 | 'L' LLM(withsearch) | 'O' observation
         self.pdf_id = pdf_id
         self.text = text          # 编码用文本(与评测管线逐字一致)
         self.title = title        # works:论文标题(展示)
         self.year = year          # works:发表年份(时间分布)
+        self.norm = norm          # works:规范化标题(= dataio.unique_works 的键)
+        self.entity = None        # works:S2 规范实体键(paperId/DOI)——同一篇论文去重用
         self.vec = None
+        self.share = 0            # 1 = 两侧引用同一篇论文(见 mark_shared_*);0 = 非共有
+        self.share_with = []      # 对侧那篇同论文的标题(落盘溯源)
 
     @property
     def tag(self) -> str:
@@ -112,6 +132,14 @@ def work_embed_text(w: dict, res: dict) -> str:
     return paper_doc_text(p.get("title") or w["title"], p.get("abstract"))
 
 
+def work_entity(w: dict, res: dict) -> str:
+    """work 的 S2 规范实体键(判定"是不是同一篇论文"的键):paperId 优先,退化 DOI,
+    再退化规范化标题。两侧标题写法可能不同(如 FPGA-based / FPGA based),解析到同一篇
+    则 paperId 相同——统计共有论文数/年份时按此去重,避免同一篇被算两次。"""
+    p = (res.get(w["_norm"]) or {}).get("s2_paper") or {}
+    return p.get("paperId") or (p.get("doi") or "").lower() or f"norm:{w['_norm']}"
+
+
 def work_year_of(w: dict, res: dict) -> int | None:
     """work 年份:人类取数据自带;LLM 取 S2 解析年份(LLM 生成文件无 year 字段)。"""
     y = w.get("year")
@@ -137,11 +165,81 @@ def collect() -> tuple:
                 works.append(Instance("work", side, pdf_id,
                                       work_embed_text(w, res),
                                       title=(w.get("title") or "").strip(),
-                                      year=work_year_of(w, res)))
+                                      year=work_year_of(w, res),
+                                      norm=w["_norm"]))
             for c in dataio.all_claims(doc):
                 claims.append(Instance("claim", side, pdf_id, (c or "").strip()))
         obs.append(Instance("obs", "O", pdf_id, (doc_h["observation"] or "").strip()))
-    return works, claims, obs
+    return works, claims, obs, res
+
+
+# --------------------------------------------------------------------------- #
+# 一(补)、两侧共有部分标注(works:同一篇论文;claims:逐字相同的句子)
+# --------------------------------------------------------------------------- #
+def mark_shared_works(works: list, res: dict) -> dict:
+    """把"两边都有"的论文标到 work 实例上,返回逐论文计数(图例/日志用)。
+
+    只认**同一篇论文**:匹配走 rq2_1.match_levels(与 run_rq2_1.py 同一条代码路径、
+    同一份 SPECTER2 向量缓存),仅取 L1(两侧 S2 解析到同一 DOI/S2ID)的配对;
+    L2/L3 的语义近似匹配**不计入共有**、不标注。向量直接取实例上已加载的缓存向量,
+    零新增计算。返回:
+      {"l1_pairs": 同一篇论文的配对数, "n_papers": 去重后的论文数(= 图上绿方块数),
+       "per_pid": {pdf_id: {"l1_pairs": n, "titles": [共有论文标题]}}}
+    """
+    by_key = {}
+    for it in works:
+        by_key[(it.pdf_id, it.side, it.norm)] = it
+    stat = {"l1_pairs": 0, "per_pid": {}}
+    for pdf_id in dataio.list_pdf_ids():
+        doc_h = dataio.load_doc(dataio.SET_GT, pdf_id)
+        doc_l = dataio.load_doc(dataio.SET_WS, pdf_id)
+        H, L = dataio.unique_works(doc_h), dataio.unique_works(doc_l)
+        vecs = {"vec": {}, "v_obs": None}
+        for tag, W in (("H", H), ("L", L)):
+            for w in W:
+                it = by_key.get((pdf_id, tag, w["_norm"]))
+                if it is not None:
+                    it.entity = work_entity(w, res)
+                    if it.vec is not None:
+                        vecs["vec"][f"{tag}:{w['_norm']}"] = it.vec
+        M = rq2_1.match_levels(doc_h, doc_l, res, vecs)["M"]
+        pid = {"l1_pairs": 0, "titles": []}
+        ents = set()
+        for i, row in enumerate(M):
+            h_it = by_key.get((pdf_id, "H", H[i]["_norm"]))
+            for j, lvl in enumerate(row):
+                if lvl != SHARED:              # 只认"同一篇论文",语义匹配不标注
+                    continue
+                l_it = by_key.get((pdf_id, "L", L[j]["_norm"]))
+                for it, other in ((h_it, L[j]["title"]), (l_it, H[i]["title"])):
+                    if it is not None:
+                        it.share = SHARED
+                        if other not in it.share_with:
+                            it.share_with.append(other)
+                pid["l1_pairs"] += 1
+                ents.add(h_it.entity if h_it is not None else H[i]["_norm"])
+                pid["titles"].append(f"H: {H[i]['title']}  ||  L: {L[j]['title']}")
+        stat["l1_pairs"] += pid["l1_pairs"]
+        stat["n_papers"] = stat.get("n_papers", 0) + len(ents)   # 图上绿方块数
+        stat["per_pid"][pdf_id] = pid
+    return stat
+
+
+def mark_shared_claims(claims: list) -> dict:
+    """claims 的"共有"= 两侧逐字相同的 claim(claims 无实体匹配口径,实测 0 条)。"""
+    stat = {"l1_pairs": 0, "per_pid": {}}
+    for pdf_id in dataio.list_pdf_ids():
+        side_txt = {"H": set(), "L": set()}
+        for it in claims:
+            if it.pdf_id == pdf_id:
+                side_txt[it.side].add(it.text)
+        both = side_txt["H"] & side_txt["L"]
+        for it in claims:
+            if it.pdf_id == pdf_id and it.text in both:
+                it.share = SHARED
+        stat["l1_pairs"] += len(both)
+        stat["per_pid"][pdf_id] = {"l1_pairs": len(both), "titles": sorted(both)}
+    return stat
 
 
 # --------------------------------------------------------------------------- #
@@ -286,8 +384,34 @@ def draw_obs(ax, xy, s: float, color: str = COL_OBS, edge: str = COL_OBS_EDGE,
                    c=color, edgecolors=edge, linewidths=0.8, zorder=9, label=label)
 
 
-def draw_space_paper(insts, emb, kind: str, pname: str) -> tuple:
-    """每篇论文一张图:Human 色点 vs LLM(with search)色点,同空间 t-SNE。"""
+def shared_points(insts: list, xy: dict) -> list:
+    """共有论文在图上各自的落点:每篇论文一个绿方块。
+
+    同一篇论文在 H/L 两侧各有一个实例,两者编码文本相同(同篇 -> 同向量 -> 同坐标,
+    仅被 expand_duplicates 沿小圆环摊开),这里按 S2 实体合并、取二者中点 = 原始坐标,
+    故"一个方块 = 一篇两边都有的论文"。返回 [(x, y), ...]。"""
+    groups = defaultdict(list)
+    for it in insts:
+        if it.share == SHARED:
+            groups[(it.pdf_id, it.entity or it.norm)].append(xy[it.tag])
+    return [tuple(np.mean(v, axis=0)) for v in groups.values()]
+
+
+def share_legend_handle(shared: dict, kind: str) -> Line2D:
+    """共有论文的图例色块(绿色方块):形状+颜色都表示"两边都有",不区分来源侧。"""
+    unit = "papers" if kind == "work" else "claims"
+    return Line2D([0], [0], marker=MARK_SHARED, color="none", markerfacecolor=COL_SHARE,
+                  markeredgecolor="white", markeredgewidth=0.6, markersize=9,
+                  label=f"both sides, same paper (n={shared['l1_pairs']} {unit})"
+                  if kind == "work" else
+                  f"both sides, identical text (n={shared['l1_pairs']} {unit})")
+
+
+def draw_space_paper(insts, emb, kind: str, pname: str, shared: dict) -> tuple:
+    """每篇论文一张图:Human 色点 vs LLM(with search)色点,同空间 t-SNE。
+
+    圆点=只有一侧(蓝 Human / 橙 LLM),绿色方块=两边都引用同一篇论文(每篇一个方块,
+    不区分侧);claims 的"共有"指两侧逐字相同(实测 0 条)。"""
     kind_cn = {"work": "Works", "claim": "Claims"}[kind]
     embed_all(insts, emb, f"{kind}:{pname}")
     xy0 = tsne_layout(insts)
@@ -297,24 +421,33 @@ def draw_space_paper(insts, emb, kind: str, pname: str) -> tuple:
 
     n_h = sum(1 for it in insts if it.side == "H")
     n_l = sum(1 for it in insts if it.side == "L")
-    n_both = len({it.text for it in insts if it.side == "H"} &
-                 {it.text for it in insts if it.side == "L"})
     fig, ax = plt.subplots(figsize=(FIG_W, FIG_H))
     hide_axes(ax)
+    # 圆点=只有一侧(蓝 Human / 橙 LLM),绿方块=两边都有的同一篇论文(不区分侧)
     for side, col in (("H", COL_H), ("L", COL_L)):
-        ps = [it for it in insts if it.side == side]
+        ps = [it for it in insts if it.side == side and it.share != SHARED]
         if ps:
             ax.scatter([xy[it.tag][0] for it in ps], [xy[it.tag][1] for it in ps],
-                       s=s_dot, c=col, alpha=0.92, edgecolors="white", linewidths=0.4,
-                       label=f"{'Human' if side == 'H' else 'LLM (with search)'} (n={len(ps)})")
-    draw_obs(ax, xy, s=320)
-    ax.set_aspect("equal")
-    overlap_en = "co-cited by both" if kind == "work" else "identical on both sides"
-    ax.set_title(f"{kind_cn} semantic space - {pname}", fontsize=18, color=COL_TXT, pad=12)
-    ax.set_xlabel(f"{EMB_LABEL} embeddings + t-SNE  |  {overlap_en}: {n_both}",
-                  fontsize=10.5, color="#666666", labelpad=6)
+                       s=s_dot, c=col, alpha=0.92, marker="o",
+                       edgecolors="white", linewidths=0.4, zorder=4,
+                       label=f"{'Human' if side == 'H' else 'LLM (with search)'}"
+                             f", one side only (n={len(ps)})")
+    pts = shared_points(insts, xy)
+    if pts:
+        ax.scatter([p[0] for p in pts], [p[1] for p in pts], s=s_dot * 1.30,
+                   marker=MARK_SHARED, c=COL_SHARE, edgecolors="white", linewidths=0.4,
+                   zorder=5, label=f"both sides, same paper (n={len(pts)})")
     ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), frameon=False,
               fontsize=11.5, borderaxespad=0.2)
+    draw_obs(ax, xy, s=320)
+    ax.set_aspect("equal")
+    # 说明文字分两行:图例在轴外,轴宽有限,单行过长会被画布裁掉
+    cap = (f"green square = cited by both sides (same paper; n={shared['l1_pairs']})"
+           if kind == "work" else
+           f"green square = identical claim text on both sides (n={shared['l1_pairs']})")
+    ax.set_title(f"{kind_cn} semantic space - {pname}", fontsize=18, color=COL_TXT, pad=12)
+    ax.set_xlabel(f"{EMB_LABEL} embeddings + t-SNE\n{cap}",
+                  fontsize=10.5, color="#666666", labelpad=6)
     fname = f"{kind}s_2d_{pname}.png"
     fig.savefig(VIZ_DIR / fname)
     plt.close(fig)
@@ -322,12 +455,13 @@ def draw_space_paper(insts, emb, kind: str, pname: str) -> tuple:
     return fname, xy
 
 
-def draw_space_overview(insts, emb, kind: str, paper_names: dict) -> tuple:
+def draw_space_overview(insts, emb, kind: str, paper_names: dict, shared: dict) -> tuple:
     """8 篇论文总图:颜色=论文(8 色相),实心圆=Human / 空心圆=LLM(with search)。
 
     布局:双层合成布局(见 overview_layout)——每个论文是独立"岛屿",岛间按
     Observation 相似度排列,岛内为各自局部 t-SNE;保证同论文的点必在同一区域,
-    颜色归属无歧义。点形语义:实心=Human、空心=LLM(with search);★=岛心 Observation。
+    颜色归属无歧义。点形语义:实心圆=Human、空心圆=LLM(with search)、**绿色方块=两边都有的
+    同一篇论文**(每篇一个,不区分侧)、★=岛心 Observation。
     """
     kind_cn = {"work": "Works", "claim": "Claims"}[kind]
     embed_all(insts, emb, f"{kind}:overview")
@@ -341,11 +475,11 @@ def draw_space_overview(insts, emb, kind: str, paper_names: dict) -> tuple:
     paper_colors = plt.cm.tab10([0, 1, 2, 3, 4, 5, 6, 9])
     fig, ax = plt.subplots(figsize=(11.5, 9.0))
     hide_axes(ax)
-    # ---- 逐论文绘制:Human 实心 / LLM 空心(同色相) ----
+    # ---- 逐论文绘制:Human 实心圆 / LLM 空心圆(同色相);两边都有的论文另画绿方块 ----
     for i, pid in enumerate(pid_list):
         col = paper_colors[i]
-        ph = [it for it in insts if it.pdf_id == pid and it.side == "H"]
-        pl = [it for it in insts if it.pdf_id == pid and it.side == "L"]
+        ph = [it for it in insts if it.pdf_id == pid and it.side == "H" and it.share != SHARED]
+        pl = [it for it in insts if it.pdf_id == pid and it.side == "L" and it.share != SHARED]
         if ph:
             ax.scatter([xy[it.tag][0] for it in ph], [xy[it.tag][1] for it in ph],
                        s=s_dot, c=[col], alpha=0.92, edgecolors="white", linewidths=0.15,
@@ -354,12 +488,17 @@ def draw_space_overview(insts, emb, kind: str, paper_names: dict) -> tuple:
             ax.scatter([xy[it.tag][0] for it in pl], [xy[it.tag][1] for it in pl],
                        s=s_dot * 0.96, facecolors="white", edgecolors=[col],
                        linewidths=1.9, alpha=0.95, zorder=3.2)
+    pts = shared_points(insts, xy)
+    if pts:                       # 两边都有的论文:绿方块(不区分来源侧)
+        ax.scatter([p[0] for p in pts], [p[1] for p in pts], s=s_dot * 1.45,
+                   marker=MARK_SHARED, c=COL_SHARE, edgecolors="white", linewidths=0.5,
+                   zorder=4.5)
     draw_obs(ax, xy, s=230, color="#222222", edge="white", label="Observation")
     ax.set_aspect("equal")
     ax.set_title(f"All 8 papers - {kind_cn} overview ({EMB_LABEL} + t-SNE): "
-                 f"color = paper, solid = Human, hollow = LLM (with search)",
+                 f"color = paper, circle = one side, green square = both sides",
                  fontsize=16, color=COL_TXT, pad=12)
-    # ---- 右侧图例:来源(灰圆) + 论文色相(带各自 H/L 计数) ----
+    # ---- 右侧图例:来源(灰圆) + 共有绿方块 + 论文色相(带各自 H/L/共有计数) ----
     n_h_all = sum(1 for it in insts if it.side == "H")
     n_l_all = sum(1 for it in insts if it.side == "L")
     handles = [Line2D([0], [0], marker="o", color="#555555", markerfacecolor="#555555",
@@ -369,14 +508,17 @@ def draw_space_overview(insts, emb, kind: str, paper_names: dict) -> tuple:
                       label=f"hollow = LLM with search (n={n_l_all})"),
                Line2D([0], [0], marker="*", color="#222222", markersize=13,
                       label="Observation")]
+    if shared["l1_pairs"]:        # 确有共有项时才给图例(claims 实测 0 条,不占位)
+        handles.insert(2, share_legend_handle(shared, kind))
     for i, pid in enumerate(pid_list):
         col = paper_colors[i]
         n_h = sum(1 for it in insts if it.pdf_id == pid and it.side == "H")
         n_l = sum(1 for it in insts if it.pdf_id == pid and it.side == "L")
+        n_s = shared["per_pid"].get(pid, {}).get("l1_pairs", 0)
         handles.append(Line2D([0], [0], marker="o", color="w", markerfacecolor=col,
                               markeredgecolor="none", markersize=9,
                               label=f"{i + 1}  {paper_names.get(pid, pid)}   "
-                                    f"H {n_h}  /  L {n_l}  (LLM = hollow same color)"))
+                                    f"H {n_h}  /  L {n_l}  /  both {n_s}"))
     ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1.005, 0.5),
               frameon=False, fontsize=9, borderaxespad=0.2, labelspacing=1.05)
     fname = f"{kind}s_2d_overview.png"
@@ -386,10 +528,27 @@ def draw_space_overview(insts, emb, kind: str, paper_names: dict) -> tuple:
     return fname, xy
 
 
+def shared_work_years(works: list) -> list:
+    """两侧共有的论文(L1)的年份——按 S2 实体去重(同一篇在 H/L 两侧各有一个实例)。"""
+    seen: dict = {}
+    for it in works:
+        if it.share != SHARED:
+            continue
+        key = (it.pdf_id, it.entity or it.norm)
+        if key not in seen or seen[key] is None:
+            seen[key] = it.year
+    return sorted(int(y) for y in seen.values() if y is not None)
+
+
 def draw_time_distribution(works: list) -> str:
-    """归一化发表年份分布(人类 works 远多于 LLM,故按各自数量归一为比例)。"""
+    """归一化发表年份分布(人类 works 远多于 LLM,故按各自数量归一为比例)。
+
+    第三条曲线 = 两侧共有论文(L1,同一篇论文)的年份分布,用来回答"共有的部分是
+    经典老论文还是近期工作"。
+    """
     y_h = sorted(int(it.year) for it in works if it.side == "H" and it.year is not None)
     y_l = sorted(int(it.year) for it in works if it.side == "L" and it.year is not None)
+    y_s = shared_work_years(works)
     lo, hi = int(min(min(y_h), min(y_l))) - 1, int(max(max(y_h), max(y_l))) + 1
     edges = np.arange(lo, hi + 1, dtype=float)
     h_h, _ = np.histogram(y_h, bins=edges, weights=np.full(len(y_h), 1 / len(y_h)))
@@ -403,7 +562,11 @@ def draw_time_distribution(works: list) -> str:
               label=f"Human works (n={len(y_h)})")
     ax.stairs(h_l, edges, fill=True, color=COL_L, alpha=0.30, linewidth=2.0, zorder=3,
               label=f"LLM works, with search (n={len(y_l)})")
-    for ys, col in ((y_h, COL_H), (y_l, COL_L)):
+    if y_s:   # 两侧共有(同一篇论文)的年份分布:黑色描边台阶,不填充
+        h_s, _ = np.histogram(y_s, bins=edges, weights=np.full(len(y_s), 1 / len(y_s)))
+        ax.stairs(h_s, edges, fill=False, color=COL_SHARE, linewidth=2.4, zorder=5,
+                  label=f"cited by both sides, same paper (n={len(y_s)})")
+    for ys, col in [(y_h, COL_H), (y_l, COL_L)] + ([(y_s, COL_SHARE)] if y_s else []):
         ax.axvline(np.median(ys), color=col, lw=1.2, ls="--", alpha=0.7, zorder=2)
     n_miss = sum(1 for it in works if it.side == "L" and it.kind == "work" and it.year is None)
     rr_h, _ = mc.recency_ratio(y_h)
@@ -411,15 +574,22 @@ def draw_time_distribution(works: list) -> str:
     w1, _, _ = mc.w1_cdf_distance(y_h, y_l)
     stat = (f"Human:  median {np.median(y_h):.0f}  |  recent-3y share {rr_h:.1%}\n"
             f"LLM:    median {np.median(y_l):.0f}  |  recent-3y share {rr_l:.1%}\n"
-            f"distribution gap W1 (EMD) = {w1:.2f} yrs"
-            + (f"\nnote: {n_miss} LLM works omitted (not found on S2)" if n_miss else ""))
-    ax.text(0.985, 0.965, stat, transform=ax.transAxes, ha="right", va="top", fontsize=10,
+            f"distribution gap W1 (EMD) = {w1:.2f} yrs")
+    if y_s:
+        rr_s, _ = mc.recency_ratio(y_s)
+        stat += (f"\nboth sides (same paper): median {np.median(y_s):.0f}  |  "
+                 f"recent-3y share {rr_s:.1%}")
+    if n_miss:
+        stat += f"\nnote: {n_miss} LLM works omitted (not found on S2)"
+    # 统计框放左上空白区(1960–1995 上方无数据),避开右侧高柱
+    ax.text(0.02, 0.76, stat, transform=ax.transAxes, ha="left", va="top", fontsize=9.5,
             color="#444444", bbox=dict(boxstyle="round,pad=0.5", fc="#FAFAFA", ec="#D5D5D5", lw=0.8))
     ax.legend(loc="upper left", frameon=False, fontsize=12)
     ax.set_xlim(lo - 0.5, hi + 0.5)
     ax.set_xlabel("Publication year", fontsize=12.5)
-    ax.set_ylabel("Normalized fraction of works per side", fontsize=12.5)
-    ax.set_title("Publication-year distribution of related works (normalized): Human vs LLM (with search)",
+    ax.set_ylabel("Normalized fraction of works per series", fontsize=12.5)
+    ax.set_title("Publication-year distribution of related works (normalized): "
+                 "Human, LLM (with search), and shared",
                  fontsize=17, color=COL_TXT, pad=14)
     fname = "works_time_distribution.png"
     fig.savefig(VIZ_DIR / fname)
@@ -437,6 +607,8 @@ def dump_points(records: list) -> None:
             for it in insts:
                 row = {"fig": fname, "kind": it.kind, "side": it.side, "pdf_id": it.pdf_id,
                        "emb": EMB_LABEL, "title": it.title, "year": it.year,
+                       "share": it.share,        # 1 = 两边都有(同一篇论文/逐字相同 claim)
+                       "share_with": it.share_with,
                        "text": (it.text or "")[:500]}
                 if it.tag in xy:
                     row["x"], row["y"] = map(float, xy[it.tag])
@@ -472,7 +644,7 @@ def main() -> None:
     pnames = paper_names()
     log(f"编码器: {args.emb}({EMB_LABEL}) -> 输出目录 {VIZ_DIR.name}")
     log("装载数据与 S2 解析缓存…")
-    works, claims, obs = collect()
+    works, claims, obs, res = collect()
     log(f"实例统计 —— works: Human {sum(1 for i in works if i.side == 'H')} / "
         f"LLM {sum(1 for i in works if i.side == 'L')}; "
         f"claims: Human {sum(1 for i in claims if i.side == 'H')} / "
@@ -481,18 +653,27 @@ def main() -> None:
     _spec = config.EMB_CHOICES[args.emb]
     emb = Specter2Embedder(model_dir=_spec[0], adapter_dir=_spec[2], pooling=_spec[3],
                            name=None if args.emb == config.EMB_DEFAULT else args.emb)
+    # 0) 共有部分标注:works 取 RQ2-1 的 L1 同篇判定(先备好向量,全部命中缓存)
+    embed_all(works, emb, "works(共有标注用)")
+    sh_work = mark_shared_works(works, res)
+    sh_claim = mark_shared_claims(claims)
+    log(f"两侧共有(works): 同一篇论文(DOI/S2ID 相同) {sh_work['n_papers']} 篇"
+        f"-> 每图每篇画一个绿方块(配对数 {sh_work['l1_pairs']})")
+    log(f"两侧共有(claims): 逐字相同 {sh_claim['l1_pairs']} 条")
+
     records = []
     # 1) 每篇论文的 works / claims 图
     for pdf_id in dataio.list_pdf_ids():
         pname = "".join(ch for ch in pnames[pdf_id] if ch.isalnum() or ch in "-_") or pdf_id
-        for kind, pool in (("work", works), ("claim", claims)):
+        for kind, pool, sh in (("work", works, sh_work), ("claim", claims, sh_claim)):
             insts = [it for it in pool if it.pdf_id == pdf_id] + [o for o in obs if o.pdf_id == pdf_id]
-            fn, xy = draw_space_paper(insts, emb, kind, pname)
+            fn, xy = draw_space_paper(insts, emb, kind, pname,
+                                      sh["per_pid"].get(pdf_id) or {"l1_pairs": 0})
             records.append((fn, insts, xy))
     # 2) 总图
-    for kind, pool in (("work", works), ("claim", claims)):
+    for kind, pool, sh in (("work", works, sh_work), ("claim", claims, sh_claim)):
         insts = pool + obs
-        fn, xy = draw_space_overview(insts, emb, kind, pnames)
+        fn, xy = draw_space_overview(insts, emb, kind, pnames, sh)
         records.append((fn, insts, xy))
     # 3) 时间分布
     fn = draw_time_distribution(works)
