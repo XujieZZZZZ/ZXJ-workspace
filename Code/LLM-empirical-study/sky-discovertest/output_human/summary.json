@@ -1,0 +1,110 @@
+{
+  "generated_at": "2026-09-14",
+  "source": "data/human_data/<pdf_id>.json (solution.idea + solution.implementation)",
+  "program_dir": "genration_program_human/",
+  "output_dir": "output_human/",
+  "mapping": [
+    {
+      "pdf_id": "52875bf8ef4b3f8c",
+      "paper": "Telemetry (The Case for Validating Inputs in Software-Defined WANs)",
+      "adrs_task": null,
+      "initial_program": null,
+      "generated_program": null,
+      "status": "skipped",
+      "reason": "ADRS checkout contains no matching task folder (no SDN telemetry/validation task)"
+    },
+    {
+      "pdf_id": "5dd2d839c66d339a",
+      "paper": "MAS (MetaGPT)",
+      "adrs_task": "multiagent_system",
+      "initial_program": "multi_agent_evolution{,_v2,_v2_gpt5,_v3_gpt5}/initial_program.py",
+      "generated_program": null,
+      "status": "skipped",
+      "reason": "test harness cannot run: evaluator.py fails at import on missing ADRS/taxonomy_definitions_examples/{definitions.txt,examples.txt}; the judge and the agents additionally need an external OpenAI API key. Top-level README.md is empty and does not say which of the 4 variants is the task."
+    },
+    {
+      "pdf_id": "7d3b6e61ea96cc4f",
+      "paper": "NS3 (PowerTCP)",
+      "adrs_task": null,
+      "initial_program": null,
+      "generated_program": null,
+      "status": "skipped",
+      "reason": "ADRS checkout contains no matching task folder (no congestion-control / ns-3 task)"
+    },
+    {
+      "pdf_id": "b93fea400aedf898",
+      "paper": "Can't-Be-Late",
+      "adrs_task": "cant-be-late",
+      "initial_program": "initial_greedy.py",
+      "generated_program": "genration_program_human/cant_be_late.py",
+      "status": "tested",
+      "test_command": "cd ADRS/cant-be-late && PYTHONPATH=shims simulator/.venv/bin/python evaluator.py <program>",
+      "generated": {"runs_successfully": 1.0, "avg_cost": 97.15691035493826, "cost_std": 40.66611684486063, "min_cost": 46.870983333333335, "max_cost": 188.16655, "score": -97.15691035493826, "combined_score": -107.32343956615343},
+      "baseline": {"runs_successfully": 1.0, "avg_cost": 96.51543611111111, "cost_std": 40.921052290898466, "min_cost": 46.870983333333335, "max_cost": 148.89655, "score": -96.51543611111111, "combined_score": -106.74569918383573},
+      "llm_solution": {"avg_cost": 140.8155847222222, "cost_std": 50.86506905424361, "combined_score": -153.5318519857831},
+      "verdict": "tie_with_seed",
+      "note": "human solution = the paper's Uniform Progress (rules 1-6); ADRS's own initial_greedy.py is a different safety-line greedy. Better than the LLM solution by 46 percentage points of avg cost.",
+      "reference_variant": {
+        "program": "ADRS/cant-be-late/referenced_up.py",
+        "difference": "the paper's own UP code: safety net uses 1d instead of the 2d the solution text states, and `if has_spot: return SPOT` overrides the hysteresis",
+        "metrics": {"runs_successfully": 1.0, "avg_cost": 94.67714896604939, "cost_std": 41.06034155670652, "min_cost": 46.870983333333335, "max_cost": 188.49091666666666, "score": -94.67714896604939, "combined_score": -104.94223435522602}
+      }
+    },
+    {
+      "pdf_id": "c252b8a901feea74",
+      "paper": "TXN (Towards Optimal Transaction Scheduling)",
+      "adrs_task": "txn_scheduling",
+      "initial_program": "initial_program.py",
+      "generated_program": "genration_program_human/txn_scheduling.py",
+      "status": "tested",
+      "test_command": "cd ADRS/txn_scheduling && python evaluator.py <program>",
+      "generated": {"makespan": 427.0, "validity": 1.0, "combined_score": 2336.448598130841},
+      "baseline": {"makespan": 357.0, "validity": 1.0, "combined_score": 2793.2960893854747},
+      "llm_solution": {"makespan": 581.0, "validity": 1.0, "combined_score": 1718.213058419244},
+      "verdict": "worse_than_seed_better_than_llm",
+      "note": "human solution = SMF: sample s=5 unscheduled transactions, append the one with the smallest incremental makespan under the paper's Section 2.1 model restricted to predicted hot-key operations (R-SMF's classifier cannot be trained here, so the transaction's own hot-key ops are used). The proxy model is coarser than the simulator's lock-conflict cost of the full read/write set, so it loses 16% to the seed, but it keeps the real conflict structure and therefore beats the LLM's unrelated 'sum of colour-class maxima' by 36%."
+    },
+    {
+      "pdf_id": "d18c13d036b3708f",
+      "paper": "LLM-SQL",
+      "adrs_task": "llm_sql",
+      "initial_program": "initial_program.py",
+      "generated_program": "genration_program_human/llm_sql.py",
+      "status": "tested",
+      "test_command": "cd ADRS/llm_sql && python -c 'import evaluator; evaluator.evaluate(<program>)'",
+      "generated": {"combined_score": 0.6726314866145435, "runs_successfully": 1.0, "hit_rates": [0.7940482545035775, 0.7073326544368439, 0.7966708561585233, 0.4001552217937114, 0.8419587321312576], "total_runtime": 383.2691400051117},
+      "baseline": {"combined_score": 0.6717413835118066, "runs_successfully": 1.0, "hit_rates": [0.7940941310156155, 0.707332214166747, 0.794851847194222, 0.3967985668655787, 0.8424042066094504], "total_runtime": 351.5789704322815},
+      "llm_solution": {"combined_score": 0.6878251631199369, "hit_rates": [0.7940080691352975, 0.6965162709282146, 0.7958884733042801, 0.3221936449821612, 0.8421128088526462], "total_runtime": 21.373797178268433},
+      "verdict": "tie_with_seed",
+      "note": "the ADRS seed program IS the paper's own GGR implementation (class docstring 'GGR algorithm'), so human solution and seed are the same algorithm; this program adds the HITCOUNT term the solution text specifies (len(v)^2 + average length of the FD-inferred fields, over R_v) and the per-(value, column) scan, and reads the functional dependencies off the table. Mean hit rate 0.70803 vs seed 0.70711 (slightly better), but 72 s/dataset keeps the evaluator's runtime bonus at zero, which is the only reason the LLM's faster single-pass greedy scores higher."
+    },
+    {
+      "pdf_id": "e3d82bafe7cb11e7",
+      "paper": "Cloudcast",
+      "adrs_task": "cloudcast",
+      "initial_program": "initial_program.py",
+      "generated_program": "genration_program_human/cloudcast.py",
+      "status": "tested",
+      "test_command": "cd ADRS/cloudcast && python -c 'import evaluator; evaluator.evaluate(<program>)'",
+      "generated": {"combined_score": 0.0015695294885060193, "runs_successfully": 1.0, "total_cost": 636.133617, "avg_cost": 127.2267234, "max_transfer_time": 2555.515783467231, "successful_configs": 5, "failed_configs": 0},
+      "baseline": {"combined_score": 0.0009552371980292827, "runs_successfully": 1.0, "total_cost": 1045.860405, "avg_cost": 209.172081, "max_transfer_time": 4461.428571428572},
+      "llm_solution": {"combined_score": 0.0012409508267985665, "total_cost": 804.8337029999997},
+      "verdict": "better_than_seed_and_llm",
+      "note": "the paper's planner: cluster the 71 regions to ~20 representatives by pricing/bandwidth features, hop-limit candidate paths to at most two relays, then solve a per-stripe min-cost multicast MILP (pulp/CBC) whose flow conservation makes P a delivery tree, so an edge shared by several downstream destinations is paid for once. The interface exposes no deadline, so the paper's capacity constraints are slack and the stripes reuse the first stripe's tree.-39.2% egress cost vs seed."
+    },
+    {
+      "pdf_id": "f948850caef3d25f",
+      "paper": "Prism",
+      "adrs_task": "prism",
+      "initial_program": "initial_program.py",
+      "generated_program": "genration_program_human/prism.py",
+      "status": "tested",
+      "test_command": "cd ADRS/prism && python -c 'import evaluator; evaluator.evaluate(<program>)'",
+      "generated": {"combined_score": 19.66624226263508, "max_kvpr": 18.66624226263508, "success_rate": 1.0},
+      "baseline": {"combined_score": 21.891622105209393, "max_kvpr": 20.891622105209393, "success_rate": 1.0},
+      "llm_solution": {"combined_score": 20.627427577103326, "max_kvpr": 19.627427577103326, "success_rate": 1.0},
+      "verdict": "worse_than_seed",
+      "note": "the solution's ranking key is token_rate*token_size/SLO and its KVPR numerator accumulates the same token_size-weighted quantity; the evaluator's KVPR is instead sum(req_rate/slo)/free memory. Weighting by model_size favours small high-demand models, which is the wrong direction for the min-max packing the metric minimises. Migration and local request arbitration have no counterpart in a one-shot placement interface."
+    }
+  ]
+}

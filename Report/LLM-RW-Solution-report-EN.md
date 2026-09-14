@@ -8,7 +8,7 @@
 1. **LLM-generated related work and human related work are a "sparse sampling of the same region" in semantic space, not two separate regions.** The set-centroid cosine is 0.982, and affinity to the Observation is 0.865 (H) vs 0.869 (L) — nearly identical; but the volume is only 0.23× that of humans (7–8 per paper vs 36), and strict same-title overlap is only 5.6%.
 2. **The bias is systematic**: the median citation count of LLM-selected works is **6.3×** that of humans (902 vs 144), the share of works from the last 3 years is 41.5% vs 28.8%, and the within-paper publication-year span is 9.5 years vs 31.0 years. It picks **highly-cited classics + recent hotspots**, skipping the middle band and the long tail.
 3. **This distribution characteristic directly explains the Solution performance later**: the LLM's idea is assembled from **mature mechanism templates** inside the correct method space (which is exactly how its two winning cases won), but it carries no "quantitative facts about this system" — 0/80 claims contain any number, and coverage reaches only 24.1% of human atomic assertions.
-4. **Of the 5 runnable tasks tested: 1 true win, 1 metric win, 3 true losses.** cloudcast is a structural true win (rewrites the objective function, cost −23%); llm_sql's score margin comes 100% from the runtime term, with its hit rate actually 1.7pp lower; prism/txn/cant-be-late are genuinely worse than seed, and two of them have large margins from the same mechanism — surrogate objective / parameter assumptions inconsistent with the real system.
+4. **Of the 5 runnable tasks tested: 1 true win, 1 metric win, 3 true losses.** cloudcast is a structural true win (rewrites the objective function, cost −23%); llm_sql's score margin comes 100% from the runtime term, with its hit rate actually 1.7pp lower; prism/txn/cant-be-late are genuinely worse than seed, and two of them have large margins from the same mechanism — surrogate objective / parameter assumptions inconsistent with the real system. **The same-protocol comparison against the human solutions (§3.4): 1 true win (cloudcast, cost −39%, cheaper than the LLM), 1 tie (llm_sql), 1 wash (cant-be-late), 2 true losses (prism −10%, txn −16%); human vs LLM is 3 wins to 2.** Taken together, the two sides show that the outcome depends on **how well the surrogate objective aligns with the real cost function**, not on whether a human or a model produced the solution — the human's only large win and the LLM's only true win use the same mechanism (a shared-edge multicast tree that directly matches the evaluator's billing model).
 5. **The common root cause of failure is not "not understanding the problem" but "surrogate-objective mismatch"**: all three negative cases build a self-consistent mechanism narrative on a surrogate quantity that does not correspond to the real cost function. The LLM's idea is **correct at the semantic layer and not closed-loop at the numerical/causal layer**.
 
 ---
@@ -81,15 +81,23 @@ Publication-year distribution figure: ![works year distribution](../Code/LLM-emp
 
 ### 3.1 Results Table
 
-| Paper | Task | Metric (higher is better) | LLM solution | seed baseline | SOTA | Relative change (vs seed) | Verdict |
-|---|---|---|---:|---:|---:|---|---|
-| Cloudcast  | `cloudcast` | `combined_score` = 1/(1+cost) | **0.00124095** | 0.00095524 | 0.00159429 | Cost \$1045.86 → **\$804.83 (−23%)** | ✅ Win |
-| LLM-SQL | `llm_sql` | `combined_score` | **0.68783** | 0.67174 | 0.729 | **+2.4%**; runtime 351.6 s → 21.4 s (**16×**); hit rate 0.707 → 0.690 | ✅ Win |
-| Prism | `prism` | `combined_score` = 1/mean(kvpr) + success_rate | 20.627 | 21.892 | 26.26 | mean kvpr 0.04787 → 0.05095, combined score −5.8% | ❌ Loss |
-| TXN | `txn_scheduling` | `combined_score` = 1e6/(1+makespan) | 1718.21 | 2793.30 | 4238.6| makespan **357 → 581 (+63%)** | ❌ Loss |
-| Can't-Be-Late  | `cant-be-late` | `combined_score` = −(avg_cost+0.25·std) | −153.53 | −106.75 | -95.69 | Average cost \$96.52 → **\$140.82 (+46%)** | ❌ Loss |
+The "human solution" column = the score obtained by implementing the solution extracted from each paper in
+`data/human_data/` (idea + implementation) against the same interface and running it on the same evaluator
+(see §3.4; artifacts in `sky-discovertest/genration_program_human/` and `sky-discovertest/output_human/`).
 
-Summary: **1 true win (cloudcast), 1 "metric win" (llm_sql, entirely from the runtime term), 3 true losses.** Neither win comes from tuning; both come from introducing a new structure (shared edges, ordering objective).
+| Paper | Task | Metric (higher is better) | LLM solution | Human solution | seed baseline | SOTA | LLM relative change (vs seed) | Human relative change (vs seed) | Verdict (LLM / Human) |
+|---|---|---|---:|---:|---:|---:|---|---|---|
+| Cloudcast  | `cloudcast` | `combined_score` = 1/(1+cost) | 0.00124095 | **0.00156953** | 0.00095524 | 0.00159429 | Cost \$1045.86 → **\$804.83 (−23%)** | Cost \$1045.86 → **\$636.13 (−39%)** | ✅ Win / ✅ **Win** |
+| LLM-SQL | `llm_sql` | `combined_score` | **0.68783** | 0.67263 | 0.67174 | 0.729 | **+2.4%**; runtime 351.6 s → 21.4 s (**16×**); hit rate 0.707 → 0.690 | **+0.13%**; runtime 351.6 s → 383.3 s; hit rate 0.707 → **0.708** | ✅ Win / ≈ Tie |
+| Prism | `prism` | `combined_score` = 1/mean(kvpr) + success_rate | **20.627** | 19.666 | 21.892 | 26.26 | mean kvpr 0.04787 → 0.05095, combined score −5.8% | mean kvpr 0.04787 → 0.05334, combined score −10.2% | ❌ Loss / ❌ Loss |
+| TXN | `txn_scheduling` | `combined_score` = 1e6/(1+makespan) | 1718.21 | **2336.45** | 2793.30 | 4238.6| makespan **357 → 581 (+63%)** | makespan **357 → 427 (+20%)** | ❌ Loss / ❌ Loss |
+| Can't-Be-Late  | `cant-be-late` | `combined_score` = −(avg_cost+0.25·std) | −153.53 | **−107.32** | −106.75 | -95.69 | Average cost \$96.52 → **\$140.82 (+46%)** | Average cost \$96.52 → **\$97.16 (+0.7%)** | ❌ Loss / ≈ Tie |
+
+Summary: **on the LLM side, 1 true win (cloudcast), 1 "metric win" (llm_sql, entirely from the runtime term),
+3 true losses; on the human side, 1 true win (cloudcast, and by a wider margin), 2 ties, 2 true losses.**
+Neither side wins by tuning; the outcome tracks whether the **real cost function** was modelled correctly:
+the human solution takes −39% on cloudcast with a shared-edge multicast tree, and is also closer to seed than
+the LLM on txn and cant-be-late.
 
 ### 3.1.1 Why the Numbers Are What They Are (Per-Task Breakdown)
 
@@ -163,3 +171,87 @@ The runtime term is a **cliff, not a gradient**: rt > 12 s is always 0, so seed'
 4. **Specification gaps filled in by the implementation**. Prism does not specify "which GPU to place a model on", so the implementation fills it in by "lowest pressure". Such undefined spots are a hidden source of score variance: the same idea, landed by different implementations, can cross the seed baseline.
 
 **Unified root cause**: the LLM's idea is **correct at the semantic layer and not closed-loop at the numerical/causal layer**. It can produce a self-consistent mechanism narrative (which is why readers / LLM judges score it highly: Rubric 4.41 > human baseline 4.19), but it has no verifiable grasp of **the true cost function's shape, parameter scales, or constraint boundaries**. This is fully consistent with Part 2: its knowledge source is a **mechanism-template library** made of "highly-cited classics + recent hotspots", and templates give structure, not quantitative facts about this system.
+
+---
+
+### 3.4 Execution Results of the Human (Paper) Solutions — Control
+
+The human-side solutions were run through the same protocol: take `solution.{idea,implementation}` from
+`data/human_data/<pdf_id>.json`, implement it against the same interface per the uncommented half of
+`sky-discovertest/README.md` (equivalent protocol to the LLM side), and evaluate with the **same evaluator and
+the same commands**. Programs are in `sky-discovertest/genration_program_human/`, results in
+`sky-discovertest/output_human/`; per-task detail is in that directory's `REPORT.md`. **No test code was
+modified**; Telemetry / NS3 / MAS are skipped for the same reasons as before.
+
+**One-line conclusion: on 3 of these 5 tasks the human solution's algorithm substantially coincides with the
+ADRS seed** (llm_sql is the very same GGR; prism differs only in the sort key; cant-be-late is the paper's UP
+while the seed is a different greedy). So its score is naturally close to seed. The real signal appears where
+**the paper's method and the evaluator's ground truth disagree — which is exactly the mechanism that costs the
+LLM the most points.**
+
+#### 3.4.1 Results and Verdicts
+
+| Task | Human solution | seed | LLM | Human vs seed | Human vs LLM |
+|---|---:|---:|---:|---|---|
+| cloudcast | **0.00156953** (\$636.13) | 0.00095524 | 0.00124095 | ✅ **+64.3%** (cost −39.2%) | ✅ Better |
+| llm_sql | 0.67263 (hit 0.70803, 383.3 s) | 0.67174 | **0.68783** | ≈ Tie (+0.13%) | ❌ Slightly worse |
+| prism | 19.666 | **21.892** | 20.627 | ❌ −10.2% | ❌ Slightly worse |
+| txn_scheduling | 2336.45 (makespan 427) | **2793.30** | 1718.21 | ❌ −16.4% | ✅ Better |
+| cant-be-late | −107.32 (avg \$97.16) | **−106.75** | −153.53 | ❌ 0.5% behind (wash) | ✅ **Much better** |
+
+**Human side: 1 true win (cloudcast), 1 tie (llm_sql), 1 wash (cant-be-late), 2 true losses (prism, txn);
+human vs LLM is 3 wins to 2.**
+
+#### 3.4.2 Three Protocol Facts That Must Be Stated
+
+1. **For llm_sql, the ADRS seed *is* the paper's own code.** The class docstring of `initial_program.py` says
+   "GGR algorithm" and it implements the GGR from the solution. The two differ only in the **FD-inference term**
+   that the solution states explicitly but the seed leaves off (`HITCOUNT = (len(v)² + average length of the
+   FD-inferred fields over R_v)·(|R_v|−1)`; in the seed `dep_graph` is commented "NOTE: not used"). This
+   implementation adds that term and switches the selection to a per-`(v, c)` scan, keeping the rest of the
+   structure identical to the seed. So "human ≈ seed (+0.13%)" is a **property of the task itself**, not a
+   shortcut taken by the implementation.
+2. **For cant-be-late, ADRS also ships the paper's own UP code as `referenced_up.py`.** Running it through the
+   same command gives **−104.94** (avg \$94.68), this implementation (strictly the solution text: a 2d safety net,
+   hysteresis taking precedence over taking spot) gives −107.32, and the seed gives −106.75 — all three within a
+   ±2% band, a three-way cross-check. The difference comes from two places where the solution text and the paper's
+   code disagree (the code uses 1d in the safety net, and `if has_spot: return SPOT` makes the hysteresis
+   ineffective). Both are reported as found, with no selective polishing.
+3. **All 5 seeds "stand on the ground-truth track".** The seed is either the paper's own code (llm_sql, prism)
+   or calls the environment's true cost function directly (txn's seed uses `get_opt_seq_cost`; cloudcast's seed is
+   a per-destination shortest path). Both solutions — human and LLM — are **generated once with zero feedback**
+   and can only use a **surrogate quantity they narrated themselves**. The accurate phrasing is therefore:
+   **"the paper's method translated in one shot" against "the seed its authors already tuned": 1 win, 1 tie,
+   2 losses, 1 wash.**
+
+#### 3.4.3 The Conclusion Gets Sharper When the Two Sides Are Read Together
+
+Side by side, winning **does not depend on whether a human or a model produced the solution, but on how well the
+surrogate objective aligns with the real cost function**:
+
+| Case | Human solution's surrogate | Distance from ground truth | LLM solution's surrogate | Distance from ground truth | Outcome |
+|---|---|---|---|---|---|
+| cloudcast | Egress spend on the overlay graph (exactly what the evaluator bills) | **Same quantity** | Same (multicast cuts / rate penalty) | Same quantity | **Both beat** seed |
+| llm_sql | The prefix hit count (exactly what the evaluator measures) | **Same quantity** | Same | Same quantity | Human hit rate 0.708 vs LLM 0.690; the LLM collects the runtime bonus for being fast |
+| prism | `Σ(req_rate·size/slo)/free memory` (evaluator uses `Σ(req_rate/slo)/free memory`) | Off by a `model_size` factor | `Σ((req_rate/slo)/size)` ordering | Off by a `/size` factor | **Both lose**, in opposite directions |
+| txn | Incremental makespan over hot keys and the latest conflict per key | Keeps the real conflict structure, only truncated | "Sum of per-class maxima" | Almost uncorrelated with ground truth | Human −16%, LLM −38% |
+| cant-be-late | UP's progress invariant `cp ≥ ep(t)` | Self-consistent parameters, no oracle needed | Thresholds `Rδ+Rτ` / `2Rδ` cross when τ>δ | Assumption written down but never verified | Human wash, LLM −46% |
+
+Three conclusions can be written down directly:
+
+1. **The human solution fails for the same reason as the LLM, only less severely.** On prism and txn the human
+   also loses to seed, and for the same reason — "the paper's/model's surrogate ≠ the evaluator's ground truth"
+   (prism is off by a `model_size` factor; txn replaces the true cost with a hot-key surrogate). The difference is
+   magnitude: human −10%/−16% versus LLM −5.8%/−38%. **How far the surrogate is from ground truth predicts the
+   score better than who wrote it.**
+2. **The human solution's only large win over seed comes precisely from having no surrogate and rewriting the real
+   billing structure** — cloudcast's multicast tree lets an edge occurrence be shared by downstream destinations,
+   and that is exactly what the evaluator bills. This is the same mechanism by which the LLM won cloudcast; the
+   human version (clustering + hop constraining + a flow-conservation MILP) simply finds a cheaper tree than the
+   LLM version (a greedy Steiner tree): \$636 vs \$805.
+3. **"Humans also have −39% of headroom" shows the seed is not a ceiling, but "humans also lose" shows the paper's
+   method does not win automatically.** The conclusions about the LLM in Parts 2 and 3 should therefore be narrowed
+   to: **the LLM's weakness is not "it cannot do research", it is "it cannot obtain this system's quantitative
+   facts"** — whereas the human paper's advantage is precisely that **its authors are that system's authors**: they
+   know that billing happens per edge, and they know the magnitudes of τ and δ. This is exactly §2.4's "the LLM
+   covers only 24.1% of human atomic assertions, 0/80 claims contain a number" cashing out in execution results.
