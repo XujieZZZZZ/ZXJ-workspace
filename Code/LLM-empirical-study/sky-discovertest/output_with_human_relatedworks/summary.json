@@ -1,0 +1,279 @@
+{
+  "generated_at": "2026-09-15",
+  "side": "LLM solution generated from HUMAN related works (merged_human_re)",
+  "source": "data/LLM_data/merged_human_re/<pdf_id>.json (solution.idea + solution.implementation; related_works_source = data/human_data/<pdf_id>.json)",
+  "program_dir": "generation_program_with_human_relatedworks/",
+  "output_dir": "output_with_human_relatedworks/",
+  "mapping": [
+    {
+      "pdf_id": "52875bf8ef4b3f8c",
+      "paper": "Telemetry (The Case for Validating Inputs in Software-Defined WANs)",
+      "adrs_task": null,
+      "initial_program": null,
+      "generated_program": null,
+      "status": "skipped",
+      "reason": "ADRS checkout contains no matching task folder (no SDN telemetry/validation task)"
+    },
+    {
+      "pdf_id": "5dd2d839c66d339a",
+      "paper": "MAS (MetaGPT)",
+      "adrs_task": "multiagent_system",
+      "initial_program": "multi_agent_evolution{,_v2,_v2_gpt5,_v3_gpt5}/initial_program.py",
+      "generated_program": null,
+      "status": "skipped",
+      "reason": "re-checked this round: no top-level README says which of the 4 variants is the task; v2/_v2_gpt5/_v3_gpt5 evaluator.py fail at import on the missing ADRS/taxonomy_definitions_examples/definitions.txt; the only importable one (multi_agent_evolution) needs the missing LLM-empirical-study/example_mas/programdev dataset and calls gpt-4o-mini with OPENAI_API_KEY unset"
+    },
+    {
+      "pdf_id": "7d3b6e61ea96cc4f",
+      "paper": "NS3 (PowerTCP)",
+      "adrs_task": null,
+      "initial_program": null,
+      "generated_program": null,
+      "status": "skipped",
+      "reason": "ADRS checkout contains no matching task folder (no congestion-control / ns-3 task)"
+    },
+    {
+      "pdf_id": "b93fea400aedf898",
+      "paper": "Can't-Be-Late",
+      "adrs_task": "cant-be-late",
+      "initial_program": "initial_greedy.py",
+      "generated_program": "generation_program_with_human_relatedworks/cant_be_late.py",
+      "status": "tested",
+      "test_command": "cd ADRS/cant-be-late && PYTHONPATH=shims simulator/.venv/bin/python evaluator.py <program>",
+      "generated": {
+        "runs_successfully": 1.0,
+        "avg_cost": 139.20491912037036,
+        "cost_std": 14.558271848825143,
+        "min_cost": 80.6092,
+        "max_cost": 148.73436666666666,
+        "score": -139.20491912037036,
+        "combined_score": -142.84448708257665
+      },
+      "baseline": {
+        "runs_successfully": 1.0,
+        "avg_cost": 96.51543611111111,
+        "cost_std": 40.921052290898466,
+        "combined_score": -106.74569918383573
+      },
+      "llm_solution_self_re": {
+        "avg_cost": 140.8155847222222,
+        "cost_std": 50.86506905424361,
+        "combined_score": -153.5318519857831
+      },
+      "human_solution_paper": {
+        "avg_cost": 97.15691035493826,
+        "cost_std": 40.66611684486063,
+        "combined_score": -107.32343956615343
+      },
+      "verdict": "worse_than_seed_better_than_llm_self_re",
+      "note": "failover-horizon two-mode automaton. Primary reading (A) = the IMPLEMENTATION text: a spot preemption makes the controller start the on-demand tail immediately and it latches there until the job finishes -> $139.20. Control reading (B) = the IDEA text ('tail scheduled as late as possible', no latch) -> $96.54 / -106.77, i.e. indistinguishable from the seed ($96.52 / -106.75). The 44% gap between the two readings is the single most expensive sentence in this task. cost_std 14.56 vs the seed's 40.92 is the fingerprint of the latch: the outcome no longer varies with trace quality.",
+      "control_reading_B": {
+        "program": "/tmp/cant_be_late_tail_late.py (control only, NOT part of the deliverable)",
+        "metrics": {
+          "runs_successfully": 1.0,
+          "avg_cost": 96.5399011728395,
+          "cost_std": 40.93071794354387,
+          "combined_score": -106.77258065872547
+        }
+      }
+    },
+    {
+      "pdf_id": "c252b8a901feea74",
+      "paper": "TXN (Towards Optimal Transaction Scheduling)",
+      "adrs_task": "txn_scheduling",
+      "initial_program": "initial_program.py",
+      "generated_program": "generation_program_with_human_relatedworks/txn_scheduling.py",
+      "status": "tested",
+      "test_command": "cd ADRS/txn_scheduling && python evaluator.py <program>",
+      "generated": {
+        "makespan_idle_runs": [
+          354.0,
+          355.0,
+          355.0,
+          357.0,
+          357.0
+        ],
+        "makespan_median": 355.0,
+        "combined_score_at_median": 2808.988764044944,
+        "combined_score_range": [
+          2793.2960893854747,
+          2816.901408450704
+        ],
+        "per_workload_at_354": [
+          234,
+          51,
+          69
+        ],
+        "makespan_under_cpu_contention": 365.0,
+        "validity": 1.0
+      },
+      "baseline": {
+        "makespan": 357.0,
+        "validity": 1.0,
+        "combined_score": 2793.2960893854747
+      },
+      "llm_solution_self_re": {
+        "makespan": 581.0,
+        "combined_score": 1718.213058419244
+      },
+      "human_solution_paper": {
+        "makespan": 427.0,
+        "combined_score": 2336.448598130841
+      },
+      "verdict": "tie_with_seed_better_than_both_other_sides",
+      "note": "conflict graph -> connected components -> per-component DAG longest path (op durations 1) -> NEH construction + iterated greedy with SA acceptance, d=max(2,n/5), 15 s wall-clock budget per workload. Per-workload split (234/51/69 vs the seed's 252/57/48): wins W1 and W2, loses W3. The proxy makespan is a MAX over components (unbounded parallel workers) while the ground truth get_opt_seq_cost is an additive lock-conflict simulation, so cross-component order is invisible to the optimiser. The wall-clock budget is what the solution prescribes, and it is the only source of run-to-run variation (the evaluator seeds the RNG with EVAL_SEED=2026). The reported makespan is the environment's ground-truth cost of the returned schedule, never the proxy value."
+    },
+    {
+      "pdf_id": "d18c13d036b3708f",
+      "paper": "LLM-SQL",
+      "adrs_task": "llm_sql",
+      "initial_program": "initial_program.py",
+      "generated_program": "generation_program_with_human_relatedworks/llm_sql.py",
+      "status": "tested",
+      "test_command": "cd ADRS/llm_sql && python -c 'import evaluator; evaluator.evaluate(<program>)'",
+      "generated": {
+        "combined_score": 0.6652536972139277,
+        "runs_successfully": 1.0,
+        "hit_rates": [
+          0.7941554876965617,
+          0.7014198270354898,
+          0.8084778726840531,
+          0.3197192371090134,
+          0.8424838906047719
+        ],
+        "mean_hit_rate": 0.693251263025978,
+        "total_runtime": 52.00200319290161
+      },
+      "baseline": {
+        "combined_score": 0.6717413835118066,
+        "hit_rates": [
+          0.7940941310156155,
+          0.707332214166747,
+          0.794851847194222,
+          0.3967985668655787,
+          0.8424042066094504
+        ],
+        "total_runtime": 351.5789704322815
+      },
+      "llm_solution_self_re": {
+        "combined_score": 0.6878251631199369,
+        "hit_rates": [
+          0.7940080691352975,
+          0.6965162709282146,
+          0.7958884733042801,
+          0.3221936449821612,
+          0.8421128088526462
+        ],
+        "total_runtime": 21.373797178268433
+      },
+      "human_solution_paper": {
+        "combined_score": 0.6726314866145435,
+        "hit_rates": [
+          0.7940482545035775,
+          0.7073326544368439,
+          0.7966708561585233,
+          0.4001552217937114,
+          0.8419587321312576
+        ],
+        "total_runtime": 383.2691400051117
+      },
+      "verdict": "slightly_worse_than_seed",
+      "note": "prefix-layout planner (modules 2/3/4): bounded-sample profiler with a character-length token proxy, greedy field order by score(f)=sum_G sum_v max(0,n(G,v)-1)*len(G,v) with live-group splitting (tau_min=8, G_max=512), remaining fields appended in original schema order, row order = prefix-trie DFS by (cnt_j desc, value_j asc). The whole gap is on PDMX (0.31972 vs the seed's 0.39680); the row order contributes nothing there (31.95 our rows / 31.97 full-row sort / 31.98 original rows) and a global greedy column order is worse still (29.47), so the loss is the solution's own last instruction: the fields after the k prefix fields keep their schema order, whereas the seed's GGR reorders every column at every recursion level. Runtime 10.4 s/dataset is 6.8x faster than the seed but the runtime term only pays 0.0067."
+    },
+    {
+      "pdf_id": "e3d82bafe7cb11e7",
+      "paper": "Cloudcast",
+      "adrs_task": "cloudcast",
+      "initial_program": "initial_program.py",
+      "generated_program": "generation_program_with_human_relatedworks/cloudcast.py",
+      "status": "tested",
+      "test_command": "cd ADRS/cloudcast && python -c 'import evaluator; evaluator.evaluate(<program>)'",
+      "generated": {
+        "combined_score": 0.0015367525183501158,
+        "runs_successfully": 1.0,
+        "total_cost": 649.7228640000001,
+        "avg_cost": 129.9445728,
+        "max_transfer_time": 4317.857142857143,
+        "successful_configs": 5,
+        "failed_configs": 0
+      },
+      "baseline": {
+        "combined_score": 0.0009552371980292827,
+        "total_cost": 1045.860405
+      },
+      "llm_solution_self_re": {
+        "combined_score": 0.0012409508267985665,
+        "total_cost": 804.8337029999997
+      },
+      "human_solution_paper": {
+        "combined_score": 0.0015695294885060193,
+        "total_cost": 636.133617
+      },
+      "verdict": "better_than_seed_and_llm_self_re",
+      "note": "tree-column LP: candidate pool = direct multicast tree + a star through each relay region + two-hop relay variants with a fan-out partition + randomized greedy directed-Steiner trees (3-hop cap, perturbed costs), deduplicated by edge set; the LP keeps the cheapest tree and all partitions reuse it. The edge and per-VM capacity rows need bw(u,v), the per-VM caps and the deadline T, none of which the interface exposes, so every capacity row is slack and the LP degenerates to picking the cheapest column. -37.9% egress cost vs the seed (the seed pays for a shared edge once per destination). 2.1% more expensive than the paper-side solution, which solves the same 'one shared multicast tree' with an exact MILP over clustered, hop-limited edges instead of a candidate pool."
+    },
+    {
+      "pdf_id": "f948850caef3d25f",
+      "paper": "Prism",
+      "adrs_task": "prism",
+      "initial_program": "initial_program.py",
+      "generated_program": "generation_program_with_human_relatedworks/prism.py",
+      "status": "tested",
+      "test_command": "cd ADRS/prism && python -c 'import evaluator; evaluator.evaluate(<program>)'",
+      "generated": {
+        "combined_score": 19.736567509540922,
+        "max_kvpr": 18.736567509540922,
+        "success_rate": 1.0
+      },
+      "baseline": {
+        "combined_score": 21.891622105209393,
+        "max_kvpr": 20.891622105209393
+      },
+      "llm_solution_self_re": {
+        "combined_score": 20.627427577103326
+      },
+      "human_solution_paper": {
+        "combined_score": 19.66624226263508
+      },
+      "verdict": "worse_than_seed_slightly_better_than_paper_side",
+      "note": "residency planner U_m=(Q_m + alpha*predicted_demand_m)*priority_m/(W_m + expected_KV_m) with a 5% staging buffer. Only W_m and req_rate are observable, so Q_m = predicted_demand_m = req_rate, priority_m = 1/slo, expected_KV_m = 0; 'cold models receive zero replicas' cannot be honoured because every model must be placed, and the activity split is taken from the solution's own queue-emptiness rule (req_rate > 0 for every shipped test case), so the planner degenerates to the spreading clause alone. Ablation: with the seed's ordering key (req_rate/slo) the same placement rule reproduces the seed bit-for-bit (21.891622105209393), and the 5% staging buffer is immaterial (19.7433 without it) - the entire gap is the extra division by W_m in the utility, which is the right key for 'what to keep resident' and the wrong key for min-max packing."
+    }
+  ],
+  "headline": {
+    "vs_seed": {
+      "win": 1,
+      "tie": 1,
+      "loss": 3
+    },
+    "vs_llm_self_re": {
+      "win": 3,
+      "loss": 2
+    },
+    "vs_human_paper_solution": {
+      "win": 2,
+      "loss": 3
+    },
+    "per_task": {
+      "cloudcast": {
+        "vs_seed": "win",
+        "cost_change_vs_seed": -0.3788
+      },
+      "llm_sql": {
+        "vs_seed": "loss",
+        "score_change_vs_seed": -0.0097
+      },
+      "prism": {
+        "vs_seed": "loss",
+        "score_change_vs_seed": -0.0984
+      },
+      "txn_scheduling": {
+        "vs_seed": "tie",
+        "makespan": 355.0
+      },
+      "cant-be-late": {
+        "vs_seed": "loss",
+        "cost_change_vs_seed": 0.4423
+      }
+    }
+  }
+}
